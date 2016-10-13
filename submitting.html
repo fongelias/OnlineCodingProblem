@@ -1,0 +1,94 @@
+<html>
+
+<head>
+	<title>Processing...</title> 
+    <meta http-equiv="Content-Type" content='text/html; charset=UTF-8' />
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+<script>
+function gotoResults()
+{
+	//url params will look like:
+	//?bucket=public.yetanotherwhatever.io&key=uploads%2FC5E1B88A-CF0D-4BA3-8E60-639C58DC695E&etag="52f489375747daa8eec6fe95f08be504"
+
+
+	var QueryString = function () {
+  // This function is anonymous, is executed immediately and 
+  // the return value is assigned to QueryString!
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+        // If first entry with this name
+    if (typeof query_string[pair[0]] === "undefined") {
+      query_string[pair[0]] = decodeURIComponent(pair[1]);
+        // If second entry with this name
+    } else if (typeof query_string[pair[0]] === "string") {
+      var arr = [ query_string[pair[0]],decodeURIComponent(pair[1]) ];
+      query_string[pair[0]] = arr;
+        // If third or later entry with this name
+    } else {
+      query_string[pair[0]].push(decodeURIComponent(pair[1]));
+    }
+  } 
+  return query_string;
+}();
+
+
+	var key = QueryString["key"];
+
+	if (typeof key !== "undefined")
+	{
+		var baseKey = key.substring(key.indexOf("/")+1);
+		var baseKey = baseKey.substring(baseKey.indexOf("/")+1);	//remove problem
+
+		window.location = "http://yetanotherwhatever.io/results/" + baseKey + ".html";
+	}
+
+	
+}
+</script>
+
+</head>
+
+<body lang=EN-US onLoad="setTimeout(gotoResults, 10000)">
+
+<div>
+
+<p><img src="http://yetanotherwhatever.io/infiniteloginloader.gif">Please wait.  We are processing your request...</p>
+
+</div>
+
+</body>
+
+</html>
