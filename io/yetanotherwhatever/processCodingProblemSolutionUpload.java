@@ -88,7 +88,7 @@ public class processCodingProblemSolutionUpload implements RequestHandler<S3Even
             S3Object slnFile = client.getObject(bucketName, slnKey);
             InputStream slnContents = slnFile.getObjectContent();
          
-            String result =  compareStreams(putContents, slnContents);
+            String result =  compareStreams(putContents, slnContents, prefix);
         	
             current = Instant.now();
         	if (previous != null) {
@@ -163,7 +163,35 @@ public class processCodingProblemSolutionUpload implements RequestHandler<S3Even
             }
     }
     
-    private static String compareStreams(InputStream attempt, InputStream ref)
+    private static String getErrorString(String prefix)
+    {
+    	if (prefix.equals("combos"))
+    	{
+    		return "</p></div><div>Did you remember to...<ul>"
+				+ "<li>Add a \"Case #X\" before each set of combinations? (see the <a href=\"http://yetanotherwhatever.io/combos.html#sample\">\"Sample\"</a> section of the instructions)</li>"
+				+ "<li>Sort your combinations alphabetically?</li>"
+				+ "<li>Print each combination on it's own line?  (See  the <a href=\"http://yetanotherwhatever.io/combos.html#output\">\"Output\"</a> section of the instructions)</li>"
+				+ "</ul></div><div><p><a href=\"http://yetanotherwhatever.io/" + prefix + ".html\">Return to the main page</a>";
+    	}
+    	else 
+    	{
+    		return "";
+    	}
+    }
+    
+    private static String getExtendedSuccessString(String prefix)
+    {
+    	if (prefix.equals("combos"))
+    	{
+    		return "<p><a href=\"http://yetanotherwhatever.io/combos.html#submit\">Return to the main page and submit your code!</a></p>";
+    	}
+    	else 
+    	{
+    		return "";
+    	}
+    }
+    
+    private static String compareStreams(InputStream attempt, InputStream ref, String prefix)
     {
         BufferedReader aIn = new BufferedReader(new InputStreamReader(attempt));
         BufferedReader rIn = new BufferedReader(new InputStreamReader(ref));
@@ -183,15 +211,19 @@ public class processCodingProblemSolutionUpload implements RequestHandler<S3Even
         		String nl = System.lineSeparator();
         		if (aLine != null && !aLine.equals(rLine))
         		{
-        			return "Your solution is incorrect." + nl
-        					+ "The first incorrect line is line " + i + "." + nl
+        			String result = "Your solution is incorrect." + nl
+        					+ "The first incorrect line is line " + i + "." + nl;
         					//+ "Expected: \"" + rLine + "\"" + nl
         					//+ "but read \"" + aLine + "\""
-        					+ "";
+        			
+        			result += getErrorString(prefix);
+        			
+        			return result;
+        			
         		}
         		else if (aLine == null && rLine == null)
         		{
-        			return "Success!!  Your solution is correct!";
+        			return "Success!!  Your solution is correct!" + getExtendedSuccessString(prefix);
         		}
         		else if (aLine == null)
         		{
