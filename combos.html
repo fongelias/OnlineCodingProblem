@@ -324,7 +324,6 @@ function genCodeKey()
 	else
 	{
 	 	keyInput.value = "code/" + subkey + "/" + email + "/" + uuid;	
-	 	alert(keyInput.value);
 	 	return true;
 	}
 }
@@ -506,31 +505,29 @@ clear=all style='page-break-before:always'>
 
 <p class=MsoNormal>&nbsp;</p>
 
-<h1>Submitting your solution</h1>
+<h1><a name="submit">Submitting your solution</a></h1>
 
-<p class=MsoNormal>If your test output successfully passes when you submit it, the
-results page will contain a link for you to upload the source code of your
-program. Please follow the directions on that page to submit your final
-solution, and we will be contacting you very soon with next steps.</p>
+<p class=MsoNormal>If your test output successfully passes, please zip up your code and submit it using the form below.</p>
+<p class=MsoNormal>Once we've recieved it, someone from our team will be contacting you shortly.</p>
 
 <div id=uploadCodeDiv class=uploadDiv>
 	<form action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
 	      <input id="codekey" type="hidden" name="key" value="code/${filename}">
 	      <input type="hidden" name="acl" value="private"> 
-	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
+	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/thanks.html">
 	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
 ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
 LCJjb2RlLyJdLHsiYWNsIjoicHJpdmF0ZSJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiJo
-dHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3N1Ym1pdHRpbmcuaHRtbCJ9LHsieC1hbXotYWxn
-b3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotY3JlZGVudGlhbCI6IkFLSUFJSFRR
-VlVKVVIySVdPQ09BLzIwMTYxMDEzL3VzLWVhc3QtMS9zMy9hd3M0X3JlcXVlc3QifSx7IngtYW16
-LWRhdGUiOiIyMDE2MTAxM1QwMDAwMDBaIn0seyJ4LWFtei1zdG9yYWdlLWNsYXNzIjoiUkVEVUNF
-RF9SRURVTkRBTkNZIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2XV19'>
+dHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3RoYW5rcy5odG1sIn0seyJ4LWFtei1hbGdvcml0
+aG0iOiJBV1M0LUhNQUMtU0hBMjU2In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlIVFFWVUpV
+UjJJV09DT0EvMjAxNjEwMTMvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotZGF0
+ZSI6IjIwMTYxMDEzVDAwMDAwMFoifSx7IngtYW16LXN0b3JhZ2UtY2xhc3MiOiJSRURVQ0VEX1JF
+RFVOREFOQ1kifSxbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwwLDEwNDg1NzZdXX0='>
 	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
 	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20161013/us-east-1/s3/aws4_request">
 	       <input type="hidden" name="x-amz-date" value="20161013T000000Z">
 	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="56e60a064dc5c476fc6c1683f8599374d2975ad9db4f16a05c873bca444414af">
+	       <input type="hidden" name="x-amz-signature" value="0efaa5c4dac0c9b8be45321902cb00c25ab6b8eaa04e5a049c6e984eae0dfc19">
 	      <!-- Include any additional input fields here -->
 
 	      <div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>
@@ -545,8 +542,11 @@ RF9SRURVTkRBTkNZIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2XV19'>
 
 <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Good luck!</p>
+<br><br><br><br>
+<p class=MsoTitle style="text-align: center;">Good luck!</p>
+<br><br><br><br>
 
+<br><br><br><br><br><br><br><br>
 </div>
 
 </body>
