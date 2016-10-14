@@ -159,10 +159,10 @@ div.WordSection1
 ul
 	{margin-bottom:0in;}
 
-div#uploadDiv
+div.uploadDiv
 	{ outline-style: ridge;
 	margin: 5px;
-	padding: 5px;
+	padding: 10px;
 	display: inline-block;
 	}
 
@@ -172,6 +172,10 @@ h1
 
 body { width: 900px; text-align: left; margin: 50px auto; }
 
+div.formlabel {padding: none; margin: none; border: none;}
+
+
+input.fixThis {border: solid; border-color: red;}
 -->
 </style>
 
@@ -274,11 +278,17 @@ Dual licensed under the MIT and GPL licenses.
 
 
   <script type="text/javascript">
-function genKeyGuid()
+function genSlnKey()
 {
-	var uuid = Math.uuid();
-	var keyInput = document.getElementById("key");
 
+	if(!document.getElementById('outputFile').value)
+	{
+        alert("No file selected.");
+        return false;
+    }
+
+	var uuid = Math.uuid();
+	var keyInput = document.getElementById("slnkey");
 
 	var path = window.location.pathname;
 	var page = path.split("/").pop();
@@ -287,7 +297,58 @@ function genKeyGuid()
 
 	keyInput.value = "uploads/" + subkey + "/" + uuid;	
 }
+
+function genCodeKey()
+{
+
+	if(!document.getElementById('codeFile').value)
+	{
+        alert("No file selected.");
+        return false;
+    }
+
+	var uuid = Math.uuid();
+	var keyInput = document.getElementById("codekey");
+
+	var path = window.location.pathname;
+	var page = path.split("/").pop();
+	var subkey = page.substring(0, page.indexOf('.'));
+	
+
+	var email = getAndValidateEmail();
+
+	if (!email)
+	{
+		return false;	
+	}
+	else
+	{
+	 	keyInput.value = "code/" + subkey + "/" + email + "/" + uuid;	
+	 	alert(keyInput.value);
+	 	return true;
+	}
+}
+
+function getAndValidateEmail()
+{
+
+
+	var emailInput = document.getElementById("email");
+	var email = emailInput.value;
+
+	if (!email || email.indexOf("@") == -1)
+	{
+		alert("Please enter a valid email address.")
+		emailInput.className="fixThis";
+		emailInput.focus();
+		return null;
+	}
+
+	return email;
+}
+
   </script>
+
 
 </head>
 
@@ -315,9 +376,7 @@ would be:</p>
 
 <p class=MsoNormal><a href="http://yetanotherwhatever.io/inputs/combos-in.txt">The test input file can be downloaded here.</a></p>
 
-<p class=MsoNormal>The first line of input gives the number of cases, N.</p>
-
-<p class=MsoNormal>Each line that follows is one case, and contains an input string
+<p class=MsoNormal>Each line contains an input string
 for which all possible combinations must be computed.</p>
 
 <p class=MsoNormal>For each input string:</p>
@@ -329,14 +388,14 @@ for which all possible combinations must be computed.</p>
 deduplication of the results)</p></li>
 </ul>
 
-<h1>Output</h1>
+<h1><a name="output">Output</a></h1>
 
 <p class=MsoNormal>Your program should produce an output file you can upload
 and test here:</p>
 
-<div id=uploadDiv>
-<form action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data">
-      <input id="key" type="hidden" name="key" value="uploads/${filename}">
+<div id=uploadSlnDiv class=uploadDiv>
+<form action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data"  onsubmit="return genSlnKey();">
+      <input id="slnkey" type="hidden" name="key" value="uploads/${filename}">
       <input type="hidden" name="acl" value="private"> 
       <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
       <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
@@ -354,11 +413,10 @@ VUNFRF9SRURVTkRBTkNZIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2XV19'>
        <input type="hidden" name="x-amz-signature" value="303be09451cebb67401233b61196b0bc21aa79064c78100ae3c095b6778ecf55">
       <!-- Include any additional input fields here -->
 
-      File to upload: 
+      <div class="formlabel">File to upload: <input id="outputFile" name="file" type="file"> </div>
+      
       <br> 
-      <input name="file" type="file"> 
-      <br> 
-      <input type="submit" value="Upload File" onClick="genKeyGuid();"> 
+      <input type="submit" value="Upload File"> 
     </form>
 </div>
 
@@ -396,13 +454,13 @@ clear=all style='page-break-before:always'>
 <p class=MsoNormal><span style='font-size:16.0pt;line-height:107%;font-family:
 "Calibri Light",sans-serif;color:#2E74B5'>&nbsp;</span></p>
 
-<h1>Sample</h1>
+<h1><a name="sample">Sample</a></h1>
 
 <p class=MsoNormal>Input:</p>
 
-<p class=Code>abc</p>
+<p class=Code>bac</p>
 
-<p class=Code>dfg</p>
+<p class=Code>dgf</p>
 
 <p class=Code>er</p>
 
@@ -454,6 +512,36 @@ clear=all style='page-break-before:always'>
 results page will contain a link for you to upload the source code of your
 program. Please follow the directions on that page to submit your final
 solution, and we will be contacting you very soon with next steps.</p>
+
+<div id=uploadCodeDiv class=uploadDiv>
+	<form action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
+	      <input id="codekey" type="hidden" name="key" value="code/${filename}">
+	      <input type="hidden" name="acl" value="private"> 
+	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
+	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
+ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
+LCJjb2RlLyJdLHsiYWNsIjoicHJpdmF0ZSJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiJo
+dHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3N1Ym1pdHRpbmcuaHRtbCJ9LHsieC1hbXotYWxn
+b3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotY3JlZGVudGlhbCI6IkFLSUFJSFRR
+VlVKVVIySVdPQ09BLzIwMTYxMDEzL3VzLWVhc3QtMS9zMy9hd3M0X3JlcXVlc3QifSx7IngtYW16
+LWRhdGUiOiIyMDE2MTAxM1QwMDAwMDBaIn0seyJ4LWFtei1zdG9yYWdlLWNsYXNzIjoiUkVEVUNF
+RF9SRURVTkRBTkNZIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2XV19'>
+	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
+	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20161013/us-east-1/s3/aws4_request">
+	       <input type="hidden" name="x-amz-date" value="20161013T000000Z">
+	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
+	       <input type="hidden" name="x-amz-signature" value="56e60a064dc5c476fc6c1683f8599374d2975ad9db4f16a05c873bca444414af">
+	      <!-- Include any additional input fields here -->
+
+	      <div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>
+	      <br> 
+	      <div class="formlabel">Your email:</div>
+	      <br>
+	      <input id="email" name="email" type="text">
+	      <br><br>
+	      <input type="submit" value="Upload File">
+    </form>
+</div>
 
 <p class=MsoNormal>&nbsp;</p>
 
