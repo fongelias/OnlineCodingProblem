@@ -301,11 +301,23 @@ function genSlnKey()
 function genCodeKey()
 {
 
-	if(!document.getElementById('codeFile').value)
+	var fileName = document.getElementById('codeFile').value;
+	if(!fileName)
 	{
         alert("No file selected.");
         return false;
     }
+    else if (-1 == fileName.indexOf(".zip"))
+    {
+    	alert ("Selected file is not a .zip file.");
+    	return false;
+    }
+    else
+    {
+    	alert("foo");
+    }
+    alert("bar");
+
 
 	var uuid = Math.uuid();
 	var keyInput = document.getElementById("codekey");
@@ -323,7 +335,7 @@ function genCodeKey()
 	}
 	else
 	{
-	 	keyInput.value = "code/" + subkey + "/" + email + "/" + uuid;	
+	 	keyInput.value = "code/" + subkey + "/" + email + "/" + uuid + ".zip";	
 	 	return true;
 	}
 }
