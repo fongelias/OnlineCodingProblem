@@ -295,7 +295,7 @@ function genSlnKey()
 	var subkey = page.substring(0, page.indexOf('.'));
 	
 
-	keyInput.value = "uploads/" + subkey + "/" + uuid;	
+	keyInput.value = "uploads/" + subkey + "/" + getLLS() + "/" + uuid;	
 }
 
 function genCodeKey()
@@ -330,7 +330,7 @@ function genCodeKey()
 	}
 	else
 	{
-	 	keyInput.value = "code/" + subkey + "/" + email + "/" + uuid + ".zip";	
+	 	keyInput.value = "code/" + subkey + "/" + getLLS() + "/" + email + "/" + uuid + ".zip";	
 	 	return true;
 	}
 }
@@ -367,9 +367,58 @@ function getAndValidateEmail()
 
 </script>
 
+
+<!-- stats -->
+
+<script>
+
+function createPookie(name,value) {
+    
+    var date = new Date("April 15, 2017");
+    var expires = "; expires="+date.toGMTString();
+    document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    createCookie(name,"",-1);
+}
+
+function setLLS()
+{
+	var LLS = getLLS();
+
+	if (!LLS)
+	{
+		var uuid = Math.uuid();
+		createPookie("LLS", uuid);		
+	}
+	else
+	{
+		//already set
+	}
+}
+
+function getLLS()
+{
+		return readCookie("LLS");
+}
+
+</script>
+
 </head>
 
-<body lang=EN-US>
+<body lang=EN-US onload="setLLS();">
 
 <div class=WordSection1>
 
@@ -394,6 +443,7 @@ would be:</p>
 
 <p class=MsoNormal>Please submit your solutions by <b>Saturday, November 19th, 2016</b>.</p>
 
+<p class=MsoNormal>&nbsp;</p>
 
 <h1>Input</h1>
 
@@ -410,6 +460,8 @@ for which all possible combinations must be computed.</p>
 <li><p class=MsoListParagraphCxSpLast style='text-indent:-.25in'>All the characters will be unique (you do not need to consider
 de-duplication of the results)</p></li>
 </ul>
+
+<p class=MsoNormal>&nbsp;</p>
 
 <h1><a name="output">Output</a></h1>
 
