@@ -78,31 +78,31 @@ public class AWSv4Signer {
 
         String aws_secret_key = args[1];
         String algorithm = "AWS4-HMAC-SHA256";
-        String dateStamp = "20161013";
+        String dateStamp = "20170101";
         String region = "us-east-1";
         String serviceName = "s3";
         String bucket = "public.yetanotherwhatever.io";
         String accessKeyID = args[0];
 
         String solutionPolicyDoc = "{\n" +
-            "  \"expiration\":\"2018-01-01T00:00:00Z\",\n" +
-            "  \"conditions\": [\n" +
-            "    {\"bucket\":\"" + bucket + "\"},\n" +
-            "    [\"starts-with\",\"$key\",\"uploads/\"],\n" +
-            "    {\"acl\":\"private\"},\n" +
-            "    {\"success_action_redirect\":\"http://yetanotherwhatever.io/submitting.html\"},\n" +
-            "    {\"x-amz-algorithm\":\"" + algorithm + "\"},\n" +
-            "    {\"x-amz-credential\":\"" + accessKeyID + "/" + dateStamp + "/" + region + "/" + serviceName + "/aws4_request\"},\n" +
-            "    {\"x-amz-date\":\"" + dateStamp + "T000000Z\"},\n" +
-            "    {\"x-amz-storage-class\":\"REDUCED_REDUNDANCY\"},\n" +
-            "    [\"content-length-range\",0,1048576]\n" +
-            "  ]\n" +
-            "}";
+                "  \"expiration\":\"2017-01-07T00:00:00Z\",\n" +
+                "  \"conditions\": [\n" +
+                "    {\"bucket\":\"" + bucket + "\"},\n" +
+                "    [\"starts-with\",\"$key\",\"uploads/\"],\n" +
+                "    {\"acl\":\"private\"},\n" +
+                "    {\"success_action_redirect\":\"http://yetanotherwhatever.io/submitting.html\"},\n" +
+                "    {\"x-amz-algorithm\":\"" + algorithm + "\"},\n" +
+                "    {\"x-amz-credential\":\"" + accessKeyID + "/" + dateStamp + "/" + region + "/" + serviceName + "/aws4_request\"},\n" +
+                "    {\"x-amz-date\":\"" + dateStamp + "T000000Z\"},\n" +
+                "    {\"x-amz-storage-class\":\"REDUCED_REDUNDANCY\"},\n" +
+                "    [\"content-length-range\",0,1048576]\n" +
+                "  ]\n" +
+                "}";
 
 
 
         String codePolicyDoc = "{\n" +
-                "  \"expiration\":\"2018-01-01T00:00:00Z\",\n" +
+                "  \"expiration\":\"2017-01-07T00:00:00Z\",\n" +
                 "  \"conditions\": [\n" +
                 "    {\"bucket\":\"" + bucket + "\"},\n" +
                 "    [\"starts-with\",\"$key\",\"code/\"],\n" +
@@ -116,6 +116,12 @@ public class AWSv4Signer {
                 "  ]\n" +
                 "}";
 
+
+        System.out.println("Solution policy: ");
+
+        signPolicy(solutionPolicyDoc, aws_secret_key, dateStamp, region, serviceName);
+
+        System.out.println("Code submission policy: ");
         signPolicy(codePolicyDoc, aws_secret_key, dateStamp, region, serviceName);
     }
 }

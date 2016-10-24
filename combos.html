@@ -301,6 +301,12 @@ function genSlnKey()
 function genCodeKey()
 {
 
+	var email = getAndValidateEmail();
+	if (!email)
+	{
+		return false;	
+	}
+
 	var fileName = document.getElementById('codeFile').value;
 	if(!fileName)
 	{
@@ -322,17 +328,9 @@ function genCodeKey()
 	var subkey = page.substring(0, page.indexOf('.'));
 	
 
-	var email = getAndValidateEmail();
+ 	keyInput.value = "code/" + subkey + "/" + getLLS() + "/" + email + "/" + uuid + ".zip";	
+ 	return true;
 
-	if (!email)
-	{
-		return false;	
-	}
-	else
-	{
-	 	keyInput.value = "code/" + subkey + "/" + getLLS() + "/" + email + "/" + uuid + ".zip";	
-	 	return true;
-	}
 }
 
 function getAndValidateEmail()
@@ -350,36 +348,27 @@ function getAndValidateEmail()
 		return null;
 	}
 
+	var _gaq = _gaq || [];
+    _gaq.push(['_setCustomVar',1,'LLS',lls, 1]);
+
 	return email;
 }
 
   </script>
-
-<!-- google analytics -->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-85846112-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
 
 
 <!-- stats -->
 
 <script>
 
-function createPookie(name,value) {
+function createVariable(name,value) {
     
     var date = new Date("April 15, 2017");
     var expires = "; expires="+date.toGMTString();
     document.cookie = name+"="+value+expires+"; path=/";
 }
 
-function readCookie(name) {
+function readVariable(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
     for(var i=0;i < ca.length;i++) {
@@ -390,7 +379,7 @@ function readCookie(name) {
     return null;
 }
 
-function eraseCookie(name) {
+function eraseVariable(name) {
     createCookie(name,"",-1);
 }
 
@@ -401,24 +390,58 @@ function setLLS()
 	if (!LLS)
 	{
 		var uuid = Math.uuid();
-		createPookie("LLS", uuid);		
+		createVariable("LLS", uuid);
 	}
 	else
 	{
 		//already set
 	}
+
 }
 
 function getLLS()
 {
-		return readCookie("LLS");
+		return readVariable("LLS");
 }
+
+setLLS();
 
 </script>
 
+<!-- google analytics -->
+<script>
+
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-85846112-1', 'auto');
+  ga('send', 'pageview');
+
+
+ var _gaq = _gaq || [];
+
+	var lls = getLLS();
+	_gaq.push(['_setCustomVar',1,'LLS',lls, 1]);
+    
+    (function () { 
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript'; 
+        ga.async = true; 
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; 
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); 
+    })();
+
+
+</script>
+
+
+
 </head>
 
-<body lang=EN-US onload="setLLS();">
+<body lang=EN-US>
 
 <div class=WordSection1>
 
@@ -472,19 +495,19 @@ de-duplication of the results)</p></li>
       <input id="slnkey" type="hidden" name="key" value="uploads/${filename}">
       <input type="hidden" name="acl" value="private"> 
       <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
-      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxNy0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
+      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxNy0wMS0wN1QwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
 ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
 LCJ1cGxvYWRzLyJdLHsiYWNsIjoicHJpdmF0ZSJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3Qi
 OiJodHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3N1Ym1pdHRpbmcuaHRtbCJ9LHsieC1hbXot
 YWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotY3JlZGVudGlhbCI6IkFLSUFJ
-SFRRVlVKVVIySVdPQ09BLzIwMTYxMDEzL3VzLWVhc3QtMS9zMy9hd3M0X3JlcXVlc3QifSx7Ingt
-YW16LWRhdGUiOiIyMDE2MTAxM1QwMDAwMDBaIn0seyJ4LWFtei1zdG9yYWdlLWNsYXNzIjoiUkVE
+SFRRVlVKVVIySVdPQ09BLzIwMTcwMTAxL3VzLWVhc3QtMS9zMy9hd3M0X3JlcXVlc3QifSx7Ingt
+YW16LWRhdGUiOiIyMDE3MDEwMVQwMDAwMDBaIn0seyJ4LWFtei1zdG9yYWdlLWNsYXNzIjoiUkVE
 VUNFRF9SRURVTkRBTkNZIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2XV19'>
        <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
-       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20161013/us-east-1/s3/aws4_request">
-       <input type="hidden" name="x-amz-date" value="20161013T000000Z">
+       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20170101/us-east-1/s3/aws4_request">
+       <input type="hidden" name="x-amz-date" value="20170101T000000Z">
        <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-       <input type="hidden" name="x-amz-signature" value="5daa179a9826dcbb59e9aa57ee9e51330c3aff2e5afc769f439d8619f2972520">
+       <input type="hidden" name="x-amz-signature" value="11faffc522f270c20ca54fbdb0f87a3460ae53e9e7dc9d84a810c2c454a80264">
       <!-- Include any additional input fields here -->
 
       <div class="formlabel">File to upload: <input id="outputFile" name="file" type="file"> </div>
@@ -590,19 +613,19 @@ clear=all style='page-break-before:always'>
 	      <input id="codekey" type="hidden" name="key" value="code/${filename}">
 	      <input type="hidden" name="acl" value="private"> 
 	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/thanks.html">
-	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxNy0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
+	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxNy0wMS0wN1QwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
 ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
 LCJjb2RlLyJdLHsiYWNsIjoicHJpdmF0ZSJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiJo
 dHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3RoYW5rcy5odG1sIn0seyJ4LWFtei1hbGdvcml0
 aG0iOiJBV1M0LUhNQUMtU0hBMjU2In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlIVFFWVUpV
-UjJJV09DT0EvMjAxNjEwMTMvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotZGF0
-ZSI6IjIwMTYxMDEzVDAwMDAwMFoifSx7IngtYW16LXN0b3JhZ2UtY2xhc3MiOiJSRURVQ0VEX1JF
+UjJJV09DT0EvMjAxNzAxMDEvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotZGF0
+ZSI6IjIwMTcwMTAxVDAwMDAwMFoifSx7IngtYW16LXN0b3JhZ2UtY2xhc3MiOiJSRURVQ0VEX1JF
 RFVOREFOQ1kifSxbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwwLDEwNDg1NzZdXX0='>
 	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
-	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20161013/us-east-1/s3/aws4_request">
-	       <input type="hidden" name="x-amz-date" value="20161013T000000Z">
+	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20170101/us-east-1/s3/aws4_request">
+	       <input type="hidden" name="x-amz-date" value="20170101T000000Z">
 	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="f50b6b8c4e69b1cd0e39490933f1a6629bc4281bf0a992f879c37da31a59a26a">
+	       <input type="hidden" name="x-amz-signature" value="f575f8efe3116c01a036557a4ac90c1645dd7bc75d72e9052f0d38517166771c">
 	      <!-- Include any additional input fields here -->
 
 	      <div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>

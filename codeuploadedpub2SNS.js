@@ -20,7 +20,7 @@ exports.handler = function(event, context) {
     var tokens =  key.split("/", 10);
     if (tokens.length== 5)
     {
-        var email = tokens[3];
+        var email = decodeURIComponent(tokens[3]);
     }
     console.log("\nEmail: ", email);
     
