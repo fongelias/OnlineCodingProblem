@@ -78,6 +78,10 @@ public class AWSv4Signer {
 
         String aws_secret_key = args[1];
         String algorithm = "AWS4-HMAC-SHA256";
+        //ATTN: AWS weirdness/bug
+        //expiration will be calculate by S3 as max 7 days from x-amz-date
+        //so set x-amz-date in the future if you want a longer expiration period
+        //else you will encounter policy expired 403 errors when you submit your form 7 days past
         String dateStamp = "20170101";
         String region = "us-east-1";
         String serviceName = "s3";
