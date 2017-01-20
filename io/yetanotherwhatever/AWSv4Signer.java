@@ -3,6 +3,7 @@ package io.yetanotherwhatever;
 import sun.misc.BASE64Encoder;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 
 
 /*
@@ -40,59 +41,61 @@ public class AWSv4Signer {
         return kSigning;
     }
 
-    public static void signPolicy(String policy_document, String aws_secret_key, String dateStamp, String region, String serviceName)
+    private static String b64Encode(String in)
     {
+        String b64 = "";
 
+        in = in.replaceAll("\\s", "");
+        try
+        {
+            b64 = (new BASE64Encoder()).encode(
+                    in.getBytes("UTF-8"));
+
+        }
+        catch(IOException ioe)
+        {
+            ioe.printStackTrace();
+            System.exit(0);
+        }
+
+        return b64;
+    }
+
+    public static String signPolicy(String b64_policy_doc, String aws_secret_key, String dateStamp, String region, String serviceName)
+    {
         try {
-            policy_document = policy_document.replaceAll("\\s", "");
-            String b64_policy_doc = (new BASE64Encoder()).encode(
-                    policy_document.getBytes("UTF-8"));
-
 
             byte[] signatureKey = getSignatureKey(aws_secret_key, dateStamp, region, serviceName);
 
-            String stringToSign = b64_policy_doc;
             byte[] signingKey = signatureKey;
 
-            byte[] hash = HmacSHA256(stringToSign, signingKey);
+            byte[] hash = HmacSHA256(b64_policy_doc, signingKey);
             final StringBuilder builder = new StringBuilder();
             for(byte b : hash) {
                 builder.append(String.format("%02x", b));
             }
             String signature = builder.toString();
 
-
-            System.out.println("string to sign");
-            System.out.println(stringToSign);
-            System.out.println("sig");
-            System.out.println(signature);
+            return signature;
 
         } catch(Exception e)
         {
             e.printStackTrace();
+
+            System.exit(0);
         }
 
+        //for compiler, never run
+        return "";
     }
 
-    public static void main(String[] args) {
-
-        String aws_secret_key = args[1];
-        String algorithm = "AWS4-HMAC-SHA256";
-        //ATTN: AWS weirdness/bug
-        //expiration will be calculate by S3 as max 7 days from x-amz-date
-        //so set x-amz-date in the future if you want a longer expiration period
-        //else you will encounter policy expired 403 errors when you submit your form 7 days past
-        String dateStamp = "20170101";
-        String region = "us-east-1";
-        String serviceName = "s3";
-        String bucket = "public.yetanotherwhatever.io";
-        String accessKeyID = args[0];
-
-        String solutionPolicyDoc = "{\n" +
-                "  \"expiration\":\"2017-01-07T00:00:00Z\",\n" +
+    private static String buildPolicyDoc(String expiration, String bucket, String folder, String algorithm, String accessKeyID, String dateStamp, String region, String serviceName)
+    {
+        String policyDoc = "{\n" +
+                "  \"expiration\":\"" + expiration + " T00:00:00Z\",\n" +
                 "  \"conditions\": [\n" +
                 "    {\"bucket\":\"" + bucket + "\"},\n" +
-                "    [\"starts-with\",\"$key\",\"uploads/\"],\n" +
+                "    [\"starts-with\",\"$key\",\"" + folder + "/\"],\n" +
                 "    {\"acl\":\"private\"},\n" +
                 "    {\"success_action_redirect\":\"http://yetanotherwhatever.io/submitting.html\"},\n" +
                 "    {\"x-amz-algorithm\":\"" + algorithm + "\"},\n" +
@@ -103,29 +106,101 @@ public class AWSv4Signer {
                 "  ]\n" +
                 "}";
 
+        return policyDoc;
+    }
+
+    private static String buildForm(String folder, String policyDoc, String algorithm, String accessKeyID,
+                                    String dateStamp, String signedPolicy, String additionalFields,
+                                    String redirectPage, String validation, String formId)
+    {
+
+        String form = "<form id=\"" + formId + "\" action=\"http://public.yetanotherwhatever.io.s3.amazonaws.com/\" method=\"post\"" +
+                " enctype=\"multipart/form-data\" onsubmit=\"return(" + validation + ");\">\n" +
+                "\t      <input type=\"hidden\" name=\"key\" value=\"" + folder + "/${filename}\">\n" +
+                "\t      <input type=\"hidden\" name=\"acl\" value=\"private\"> \n" +
+                "\t      <input type=\"hidden\" name=\"success_action_redirect\" value=\"http://yetanotherwhatever.io/" + redirectPage + "\">\n" +
+                "\t      <input type=\"hidden\" name=\"policy\" value='" + policyDoc + "'>\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-algorithm\" value=\"" + algorithm + "\">\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-credential\" value=\"" + accessKeyID + "/20170101/us-east-1/s3/aws4_request\">\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-date\" value=\"" + dateStamp + "T000000Z\">\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-storage-class\" value=\"REDUCED_REDUNDANCY\">\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-signature\" value=\"" + signedPolicy + "\">\n" +
+                "\t      <!-- Include any additional input fields here -->\n" +
+                additionalFields +
+                "\t      <input type=\"submit\" value=\"Upload File\">\n" +
+                "    </form>";
+
+        return form;
+    }
+
+    public static void main(String[] args) {
+
+        String accessKeyID = args[0];
+        String aws_secret_key = args[1];
+
+        //ATTN: AWS weirdness/bug
+        //expiration will be calculate by S3 as max 7 days from x-amz-date
+        //so set x-amz-date in the future if you want a longer expiration period
+        //else you will encounter policy expired 403 errors when you submit your form 7 days past
+        String expiration = "2018-01-01";
+        String bucket = "public.yetanotherwhatever.io";
+        String codeFolder = "code";
+        String outputFolder = "uploads";
+
+        String dateStamp = expiration.replaceAll("-", "");
+        String region = "us-east-1";
+        String serviceName = "s3";
+        String algorithm = "AWS4-HMAC-SHA256";
+
+        //policy for uploading user's test output
+        String outputPolicyDoc = buildPolicyDoc(expiration, bucket, outputFolder, algorithm, accessKeyID, dateStamp, region, serviceName);
+        String b64outputPolicyDoc = b64Encode(outputPolicyDoc);
+        String signedOutputPolicyDoc = signPolicy(b64outputPolicyDoc, aws_secret_key, dateStamp, region, serviceName);
+        String outputFormId = "outputForm";
+        String outputRedirectPage = "submitting.html";
+        String outputAdditionalFields = "\n" +
+                "      <div class=\"formlabel\">File to upload: <input id=\"outputFile\" name=\"file\" type=\"file\"> </div>\n" +
+                "      \n" +
+                "      <br>\n";
+        String outputFormValidation= "genSlnKey()";
+        String outputForm = buildForm(outputFolder, b64outputPolicyDoc, algorithm, accessKeyID, dateStamp,
+                signedOutputPolicyDoc, outputAdditionalFields, outputRedirectPage, outputFormValidation, outputFormId);
 
 
-        String codePolicyDoc = "{\n" +
-                "  \"expiration\":\"2017-01-07T00:00:00Z\",\n" +
-                "  \"conditions\": [\n" +
-                "    {\"bucket\":\"" + bucket + "\"},\n" +
-                "    [\"starts-with\",\"$key\",\"code/\"],\n" +
-                "    {\"acl\":\"private\"},\n" +
-                "    {\"success_action_redirect\":\"http://yetanotherwhatever.io/thanks.html\"},\n" +
-                "    {\"x-amz-algorithm\":\"" + algorithm + "\"},\n" +
-                "    {\"x-amz-credential\":\"" + accessKeyID + "/" + dateStamp + "/" + region + "/" + serviceName + "/aws4_request\"},\n" +
-                "    {\"x-amz-date\":\"" + dateStamp + "T000000Z\"},\n" +
-                "    {\"x-amz-storage-class\":\"REDUCED_REDUNDANCY\"},\n" +
-                "    [\"content-length-range\",0,1048576]\n" +
-                "  ]\n" +
-                "}";
+        System.out.println();
+        System.out.println("Output upload form: ");
+        System.out.println(outputForm);
+        System.out.println();
+        System.out.println();
 
 
-        System.out.println("Solution policy: ");
+        //policy for uploading user code (.zip)
+        //
 
-        signPolicy(solutionPolicyDoc, aws_secret_key, dateStamp, region, serviceName);
+        //String codePolicyDoc = buildPolicyDoc(expiration, bucket, codeFolder, accessKeyID);
 
-        System.out.println("Code submission policy: ");
-        signPolicy(codePolicyDoc, aws_secret_key, dateStamp, region, serviceName);
+        String codePolicyDoc = buildPolicyDoc(expiration, bucket, codeFolder, algorithm, accessKeyID, dateStamp, region, serviceName);
+        String b64codePolicyDoc = b64Encode(codePolicyDoc);
+        String signedCodePolicyDoc = signPolicy(b64codePolicyDoc, aws_secret_key, dateStamp, region, serviceName);
+        String codeRedirectPage = "thanks.html";
+        String codeAdditionalFields = "\n" +
+                "\t      <div class=\"formlabel\">File to upload: <input id=\"codeFile\" name=\"file\" type=\"file\"> </div>\n" +
+                "\t      <br> \n" +
+                "\t      <div class=\"formlabel\">Your email address (preferably the same one as on your resume):</div>\n" +
+                "\t      <br>\n" +
+                "\t      <input id=\"email\" name=\"email\" type=\"text\">\n" +
+                "\t      <br><br>\n";
+        String codeFormValidation= "genCodeKey()";
+        String codeFormId = "codeForm";
+        String codeForm = buildForm(codeFolder, b64codePolicyDoc, algorithm, accessKeyID, dateStamp,
+                signedCodePolicyDoc, codeAdditionalFields, codeRedirectPage, codeFormValidation,codeFormId);
+
+
+
+        System.out.println();
+        System.out.println("Code upload form: ");
+        System.out.println(codeForm);
+        System.out.println();
+        System.out.println();
     }
 }
