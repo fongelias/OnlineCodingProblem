@@ -89,7 +89,9 @@ public class AWSv4Signer {
         return "";
     }
 
-    private static String buildPolicyDoc(String expiration, String bucket, String folder, String algorithm, String accessKeyID, String dateStamp, String region, String serviceName)
+    private static String buildPolicyDoc(String expiration, String bucket, String folder, String algorithm,
+                                         String accessKeyID, String dateStamp, String region, String serviceName,
+                                         String redirectPage)
     {
         String policyDoc = "{\n" +
                 "  \"expiration\":\"" + expiration + " T00:00:00Z\",\n" +
@@ -97,7 +99,7 @@ public class AWSv4Signer {
                 "    {\"bucket\":\"" + bucket + "\"},\n" +
                 "    [\"starts-with\",\"$key\",\"" + folder + "/\"],\n" +
                 "    {\"acl\":\"private\"},\n" +
-                "    {\"success_action_redirect\":\"http://yetanotherwhatever.io/submitting.html\"},\n" +
+                "    {\"success_action_redirect\":\"http://yetanotherwhatever.io/" + redirectPage + "\"},\n" +
                 "    {\"x-amz-algorithm\":\"" + algorithm + "\"},\n" +
                 "    {\"x-amz-credential\":\"" + accessKeyID + "/" + dateStamp + "/" + region + "/" + serviceName + "/aws4_request\"},\n" +
                 "    {\"x-amz-date\":\"" + dateStamp + "T000000Z\"},\n" +
@@ -121,7 +123,7 @@ public class AWSv4Signer {
                 "\t      <input type=\"hidden\" name=\"success_action_redirect\" value=\"http://yetanotherwhatever.io/" + redirectPage + "\">\n" +
                 "\t      <input type=\"hidden\" name=\"policy\" value='" + policyDoc + "'>\n" +
                 "\t       <input type=\"hidden\" name=\"x-amz-algorithm\" value=\"" + algorithm + "\">\n" +
-                "\t       <input type=\"hidden\" name=\"x-amz-credential\" value=\"" + accessKeyID + "/20170101/us-east-1/s3/aws4_request\">\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-credential\" value=\"" + accessKeyID + "/" + dateStamp + "/us-east-1/s3/aws4_request\">\n" +
                 "\t       <input type=\"hidden\" name=\"x-amz-date\" value=\"" + dateStamp + "T000000Z\">\n" +
                 "\t       <input type=\"hidden\" name=\"x-amz-storage-class\" value=\"REDUCED_REDUNDANCY\">\n" +
                 "\t       <input type=\"hidden\" name=\"x-amz-signature\" value=\"" + signedPolicy + "\">\n" +
@@ -153,11 +155,11 @@ public class AWSv4Signer {
         String algorithm = "AWS4-HMAC-SHA256";
 
         //policy for uploading user's test output
-        String outputPolicyDoc = buildPolicyDoc(expiration, bucket, outputFolder, algorithm, accessKeyID, dateStamp, region, serviceName);
+        String outputRedirectPage = "submitting.html";
+        String outputPolicyDoc = buildPolicyDoc(expiration, bucket, outputFolder, algorithm, accessKeyID, dateStamp, region, serviceName, outputRedirectPage);
         String b64outputPolicyDoc = b64Encode(outputPolicyDoc);
         String signedOutputPolicyDoc = signPolicy(b64outputPolicyDoc, aws_secret_key, dateStamp, region, serviceName);
         String outputFormId = "outputForm";
-        String outputRedirectPage = "submitting.html";
         String outputAdditionalFields = "\n" +
                 "      <div class=\"formlabel\">File to upload: <input id=\"outputFile\" name=\"file\" type=\"file\"> </div>\n" +
                 "      \n" +
@@ -178,11 +180,12 @@ public class AWSv4Signer {
         //
 
         //String codePolicyDoc = buildPolicyDoc(expiration, bucket, codeFolder, accessKeyID);
-
-        String codePolicyDoc = buildPolicyDoc(expiration, bucket, codeFolder, algorithm, accessKeyID, dateStamp, region, serviceName);
+        String codeRedirectPage = "thanks.html";
+        String codePolicyDoc = buildPolicyDoc(expiration, bucket, codeFolder, algorithm, accessKeyID, dateStamp,
+                region, serviceName, codeRedirectPage);
         String b64codePolicyDoc = b64Encode(codePolicyDoc);
         String signedCodePolicyDoc = signPolicy(b64codePolicyDoc, aws_secret_key, dateStamp, region, serviceName);
-        String codeRedirectPage = "thanks.html";
+
         String codeAdditionalFields = "\n" +
                 "\t      <div class=\"formlabel\">File to upload: <input id=\"codeFile\" name=\"file\" type=\"file\"> </div>\n" +
                 "\t      <br> \n" +
