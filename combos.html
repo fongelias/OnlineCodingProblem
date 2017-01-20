@@ -278,6 +278,15 @@ Dual licensed under the MIT and GPL licenses.
 
 
   <script type="text/javascript">
+
+ function debug(msg)
+ {
+ 	if (window.location.pathname.indexOf('yetanotherwhatever.io') == -1)
+ 	{
+ 		alert(msg);
+ 	}
+ }
+
 function genSlnKey()
 {
 
@@ -288,7 +297,12 @@ function genSlnKey()
     }
 
 	var uuid = Math.uuid();
-	var keyInput = document.getElementById("slnkey");
+
+	var form = document.getElementById('outputForm');
+	var keys = form.querySelectorAll("[name=key]");
+	var keyInput = keys[0];
+	
+	alert(keyInput.value);
 
 	var path = window.location.pathname;
 	var page = path.split("/").pop();
@@ -318,10 +332,19 @@ function genCodeKey()
     	alert ("Selected file is not a .zip file.");
     	return false;
     }
+    else if (!confirm("Did you include your resume in your .zip file?"))
+    {
+    	return false;
+    }
 
 
 	var uuid = Math.uuid();
-	var keyInput = document.getElementById("codekey");
+
+	var form = document.getElementById('codeForm');
+	var keys = form.querySelectorAll("[name=key]");
+	var keyInput = keys[0];
+
+	alert(keyInput.value);
 
 	var path = window.location.pathname;
 	var page = path.split("/").pop();
@@ -349,7 +372,7 @@ function getAndValidateEmail()
 	}
 
 	var _gaq = _gaq || [];
-    _gaq.push(['_setCustomVar',1,'LLS',lls, 1]);
+    _gaq.push(['_setCustomVar',1,'email', email, 1]);
 
 	return email;
 }
@@ -462,12 +485,13 @@ would be:</p>
 
 <p class=MsoNormal>&nbsp;</p>
 
-<h1><a name="output">Deadline</a></h1>
+<!--
+<h1><a>Deadline</a></h1>
 
-<p class=MsoNormal>Please submit your solutions by <b>Saturday, November 26th, 2016</b>.</p>
+<p class=MsoNormal>Please submit your solutions by <b>Monday, November 21st, 2016</b>.</p>
 
 <p class=MsoNormal>&nbsp;</p>
-
+-->
 <h1>Input</h1>
 
 <p class=MsoNormal><a href="http://yetanotherwhatever.io/inputs/combos-in.txt">The test input file can be downloaded here.</a></p>
@@ -491,29 +515,29 @@ de-duplication of the results)</p></li>
 <p class=MsoNormal>Your program should produce an output file you can test by uploading here:</p>
 
 <div id=uploadSlnDiv class=uploadDiv>
-<form action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data"  onsubmit="return genSlnKey();">
-      <input id="slnkey" type="hidden" name="key" value="uploads/${filename}">
-      <input type="hidden" name="acl" value="private"> 
-      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
-      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxNy0wMS0wN1QwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
+	<form id="outputForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genSlnKey());">
+	      <input type="hidden" name="key" value="uploads/${filename}">
+	      <input type="hidden" name="acl" value="private"> 
+	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
+	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
 ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
 LCJ1cGxvYWRzLyJdLHsiYWNsIjoicHJpdmF0ZSJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3Qi
 OiJodHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3N1Ym1pdHRpbmcuaHRtbCJ9LHsieC1hbXot
 YWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotY3JlZGVudGlhbCI6IkFLSUFJ
-SFRRVlVKVVIySVdPQ09BLzIwMTcwMTAxL3VzLWVhc3QtMS9zMy9hd3M0X3JlcXVlc3QifSx7Ingt
-YW16LWRhdGUiOiIyMDE3MDEwMVQwMDAwMDBaIn0seyJ4LWFtei1zdG9yYWdlLWNsYXNzIjoiUkVE
+SFRRVlVKVVIySVdPQ09BLzIwMTgwMTAxL3VzLWVhc3QtMS9zMy9hd3M0X3JlcXVlc3QifSx7Ingt
+YW16LWRhdGUiOiIyMDE4MDEwMVQwMDAwMDBaIn0seyJ4LWFtei1zdG9yYWdlLWNsYXNzIjoiUkVE
 VUNFRF9SRURVTkRBTkNZIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2XV19'>
-       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
-       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20170101/us-east-1/s3/aws4_request">
-       <input type="hidden" name="x-amz-date" value="20170101T000000Z">
-       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-       <input type="hidden" name="x-amz-signature" value="11faffc522f270c20ca54fbdb0f87a3460ae53e9e7dc9d84a810c2c454a80264">
-      <!-- Include any additional input fields here -->
+	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
+	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20170101/us-east-1/s3/aws4_request">
+	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
+	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
+	       <input type="hidden" name="x-amz-signature" value="b53d76bb8569783f36766c9b64e7a4bffffbd7b13647377d62170b28ec8fd553">
+	      <!-- Include any additional input fields here -->
 
       <div class="formlabel">File to upload: <input id="outputFile" name="file" type="file"> </div>
       
-      <br> 
-      <input type="submit" value="Upload File"> 
+      <br>
+	      <input type="submit" value="Upload File">
     </form>
 </div>
 
@@ -606,31 +630,32 @@ clear=all style='page-break-before:always'>
 <h1><a name="submit">Submitting Your Solution</a></h1>
 
 <p class=MsoNormal>If your test output successfully passes, please zip up your code (source only, please - no binaries) and submit it using the form below.</p>
+<p class=MsoNormal><b>Please include you resume in your .zip.</b></p>
 <p class=MsoNormal>Once we've recieved it, someone from our team will be contacting you shortly.</p>
 
 <div id=uploadCodeDiv class=uploadDiv>
-	<form action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
-	      <input id="codekey" type="hidden" name="key" value="code/${filename}">
+	<form id="codeForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
+	      <input type="hidden" name="key" value="code/${filename}">
 	      <input type="hidden" name="acl" value="private"> 
 	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/thanks.html">
-	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxNy0wMS0wN1QwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
+	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
 ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
 LCJjb2RlLyJdLHsiYWNsIjoicHJpdmF0ZSJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiJo
-dHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3RoYW5rcy5odG1sIn0seyJ4LWFtei1hbGdvcml0
-aG0iOiJBV1M0LUhNQUMtU0hBMjU2In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlIVFFWVUpV
-UjJJV09DT0EvMjAxNzAxMDEvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotZGF0
-ZSI6IjIwMTcwMTAxVDAwMDAwMFoifSx7IngtYW16LXN0b3JhZ2UtY2xhc3MiOiJSRURVQ0VEX1JF
-RFVOREFOQ1kifSxbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwwLDEwNDg1NzZdXX0='>
+dHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3N1Ym1pdHRpbmcuaHRtbCJ9LHsieC1hbXotYWxn
+b3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotY3JlZGVudGlhbCI6IkFLSUFJSFRR
+VlVKVVIySVdPQ09BLzIwMTgwMTAxL3VzLWVhc3QtMS9zMy9hd3M0X3JlcXVlc3QifSx7IngtYW16
+LWRhdGUiOiIyMDE4MDEwMVQwMDAwMDBaIn0seyJ4LWFtei1zdG9yYWdlLWNsYXNzIjoiUkVEVUNF
+RF9SRURVTkRBTkNZIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2XV19'>
 	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
 	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20170101/us-east-1/s3/aws4_request">
-	       <input type="hidden" name="x-amz-date" value="20170101T000000Z">
+	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
 	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="f575f8efe3116c01a036557a4ac90c1645dd7bc75d72e9052f0d38517166771c">
+	       <input type="hidden" name="x-amz-signature" value="8472d8bf492addc250b095bffd4ceced128e9d43ffe95c4bc318facea5d46aee">
 	      <!-- Include any additional input fields here -->
 
 	      <div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>
 	      <br> 
-	      <div class="formlabel">Your email:</div>
+	      <div class="formlabel">Your email address (preferably the same one as on your resume):</div>
 	      <br>
 	      <input id="email" name="email" type="text">
 	      <br><br>
