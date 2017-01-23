@@ -17,6 +17,33 @@ http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-UsingHTTPPOST.html
 
 public class AWSv4Signer {
 
+    //ATTN: AWS weirdness/bug
+    //expiration will be calculate by S3 as max 7 days from x-amz-date
+    //so set x-amz-date in the future if you want a longer expiration period
+    //else you will encounter policy expired 403 errors when you submit your form 7 days past
+    String m_expiration;
+    String m_bucket;
+    String m_dateStamp;
+    String m_region;
+    String m_serviceName;
+    String m_algorithm;
+    String m_accessKeyID;
+    String m_aws_secret_key;
+
+
+
+    AWSv4Signer(String accessKeyID, String aws_secret_key)
+    {
+        m_accessKeyID = accessKeyID;
+        m_aws_secret_key = aws_secret_key;
+        m_expiration = "2018-01-01";
+        m_bucket = "public.yetanotherwhatever.io";
+        m_dateStamp = m_expiration.replaceAll("-", "");
+        m_region = "us-east-1";
+        m_serviceName = "s3";
+        m_algorithm = "AWS4-HMAC-SHA256";
+    }
+
     static byte[] HmacSHA256(String data, byte[] key) throws Exception  {
         return HmacSHA256(data.getBytes("UTF-8"), key);
     }
@@ -111,20 +138,24 @@ public class AWSv4Signer {
         return policyDoc;
     }
 
-    private static String buildForm(String folder, String policyDoc, String algorithm, String accessKeyID,
-                                    String dateStamp, String signedPolicy, String additionalFields,
+    private void buildForm(String folder, String additionalFields,
                                     String redirectPage, String validation, String formId)
     {
+        String policyDoc = buildPolicyDoc(m_expiration, m_bucket, folder, m_algorithm, m_accessKeyID, m_dateStamp, m_region, m_serviceName, redirectPage);
+        String b64PolicyDoc = b64Encode(policyDoc);
+        String signedPolicy = signPolicy(b64PolicyDoc, m_aws_secret_key, m_dateStamp, m_region, m_serviceName);
+
+
 
         String form = "<form id=\"" + formId + "\" action=\"http://public.yetanotherwhatever.io.s3.amazonaws.com/\" method=\"post\"" +
                 " enctype=\"multipart/form-data\" onsubmit=\"return(" + validation + ");\">\n" +
                 "\t      <input type=\"hidden\" name=\"key\" value=\"" + folder + "/${filename}\">\n" +
                 "\t      <input type=\"hidden\" name=\"acl\" value=\"private\"> \n" +
                 "\t      <input type=\"hidden\" name=\"success_action_redirect\" value=\"http://yetanotherwhatever.io/" + redirectPage + "\">\n" +
-                "\t      <input type=\"hidden\" name=\"policy\" value='" + policyDoc + "'>\n" +
-                "\t       <input type=\"hidden\" name=\"x-amz-algorithm\" value=\"" + algorithm + "\">\n" +
-                "\t       <input type=\"hidden\" name=\"x-amz-credential\" value=\"" + accessKeyID + "/" + dateStamp + "/us-east-1/s3/aws4_request\">\n" +
-                "\t       <input type=\"hidden\" name=\"x-amz-date\" value=\"" + dateStamp + "T000000Z\">\n" +
+                "\t      <input type=\"hidden\" name=\"policy\" value='" + b64PolicyDoc + "'>\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-algorithm\" value=\"" + m_algorithm + "\">\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-credential\" value=\"" + m_accessKeyID + "/" + m_dateStamp + "/us-east-1/s3/aws4_request\">\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-date\" value=\"" + m_dateStamp + "T000000Z\">\n" +
                 "\t       <input type=\"hidden\" name=\"x-amz-storage-class\" value=\"REDUCED_REDUNDANCY\">\n" +
                 "\t       <input type=\"hidden\" name=\"x-amz-signature\" value=\"" + signedPolicy + "\">\n" +
                 "\t      <!-- Include any additional input fields here -->\n" +
@@ -132,7 +163,11 @@ public class AWSv4Signer {
                 "\t      <input type=\"submit\" value=\"Upload File\">\n" +
                 "    </form>";
 
-        return form;
+        System.out.println();
+        System.out.println(formId + " upload form: ");
+        System.out.println(form);
+        System.out.println();
+        System.out.println();
     }
 
     public static void main(String[] args) {
@@ -140,52 +175,26 @@ public class AWSv4Signer {
         String accessKeyID = args[0];
         String aws_secret_key = args[1];
 
-        //ATTN: AWS weirdness/bug
-        //expiration will be calculate by S3 as max 7 days from x-amz-date
-        //so set x-amz-date in the future if you want a longer expiration period
-        //else you will encounter policy expired 403 errors when you submit your form 7 days past
-        String expiration = "2018-01-01";
-        String bucket = "public.yetanotherwhatever.io";
-        String codeFolder = "code";
-        String outputFolder = "uploads";
+        AWSv4Signer signer = new AWSv4Signer(accessKeyID, aws_secret_key);
 
-        String dateStamp = expiration.replaceAll("-", "");
-        String region = "us-east-1";
-        String serviceName = "s3";
-        String algorithm = "AWS4-HMAC-SHA256";
+
 
         //policy for uploading user's test output
+        String outputFolder = "uploads/output";
         String outputRedirectPage = "submitting.html";
-        String outputPolicyDoc = buildPolicyDoc(expiration, bucket, outputFolder, algorithm, accessKeyID, dateStamp, region, serviceName, outputRedirectPage);
-        String b64outputPolicyDoc = b64Encode(outputPolicyDoc);
-        String signedOutputPolicyDoc = signPolicy(b64outputPolicyDoc, aws_secret_key, dateStamp, region, serviceName);
         String outputFormId = "outputForm";
         String outputAdditionalFields = "\n" +
                 "      <div class=\"formlabel\">File to upload: <input id=\"outputFile\" name=\"file\" type=\"file\"> </div>\n" +
                 "      \n" +
                 "      <br>\n";
         String outputFormValidation= "genSlnKey()";
-        String outputForm = buildForm(outputFolder, b64outputPolicyDoc, algorithm, accessKeyID, dateStamp,
-                signedOutputPolicyDoc, outputAdditionalFields, outputRedirectPage, outputFormValidation, outputFormId);
+        signer.buildForm(outputFolder, outputAdditionalFields, outputRedirectPage, outputFormValidation, outputFormId);
 
-
-        System.out.println();
-        System.out.println("Output upload form: ");
-        System.out.println(outputForm);
-        System.out.println();
-        System.out.println();
 
 
         //policy for uploading user code (.zip)
-        //
-
-        //String codePolicyDoc = buildPolicyDoc(expiration, bucket, codeFolder, accessKeyID);
         String codeRedirectPage = "thanks.html";
-        String codePolicyDoc = buildPolicyDoc(expiration, bucket, codeFolder, algorithm, accessKeyID, dateStamp,
-                region, serviceName, codeRedirectPage);
-        String b64codePolicyDoc = b64Encode(codePolicyDoc);
-        String signedCodePolicyDoc = signPolicy(b64codePolicyDoc, aws_secret_key, dateStamp, region, serviceName);
-
+        String codeFolder = "uploads/code";
         String codeAdditionalFields = "\n" +
                 "\t      <div class=\"formlabel\">File to upload: <input id=\"codeFile\" name=\"file\" type=\"file\"> </div>\n" +
                 "\t      <br> \n" +
@@ -195,15 +204,6 @@ public class AWSv4Signer {
                 "\t      <br><br>\n";
         String codeFormValidation= "genCodeKey()";
         String codeFormId = "codeForm";
-        String codeForm = buildForm(codeFolder, b64codePolicyDoc, algorithm, accessKeyID, dateStamp,
-                signedCodePolicyDoc, codeAdditionalFields, codeRedirectPage, codeFormValidation,codeFormId);
-
-
-
-        System.out.println();
-        System.out.println("Code upload form: ");
-        System.out.println(codeForm);
-        System.out.println();
-        System.out.println();
+        signer.buildForm(codeFolder, codeAdditionalFields, codeRedirectPage, codeFormValidation, codeFormId);
     }
 }

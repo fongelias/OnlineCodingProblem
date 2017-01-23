@@ -304,10 +304,9 @@ function genSlnKey()
 
 	var path = window.location.pathname;
 	var page = path.split("/").pop();
-	var subkey = page.substring(0, page.indexOf('.'));
+	var subkey = page.substring(0, page.lastIndexOf('.'));
 	
-
-	keyInput.value = "uploads/" + subkey + "/" + getLLS() + "/" + uuid;	
+	keyInput.value = "uploads/output/" + subkey + "/" + getLLS() + "/" + uuid;	
 }
 
 function genCodeKey()
@@ -344,10 +343,9 @@ function genCodeKey()
 
 	var path = window.location.pathname;
 	var page = path.split("/").pop();
-	var subkey = page.substring(0, page.indexOf('.'));
+	var subkey = page.substring(0, page.lastIndexOf('.'));
 	
-
- 	keyInput.value = "code/" + subkey + "/" + getLLS() + "/" + email + "/" + uuid + ".zip";	
+ 	keyInput.value = "uploads/code/" + subkey + "/" + getLLS() + "/" + email + "/" + uuid + ".zip";	
  	return true;
 
 }
@@ -512,22 +510,23 @@ de-duplication of the results)</p></li>
 
 <div id=uploadSlnDiv class=uploadDiv>
 	<form id="outputForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genSlnKey());">
-	      <input type="hidden" name="key" value="uploads/${filename}">
+	      <input type="hidden" name="key" value="uploads/output/${filename}">
 	      <input type="hidden" name="acl" value="private"> 
 	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
 	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
 ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
-LCJ1cGxvYWRzLyJdLHsiYWNsIjoicHJpdmF0ZSJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3Qi
-OiJodHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3N1Ym1pdHRpbmcuaHRtbCJ9LHsieC1hbXot
-YWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotY3JlZGVudGlhbCI6IkFLSUFJ
-SFRRVlVKVVIySVdPQ09BLzIwMTgwMTAxL3VzLWVhc3QtMS9zMy9hd3M0X3JlcXVlc3QifSx7Ingt
-YW16LWRhdGUiOiIyMDE4MDEwMVQwMDAwMDBaIn0seyJ4LWFtei1zdG9yYWdlLWNsYXNzIjoiUkVE
-VUNFRF9SRURVTkRBTkNZIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2XV19'>
+LCJ1cGxvYWRzL291dHB1dC8iXSx7ImFjbCI6InByaXZhdGUifSx7InN1Y2Nlc3NfYWN0aW9uX3Jl
+ZGlyZWN0IjoiaHR0cDovL3lldGFub3RoZXJ3aGF0ZXZlci5pby9zdWJtaXR0aW5nLmh0bWwifSx7
+IngtYW16LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwi
+OiJBS0lBSUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0
+In0seyJ4LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFz
+cyI6IlJFRFVDRURfUkVEVU5EQU5DWSJ9LFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3
+Nl1dfQ=='>
 	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
 	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
 	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
 	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="b53d76bb8569783f36766c9b64e7a4bffffbd7b13647377d62170b28ec8fd553">
+	       <input type="hidden" name="x-amz-signature" value="78e1f13f02bb97a215da648add5b4585b623bdc8e8fc337b87cb63228916089d">
 	      <!-- Include any additional input fields here -->
 
       <div class="formlabel">File to upload: <input id="outputFile" name="file" type="file"> </div>
@@ -631,22 +630,22 @@ clear=all style='page-break-before:always'>
 
 <div id=uploadCodeDiv class=uploadDiv>
 	<form id="codeForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
-	      <input type="hidden" name="key" value="code/${filename}">
+	      <input type="hidden" name="key" value="uploads/code/${filename}">
 	      <input type="hidden" name="acl" value="private"> 
 	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/thanks.html">
 	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
 ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
-LCJjb2RlLyJdLHsiYWNsIjoicHJpdmF0ZSJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiJo
-dHRwOi8veWV0YW5vdGhlcndoYXRldmVyLmlvL3RoYW5rcy5odG1sIn0seyJ4LWFtei1hbGdvcml0
-aG0iOiJBV1M0LUhNQUMtU0hBMjU2In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlIVFFWVUpV
-UjJJV09DT0EvMjAxODAxMDEvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotZGF0
-ZSI6IjIwMTgwMTAxVDAwMDAwMFoifSx7IngtYW16LXN0b3JhZ2UtY2xhc3MiOiJSRURVQ0VEX1JF
-RFVOREFOQ1kifSxbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwwLDEwNDg1NzZdXX0='>
+LCJ1cGxvYWRzL2NvZGUvIl0seyJhY2wiOiJwcml2YXRlIn0seyJzdWNjZXNzX2FjdGlvbl9yZWRp
+cmVjdCI6Imh0dHA6Ly95ZXRhbm90aGVyd2hhdGV2ZXIuaW8vdGhhbmtzLmh0bWwifSx7IngtYW16
+LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwiOiJBS0lB
+SUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0In0seyJ4
+LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFzcyI6IlJF
+RFVDRURfUkVEVU5EQU5DWSJ9LFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
 	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
 	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
 	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
 	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="a48505ce7555c67baf479381ad0b1777d883dab1bee32a81f2d4ec39df6f4446">
+	       <input type="hidden" name="x-amz-signature" value="0f85f17acd6b4c450937ed773d75d7d50eb743a07e2c3f160226ce3d596d457e">
 	      <!-- Include any additional input fields here -->
 
 	      <div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>
