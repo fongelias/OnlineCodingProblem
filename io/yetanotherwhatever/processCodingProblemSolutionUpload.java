@@ -200,7 +200,7 @@ public class processCodingProblemSolutionUpload implements RequestHandler<S3Even
 
         //print first 3 lines
         int i = 1;
-        while(i < 10000)
+        while(i < 11000)
         {
         	try
         	{
