@@ -1,0 +1,678 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<title>Coding Problem: "All Combos"</title>
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:"Calibri Light";
+	panose-1:2 15 3 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+h1
+	{mso-style-link:"Heading 1 Char";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	line-height:107%;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:"Calibri Light",sans-serif;
+	color:#2E74B5;
+	font-weight:normal;}
+h2
+	{mso-style-link:"Heading 2 Char";
+	margin-top:2.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	line-height:107%;
+	page-break-after:avoid;
+	font-size:13.0pt;
+	font-family:"Calibri Light",sans-serif;
+	color:#2E74B5;
+	font-weight:normal;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{mso-style-link:"Title Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:28.0pt;
+	font-family:"Calibri Light",sans-serif;
+	letter-spacing:-.5pt;}
+p.MsoTitleCxSpFirst, li.MsoTitleCxSpFirst, div.MsoTitleCxSpFirst
+	{mso-style-link:"Title Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:28.0pt;
+	font-family:"Calibri Light",sans-serif;
+	letter-spacing:-.5pt;}
+p.MsoTitleCxSpMiddle, li.MsoTitleCxSpMiddle, div.MsoTitleCxSpMiddle
+	{mso-style-link:"Title Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:28.0pt;
+	font-family:"Calibri Light",sans-serif;
+	letter-spacing:-.5pt;}
+p.MsoTitleCxSpLast, li.MsoTitleCxSpLast, div.MsoTitleCxSpLast
+	{mso-style-link:"Title Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:28.0pt;
+	font-family:"Calibri Light",sans-serif;
+	letter-spacing:-.5pt;}
+p.MsoNoSpacing, li.MsoNoSpacing, div.MsoNoSpacing
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:.5in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:.5in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-link:"Heading 1";
+	font-family:"Calibri Light",sans-serif;
+	color:#2E74B5;}
+p.Code, li.Code, div.Code
+	{mso-style-name:Code;
+	margin:0in;
+	margin-bottom:.0001pt;
+	page-break-after:avoid;
+	background:black;
+	font-size:11.0pt;
+	font-family:"Courier New";
+	color:#92D050;}
+span.Heading2Char
+	{mso-style-name:"Heading 2 Char";
+	mso-style-link:"Heading 2";
+	font-family:"Calibri Light",sans-serif;
+	color:#2E74B5;}
+span.TitleChar
+	{mso-style-name:"Title Char";
+	mso-style-link:Title;
+	font-family:"Calibri Light",sans-serif;
+	letter-spacing:-.5pt;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+
+div.uploadDiv
+	{ outline-style: ridge;
+	margin: 5px;
+	padding: 10px;
+	display: inline-block;
+	}
+
+h1
+	{margin-top: 30px;
+		margin-bottom: 10px;}
+
+body { width: 900px; text-align: left; margin: 50px auto; }
+
+div.formlabel {padding: none; margin: none; border: none;}
+
+
+input.fixThis {border: solid; border-color: red;}
+-->
+</style>
+
+<script type="text/javascript">
+
+/*!
+Math.uuid.js (v1.4)
+http://www.broofa.com
+mailto:robert@broofa.com
+
+Copyright (c) 2010 Robert Kieffer
+Dual licensed under the MIT and GPL licenses.
+*/
+
+/*
+ * Generate a random uuid.
+ *
+ * USAGE: Math.uuid(length, radix)
+ *   length - the desired number of characters
+ *   radix  - the number of allowable values for each character.
+ *
+ * EXAMPLES:
+ *   // No arguments  - returns RFC4122, version 4 ID
+ *   >>> Math.uuid()
+ *   "92329D39-6F5C-4520-ABFC-AAB64544E172"
+ *
+ *   // One argument - returns ID of the specified length
+ *   >>> Math.uuid(15)     // 15 character ID (default base=62)
+ *   "VcydxgltxrVZSTV"
+ *
+ *   // Two arguments - returns ID of the specified length, and radix. (Radix must be <= 62)
+ *   >>> Math.uuid(8, 2)  // 8 character ID (base=2)
+ *   "01001010"
+ *   >>> Math.uuid(8, 10) // 8 character ID (base=10)
+ *   "47473046"
+ *   >>> Math.uuid(8, 16) // 8 character ID (base=16)
+ *   "098F4D35"
+ */
+(function() {
+  // Private array of chars to use
+  var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+
+  Math.uuid = function (len, radix) {
+    var chars = CHARS, uuid = [], i;
+    radix = radix || chars.length;
+
+    if (len) {
+      // Compact form
+      for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix];
+    } else {
+      // rfc4122, version 4 form
+      var r;
+
+      // rfc4122 requires these characters
+      uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+      uuid[14] = '4';
+
+      // Fill in random data.  At i==19 set the high bits of clock sequence as
+      // per rfc4122, sec. 4.1.5
+      for (i = 0; i < 36; i++) {
+        if (!uuid[i]) {
+          r = 0 | Math.random()*16;
+          uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+        }
+      }
+    }
+
+    return uuid.join('');
+  };
+
+  // A more performant, but slightly bulkier, RFC4122v4 solution.  We boost performance
+  // by minimizing calls to random()
+  Math.uuidFast = function() {
+    var chars = CHARS, uuid = new Array(36), rnd=0, r;
+    for (var i = 0; i < 36; i++) {
+      if (i==8 || i==13 ||  i==18 || i==23) {
+        uuid[i] = '-';
+      } else if (i==14) {
+        uuid[i] = '4';
+      } else {
+        if (rnd <= 0x02) rnd = 0x2000000 + (Math.random()*0x1000000)|0;
+        r = rnd & 0xf;
+        rnd = rnd >> 4;
+        uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+      }
+    }
+    return uuid.join('');
+  };
+
+  // A more compact, but less performant, RFC4122v4 solution:
+  Math.uuidCompact = function() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+  };
+})();
+
+  </script>
+
+
+  <script type="text/javascript">
+
+ function debug(msg)
+ {
+ 	if (window.location.pathname.indexOf('yetanotherwhatever.io') == -1)
+ 	{
+ 		alert(msg);
+ 	}
+ }
+
+function genSlnKey()
+{
+
+	if(!document.getElementById('outputFile').value)
+	{
+        alert("No file selected.");
+        return false;
+    }
+
+	var uuid = Math.uuid();
+
+	var form = document.getElementById('outputForm');
+	var keys = form.querySelectorAll("[name=key]");
+	var keyInput = keys[0];
+
+	var path = window.location.pathname;
+	var page = path.split("/").pop();
+	var subkey = page.substring(0, page.lastIndexOf('.'));
+	
+	keyInput.value = "uploads/output/" + subkey + "/" + getLLS() + "/" + uuid;	
+}
+
+function genCodeKey()
+{
+
+	var email = getAndValidateEmail();
+	if (!email)
+	{
+		return false;	
+	}
+
+	var fileName = document.getElementById('codeFile').value;
+	if(!fileName)
+	{
+        alert("No file selected.");
+        return false;
+    }
+    else if (-1 == fileName.indexOf(".zip"))
+    {
+    	alert ("Selected file is not a .zip file.");
+    	return false;
+    }
+    else if (!confirm("Did you include your resume in your .zip file?"))
+    {
+    	return false;
+    }
+
+
+	var uuid = Math.uuid();
+
+	var form = document.getElementById('codeForm');
+	var keys = form.querySelectorAll("[name=key]");
+	var keyInput = keys[0];
+
+	var path = window.location.pathname;
+	var page = path.split("/").pop();
+	var subkey = page.substring(0, page.lastIndexOf('.'));
+	
+ 	keyInput.value = "uploads/code/" + subkey + "/" + getLLS() + "/" + email + "/" + uuid + ".zip";	
+ 	return true;
+
+}
+
+function getAndValidateEmail()
+{
+
+
+	var emailInput = document.getElementById("email");
+	var email = emailInput.value;
+
+	if (!email || email.indexOf("@") == -1)
+	{
+		alert("Please enter a valid email address.")
+		emailInput.className="fixThis";
+		emailInput.focus();
+		return null;
+	}
+
+	var _gaq = _gaq || [];
+    _gaq.push(['_setCustomVar',1,'email', email, 1]);
+
+	return email;
+}
+
+  </script>
+
+
+<!-- stats -->
+
+<script>
+
+function createVariable(name,value) {
+    
+    var date = new Date("April 15, 2017");
+    var expires = "; expires="+date.toGMTString();
+    document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function readVariable(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+function eraseVariable(name) {
+    createCookie(name,"",-1);
+}
+
+function setLLS()
+{
+	var LLS = getLLS();
+
+	if (!LLS)
+	{
+		var uuid = Math.uuid();
+		createVariable("LLS", uuid);
+	}
+	else
+	{
+		//already set
+	}
+
+}
+
+function getLLS()
+{
+		return readVariable("LLS");
+}
+
+setLLS();
+
+</script>
+
+<!-- google analytics -->
+<script>
+
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-85846112-1', 'auto');
+  ga('send', 'pageview');
+
+
+ var _gaq = _gaq || [];
+
+	var lls = getLLS();
+	_gaq.push(['_setCustomVar',1,'LLS',lls, 1]);
+    
+    (function () { 
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript'; 
+        ga.async = true; 
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; 
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); 
+    })();
+
+
+</script>
+
+
+
+</head>
+
+<body lang=EN-US>
+
+<div class=WordSection1>
+
+<p class=MsoTitle>Coding Problem "All Combos"</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Write a program that produces every possible combination of
+a set of letters.</p>
+
+<p class=MsoNormal>For example, given a string "abc":</p>
+
+<p class=MsoNormal>Every possible combination of the letters in the string
+would be:</p>
+
+<p class=MsoNormal>"abc", "acb", "bac", "bca", "cab", "cba"</p>
+<p class=MsoNormal>(Actual formatting is show below, in the <a href="#output">Output</a> and <a href="#sample">Sample</a> sections.)</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<!--
+<h1><a>Deadline</a></h1>
+
+<p class=MsoNormal>Please submit your solutions by <b>Monday, November 21st, 2016</b>.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+-->
+<h1>Input</h1>
+
+<p class=MsoNormal><a href="http://yetanotherwhatever.io/inputs/combos-in.txt">The test input file can be downloaded here.</a></p>
+
+<p class=MsoNormal>Each line contains an input string
+for which all possible combinations must be computed.</p>
+
+<p class=MsoNormal>For each input string:</p>
+
+
+<ul>
+<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>Ignore whitespace</p></li>
+<li><p class=MsoListParagraphCxSpLast style='text-indent:-.25in'>All the characters will be unique (you do not need to consider
+de-duplication of the results)</p></li>
+</ul>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1><a name="output">Output</a></h1>
+
+<p class=MsoNormal>Your program should produce an output file you can test by uploading here:</p>
+
+<div id=uploadSlnDiv class=uploadDiv>
+	<form id="outputForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genSlnKey());">
+	      <input type="hidden" name="key" value="uploads/output/${filename}">
+	      <input type="hidden" name="acl" value="private"> 
+	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
+	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
+ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
+LCJ1cGxvYWRzL291dHB1dC8iXSx7ImFjbCI6InByaXZhdGUifSx7InN1Y2Nlc3NfYWN0aW9uX3Jl
+ZGlyZWN0IjoiaHR0cDovL3lldGFub3RoZXJ3aGF0ZXZlci5pby9zdWJtaXR0aW5nLmh0bWwifSx7
+IngtYW16LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwi
+OiJBS0lBSUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0
+In0seyJ4LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFz
+cyI6IlJFRFVDRURfUkVEVU5EQU5DWSJ9LFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3
+Nl1dfQ=='>
+	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
+	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
+	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
+	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
+	       <input type="hidden" name="x-amz-signature" value="78e1f13f02bb97a215da648add5b4585b623bdc8e8fc337b87cb63228916089d">
+	      <!-- Include any additional input fields here -->
+
+      <div class="formlabel">File to upload: <input id="outputFile" name="file" type="file"> </div>
+      
+      <br>
+	      <input type="submit" value="Upload File">
+    </form>
+</div>
+
+
+<p class=MsoNormal><br>For each test case, your program should write the line "Case
+#X".</p>
+
+<p class=MsoNormal>Each line that follows should contain a possible combination that can be constructed from the original input string.</p>
+
+
+<ul>
+<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>The "Case #X" header will be on its own line. "X" should be
+replaced by the appropriate index of the test case.</p></li>
+
+<li><p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'>Print each possible combination on its own line after the case
+header</p></li>
+
+<li><p class=MsoListParagraphCxSpLast style='text-indent:-.25in'>The combinations in the output should be ordered alphabetically</p></li>
+
+</ul>
+
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1>Limits</h1>
+
+<p class=MsoNormal>N &lt; 150, where N = number of test inputs</p>
+
+<p class=MsoNormal>L &lt; 8, where L = length of a test input string</p>
+
+<span style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><br
+clear=all style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal><span style='font-size:16.0pt;line-height:107%;font-family:
+"Calibri Light",sans-serif;color:#2E74B5'>&nbsp;</span></p>
+
+<h1><a name="sample">Sample</a></h1>
+
+<p class=MsoNormal>Input:</p>
+
+<p class=Code>bac</p>
+
+<p class=Code>dgf</p>
+
+<p class=Code>er</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Output:</p>
+
+<p class=Code>Case #1</p>
+
+<p class=Code>abc</p>
+
+<p class=Code>acb</p>
+
+<p class=Code>bac</p>
+
+<p class=Code>bca</p>
+
+<p class=Code>cab</p>
+
+<p class=Code>cba</p>
+
+<p class=Code>Case #2</p>
+
+<p class=Code>dfg</p>
+
+<p class=Code>dgf</p>
+
+<p class=Code>fdg</p>
+
+<p class=Code>fgd</p>
+
+<p class=Code>gdf</p>
+
+<p class=Code>gfd</p>
+
+<p class=Code>Case #3</p>
+
+<p class=Code>er</p>
+
+<p class=Code>re</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1><a name="submit">Submitting Your Solution</a></h1>
+
+<p class=MsoNormal>If your test output successfully passes, please zip up your code (source only, please - no binaries) and submit it using the form below.</p>
+<p class=MsoNormal><b>Please include you resume in your .zip.</b></p>
+<p class=MsoNormal>Once we've recieved it, someone from our team will be contacting you shortly.</p>
+
+<div id=uploadCodeDiv class=uploadDiv>
+	<form id="codeForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
+	      <input type="hidden" name="key" value="uploads/code/${filename}">
+	      <input type="hidden" name="acl" value="private"> 
+	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/thanks.html">
+	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
+ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
+LCJ1cGxvYWRzL2NvZGUvIl0seyJhY2wiOiJwcml2YXRlIn0seyJzdWNjZXNzX2FjdGlvbl9yZWRp
+cmVjdCI6Imh0dHA6Ly95ZXRhbm90aGVyd2hhdGV2ZXIuaW8vdGhhbmtzLmh0bWwifSx7IngtYW16
+LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwiOiJBS0lB
+SUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0In0seyJ4
+LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFzcyI6IlJF
+RFVDRURfUkVEVU5EQU5DWSJ9LFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
+	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
+	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
+	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
+	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
+	       <input type="hidden" name="x-amz-signature" value="0f85f17acd6b4c450937ed773d75d7d50eb743a07e2c3f160226ce3d596d457e">
+	      <!-- Include any additional input fields here -->
+
+	      <div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>
+	      <br> 
+	      <div class="formlabel">Your email address (preferably the same one as on your resume):</div>
+	      <br>
+	      <input id="email" name="email" type="text">
+	      <br><br>
+	      <input type="submit" value="Upload File">
+    </form>
+</div>
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1><a name="submit">Technical Issues</a></h1>
+
+<p class=MsoNormal>Please report any problems you encounter with this site to <a href="mailto:andrew_chang@symantec.com">andrew_chang@symantec.com</a></p>
+<p class=MsoNormal>&nbsp;</p>
+
+<br><br><br><br>
+<p class=MsoTitle style="text-align: center;">Good luck!</p>
+<br><br><br><br>
+
+<br><br><br><br><br><br><br><br>
+</div>
+
+</body>
+
+</html>
