@@ -2,7 +2,7 @@
 
 <head>
 <meta http-equiv=Content-Type content="text/html; charset=utf-8">
-<title>Coding Problem: "All Combos"</title>
+<title>Coding Problem: "Symcode"</title>
 
 <style>
 <!--
@@ -126,7 +126,7 @@ span.Heading1Char
 	mso-style-link:"Heading 1";
 	font-family:"Calibri Light",sans-serif;
 	color:#2E74B5;}
-p.Code, li.Code, div.Code
+p.Code, li.Code, div.Code, span.Code
 	{mso-style-name:Code;
 	margin:0in;
 	margin-bottom:.0001pt;
@@ -135,6 +135,12 @@ p.Code, li.Code, div.Code
 	font-size:11.0pt;
 	font-family:"Courier New";
 	color:#92D050;}
+
+div.output p.Code
+{
+	width: 1100;
+}
+
 span.Heading2Char
 	{mso-style-name:"Heading 2 Char";
 	mso-style-link:"Heading 2";
@@ -176,10 +182,30 @@ div.formlabel {padding: none; margin: none; border: none;}
 
 
 input.fixThis {border: solid; border-color: red;}
+
+#codeTable td
+{
+  width:30pt;border:solid #A3A3A3 1.0pt;
+  padding:4.0pt 4.0pt 4.0pt 4.0pt;
+  vertical-align: top;
+}
+#codeTable td p
+{
+	margin-bottom:0in;
+	margin-bottom:.0001pt;
+	line-height: normal;
+}
+
+td.label
+{
+	font-weight: bold;
+}
 -->
 </style>
 
 <script type="text/javascript" src="utils.js" ></script>
+
+
 
 
 
@@ -189,44 +215,112 @@ input.fixThis {border: solid; border-color: red;}
 
 <div class=WordSection1>
 
-<p class=MsoTitle>Coding Problem "All Combos"</p>
+<p class=MsoTitle>Coding Problem "Symcode"</p>
 
 <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Write a program that produces every possible combination of
-a set of letters.</p>
+<h1>Introduction</h1>
 
-<p class=MsoNormal>For example, given a string "abc":</p>
+<p class=MsoNormal>Symcode is a binary-to-txt encoding scheme, representing binary data as ascii strings.</p>
 
-<p class=MsoNormal>Every possible combination of the letters in the string
-would be:</p>
-
-<p class=MsoNormal>"abc", "acb", "bac", "bca", "cab", "cba"</p>
-<p class=MsoNormal>(Actual formatting is show below, in the <a href="#output">Output</a> and <a href="#sample">Sample</a> sections.)</p>
+<p class=MsoNormal>Symcode uses a radix-8 representation, with each character representing 3 bits of data.
+</p>
 
 <p class=MsoNormal>&nbsp;</p>
 
-<!--
-<h1><a>Deadline</a></h1>
 
-<p class=MsoNormal>Please submit your solutions by <b>Monday, November 21st, 2016</b>.</p>
+<p class=MsoNormal>The Symcode index table is:</p>
+
+<p class=MsoNormal>
+<table id="codeTable" class=MsoNormalTable border=1 cellspacing=0 cellpadding=0
+ style='margin-left:51.0pt;border-collapse:collapse;border:none'>
+ <tr>
+  <td class="label"><p class=MsoNormal><bold>Index</bold></p></td>
+  <td><p class=MsoNormal>0</p></td>
+  <td><p class=MsoNormal>1</p></td>
+  <td><p class=MsoNormal>2</p></td>
+  <td><p class=MsoNormal>3</p></td>
+  <td><p class=MsoNormal>4</p></td>
+  <td><p class=MsoNormal>5</p></td>
+  <td><p class=MsoNormal>6</p></td>
+  <td><p class=MsoNormal>7</p></td>
+ </tr>
+ <tr>
+  <td class="label"><p class=MsoNormal><bold>Code</bold></p></td>
+  <td> <p class=MsoNormal>s</p></td>
+  <td> <p class=MsoNormal>y</p></td>
+  <td> <p class=MsoNormal>m</p></td>
+  <td> <p class=MsoNormal>a</p></td>
+  <td> <p class=MsoNormal>n</p></td>
+  <td> <p class=MsoNormal>t</p></td>
+  <td> <p class=MsoNormal>e</p></td>
+  <td> <p class=MsoNormal>c</p></td>
+ </tr>
+</table>
+</p>
 
 <p class=MsoNormal>&nbsp;</p>
--->
+
+<p class=MsoNormal>	Please write a program that reads a given input file, and produces an output file for which each line of output is the Symcoded representation of the corresponding line of input.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+
+
+<h1>A simple example</h1>
+
+<p class=MsoNormal>The following stanza is from Lewis Carrol's "Jabberwocky."</p>
+
+
+<p class=MsoNormal style="font-style: italic; margin-left: 30px;">	'Twas brillig, and the slithy toves<br>
+	Did gyre and gimble in the wabe:<br>
+	All mimsy were the borogoves,<br>
+	And the mome raths outgrabe.<br></p>
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>In the above quote, the word "gimble" is represented by the hexadecimal ascii string: 
+<span class="code">0x67 0x69 0x6d 0x62 0x6c 0x65</span></p>
+<p class=MsoNormal>Sub-dividing the bytes into 3-bit blocks, then applying the encoding from the above index table will Symcode the string thusly:
+</p>
+
+<img width="900" border="2px" src="gimble.png">
+
+<p class=MsoNormal>&nbsp;</p>
+
+
+<h1>Padding</h1>
+
+<p class=MsoNormal>You may have noticed the example above conveniently fits into 24-bit blocks (divisible by 3 and 8), and hence required no padding.</p>
+
+<p class=MsoNormal>Symcode follows the same padding rules as base64 encoding; and we pad the trailing zeroes with dollar signs '$'</p>
+
+<p class=MsoNormal>The examples for "wabe" and "mimsy" follow, respectively:</p>
+
+<img width="900" border="2px" src="wabe.png">
+<p class=MsoNormal>&nbsp;</p>
+
+<img width="900" border="2px" src="mimsy.png">
+<p class=MsoNormal>&nbsp;</p>
+
+
+
+
+
 <h1>Input</h1>
 
-<p class=MsoNormal><a href="http://yetanotherwhatever.io/inputs/combos-in.txt">The test input file can be downloaded here.</a></p>
+<p class=MsoNormal><a href="http://yetanotherwhatever.io/inputs/symcode-in.txt">The test input file can be downloaded here.</a></p>
 
 <p class=MsoNormal>Each line contains an input string
-for which all possible combinations must be computed.</p>
+which must be Symcoded.</p>
 
-<p class=MsoNormal>For each input string:</p>
+<p class=MsoNormal>Each input string:</p>
 
 
 <ul>
-<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>Ignore whitespace</p></li>
-<li><p class=MsoListParagraphCxSpLast style='text-indent:-.25in'>All the characters will be unique (you do not need to consider
-de-duplication of the results)</p></li>
+
+<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>will be composed of ascii characters only</p></li>
+<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>should exclude trailing and preceding whitespace</p></li>
+<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>If the corresponding input line contains only whitespace, print an empty line.</p></li>
 </ul>
 
 <p class=MsoNormal>&nbsp;</p>
@@ -234,6 +328,9 @@ de-duplication of the results)</p></li>
 <h1><a name="output">Output</a></h1>
 
 <p class=MsoNormal>Your program should produce an output file you can test by uploading here:</p>
+
+
+
 
 <div id=uploadSlnDiv class=uploadDiv>
 	<form id="outputForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genSlnKey());">
@@ -264,86 +361,70 @@ Nl1dfQ=='>
 </div>
 
 
-<p class=MsoNormal><br>For each test case, your program should write the line "Case
-#X".</p>
 
-<p class=MsoNormal>Each line that follows should contain a possible combination that can be constructed from the original input string.</p>
+<p class=MsoNormal>&nbsp;</p>
 
+
+<p class=MsoNormal>Each line should contain:</p>
 
 <ul>
-<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>The "Case #X" header will be on its own line. "X" should be
-replaced by the appropriate index of the test case.</p></li>
-
-<li><p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'>Print each possible combination on its own line after the case
-header</p></li>
-
-<li><p class=MsoListParagraphCxSpLast style='text-indent:-.25in'>The combinations in the output should be ordered alphabetically</p></li>
-
+<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>The Symcoded data from the corresponding line of input.</p></li>
+<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>Padding for purposes of this coding exercise is mandatory.</p></li>
 </ul>
 
 
 <p class=MsoNormal>&nbsp;</p>
 
-<h1>Limits</h1>
 
-<p class=MsoNormal>N &lt; 150, where N = number of test inputs</p>
-
-<p class=MsoNormal>L &lt; 8, where L = length of a test input string</p>
-
-<span style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><br
-clear=all style='page-break-before:always'>
-</span>
-
-<p class=MsoNormal><span style='font-size:16.0pt;line-height:107%;font-family:
-"Calibri Light",sans-serif;color:#2E74B5'>&nbsp;</span></p>
 
 <h1><a name="sample">Sample</a></h1>
 
 <p class=MsoNormal>Input:</p>
 
-<p class=Code>bac</p>
 
-<p class=Code>dgf</p>
 
-<p class=Code>er</p>
+
+
+<p class=Code>	MACBETH</p>
+<p class=Code>&nbsp;</p>
+<p class=Code>ACT I</p>
+<p class=Code>&nbsp;</p>
+<p class=Code>SCENE I	A desert place.</p>
+<p class=Code>&nbsp;</p>
+<p class=Code>	[Thunder and lightning. Enter three Witches]</p>
+<p class=Code>&nbsp;</p>
+<p class=Code>First Witch	When shall we three meet again</p>
+<p class=Code>	In thunder, lightning, or in rain?</p>
+<p class=Code>&nbsp;</p>
+<p class=Code>Second Witch	When the hurlyburly's done,</p>
+<p class=Code>	When the battle's lost and won.</p>
+<p class=Code>&nbsp;</p>
+<p class=Code>Third Witch	That will be ere the set of sun.</p>
+
+
+
 
 <p class=MsoNormal>&nbsp;</p>
 
 <p class=MsoNormal>Output:</p>
 
-<p class=Code>Case #1</p>
-
-<p class=Code>abc</p>
-
-<p class=Code>acb</p>
-
-<p class=Code>bac</p>
-
-<p class=Code>bca</p>
-
-<p class=Code>cab</p>
-
-<p class=Code>cba</p>
-
-<p class=Code>Case #2</p>
-
-<p class=Code>dfg</p>
-
-<p class=Code>dgf</p>
-
-<p class=Code>fdg</p>
-
-<p class=Code>fgd</p>
-
-<p class=Code>gdf</p>
-
-<p class=Code>gfd</p>
-
-<p class=Code>Case #3</p>
-
-<p class=Code>er</p>
-
-<p class=Code>re</p>
+<div class="output">
+<p class=Code>mamnstsamsnnmtmnmms$$$$$
+<p class=Code>&nbsp;</p>
+<p class=Code>msmnytmnyssnnn$$
+<p class=Code>&nbsp;</p>
+<p class=Code>mnenytstmannmnnsmmmsntsyyssemyntaneemtematsmsyesaasestnaaymmcs$$
+<p class=Code>&nbsp;</p>
+<p class=Code>meetmytsatmecynnaymcysnsasmecynnysseeytyayeenyenaanentteayemcsnsmymecyenaymcysnsatsenyemaymemnnsmteentenaseenyntaneten$$
+<p class=Code>&nbsp;</p>
+<p class=Code>mynentemanecmsnsmteentenaseensyymteenyntaanmsyeaamsesttnaasmsyecaymmsyenamscyyntaymmsyttaymemtenyssestncasmentte
+<p class=Code>mmmecsnsatsenyetaanemyntannmesnsaasentncamscmyteammecyncyasmsytcannmsytyaanmsyemasmentteyce$$$$$
+<p class=Code>&nbsp;</p>
+<p class=Code>mneemtnaaaeecynnysstattyatseyttssmmtattsaymecsnsatsenyntyssenyetanneeycyasncmtemaascnnncanemsynnaaeecyntyas$$$$$
+<p class=Code>mteenyntaanmsyenamsemnnsasnestenatseeyntyyecynnsaasecteaatsmsynyaanemsnsateectteyan$$$$$
+<p class=Code>&nbsp;</p>
+<p class=Code>mtsenytyannemsnsmteentenaseensyymtsenynyatsmsyecammeeytnysseyyntyssemtemaymmsyenamsemnnsaneemtenyssectneysscytetaanmcs$$
+</div>
 
 <p class=MsoNormal>&nbsp;</p>
 
@@ -352,8 +433,9 @@ clear=all style='page-break-before:always'>
 <h1><a name="submit">Submitting Your Solution</a></h1>
 
 <p class=MsoNormal>If your test output successfully passes, please zip up your code (source only, please - no binaries) and submit it using the form below.</p>
-<p class=MsoNormal><b>Please include you resume in your .zip.</b></p>
+<p class=MsoNormal><b>Please include your resume in your .zip.</b></p>
 <p class=MsoNormal>Once we've recieved it, someone from our team will be contacting you shortly.</p>
+
 
 <div id=uploadCodeDiv class=uploadDiv>
 	<form id="codeForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
@@ -384,6 +466,8 @@ RFVDRURfUkVEVU5EQU5DWSJ9LFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
 	      <input type="submit" value="Upload File">
     </form>
 </div>
+
+
 <p class=MsoNormal>&nbsp;</p>
 
 <p class=MsoNormal>&nbsp;</p>
