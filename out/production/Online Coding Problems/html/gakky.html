@@ -179,11 +179,16 @@ input.fixThis {border: solid; border-color: red;}
 -->
 </style>
 
-<script type="text/javascript" src="utils.js" ></script>
 
+<script>
+var problemName = "gakky"
+</script>
 
+<script type="text/javascript" src="/utils.js" ></script>
 
-
+<script>
+setHome();
+</script>
 
 </head>
 
@@ -372,13 +377,14 @@ ZGlyZWN0IjoiaHR0cDovL3lldGFub3RoZXJ3aGF0ZXZlci5pby9zdWJtaXR0aW5nLmh0bWwifSx7
 IngtYW16LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwi
 OiJBS0lBSUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0
 In0seyJ4LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFz
-cyI6IlJFRFVDRURfUkVEVU5EQU5DWSJ9LFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3
-Nl1dfQ=='>
+cyI6IlJFRFVDRURfUkVEVU5EQU5DWSJ9LFsic3RhcnRzLXdpdGgiLCIkeC1hbXotbWV0YS1pZCIs
+IiJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
 	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
 	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
 	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
 	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="78e1f13f02bb97a215da648add5b4585b623bdc8e8fc337b87cb63228916089d">
+	       <input type="hidden" name="x-amz-signature" value="9b5d2d6e9eee7cdbdd30fb486689f2281d4a4a8f37fd43d4e4ea69e3daf80fac">
+	       <input type="hidden" name="x-amz-meta-id" value="">
 	      <!-- Include any additional input fields here -->
 
       <div class="formlabel">File to upload: <input id="outputFile" name="file" type="file"> </div>
@@ -455,20 +461,22 @@ cmVjdCI6Imh0dHA6Ly95ZXRhbm90aGVyd2hhdGV2ZXIuaW8vdGhhbmtzLmh0bWwifSx7IngtYW16
 LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwiOiJBS0lB
 SUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0In0seyJ4
 LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFzcyI6IlJF
-RFVDRURfUkVEVU5EQU5DWSJ9LFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
+RFVDRURfUkVEVU5EQU5DWSJ9LFsic3RhcnRzLXdpdGgiLCIkeC1hbXotbWV0YS1pZCIsIiJdLFsi
+Y29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
 	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
 	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
 	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
 	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="0f85f17acd6b4c450937ed773d75d7d50eb743a07e2c3f160226ce3d596d457e">
+	       <input type="hidden" name="x-amz-signature" value="49c4a08882e67c7c5cb4971a4e1612cec48b11d40efc89ad49df38c8fe83e95b">
+	       <input type="hidden" name="x-amz-meta-id" value="">
 	      <!-- Include any additional input fields here -->
 
 	      <div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>
 	      <br> 
-	      <div class="formlabel">Your email address (preferably the same one as on your resume):</div>
+	      <div class="formlabel">Your email address (preferably the same one as on your resume):
 	      <br>
 	      <input id="email" name="email" type="text">
-	      <br><br>
+	      <br><br></div>
 	      <input type="submit" value="Upload File">
     </form>
 </div>

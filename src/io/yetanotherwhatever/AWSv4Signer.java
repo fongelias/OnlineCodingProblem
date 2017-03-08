@@ -131,6 +131,7 @@ public class AWSv4Signer {
                 "    {\"x-amz-credential\":\"" + accessKeyID + "/" + dateStamp + "/" + region + "/" + serviceName + "/aws4_request\"},\n" +
                 "    {\"x-amz-date\":\"" + dateStamp + "T000000Z\"},\n" +
                 "    {\"x-amz-storage-class\":\"REDUCED_REDUNDANCY\"},\n" +
+                "    [\"starts-with\",\"$x-amz-meta-id\",\"\"],\n" +
                 "    [\"content-length-range\",0,1048576]\n" +
                 "  ]\n" +
                 "}";
@@ -158,6 +159,7 @@ public class AWSv4Signer {
                 "\t       <input type=\"hidden\" name=\"x-amz-date\" value=\"" + m_dateStamp + "T000000Z\">\n" +
                 "\t       <input type=\"hidden\" name=\"x-amz-storage-class\" value=\"REDUCED_REDUNDANCY\">\n" +
                 "\t       <input type=\"hidden\" name=\"x-amz-signature\" value=\"" + signedPolicy + "\">\n" +
+                "\t       <input type=\"hidden\" name=\"x-amz-meta-id\" value=\"\">\n" +
                 "\t      <!-- Include any additional input fields here -->\n" +
                 additionalFields +
                 "\t      <input type=\"submit\" value=\"Upload File\">\n" +
@@ -198,10 +200,10 @@ public class AWSv4Signer {
         String codeAdditionalFields = "\n" +
                 "\t      <div class=\"formlabel\">File to upload: <input id=\"codeFile\" name=\"file\" type=\"file\"> </div>\n" +
                 "\t      <br> \n" +
-                "\t      <div class=\"formlabel\">Your email address (preferably the same one as on your resume):</div>\n" +
+                "\t      <div class=\"formlabel\" id=\"emaildiv\">Your email address (preferably the same one as on your resume):\n" +
                 "\t      <br>\n" +
                 "\t      <input id=\"email\" name=\"email\" type=\"text\">\n" +
-                "\t      <br><br>\n";
+                "\t      <br><br></div>\n";
         String codeFormValidation= "genCodeKey()";
         String codeFormId = "codeForm";
         signer.buildForm(codeFolder, codeAdditionalFields, codeRedirectPage, codeFormValidation, codeFormId);

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Symantec Coding Problem Registration</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="/utils.js" ></script>
+
+<!--for local debugging-->
+<script type="text/javascript" src="utils.js" ></script>	
+
+<script type="text/javascript">
+	var URL = 'https://widwml054h.execute-api.us-east-1.amazonaws.com/CandidateRegistrationStage/candidateregistration';
+
+$(document).ready(function(){
+
+	$('#registration-form').submit(function (event) {
+	  event.preventDefault();
+
+	  if(!confirm("You will have 48 hours to complete.  Continue?")) {
+	  	return;
+	  }
+
+	  $('#registration-form').hide();
+	  $('#results').html("Submitting...")
+
+	  var data = {
+	    first: $('#first-name').val(),
+	    last: $('#last-name').val(),
+	    email: $('#email').val()
+	  }
+
+	  $.ajax({
+	    type: 'POST',
+	    url: URL,
+	    dataType: 'json',
+	    contentType: 'application/json',
+	    data: JSON.stringify(data),
+	    success: function () {
+	      	$('#results').html('<span class="success">Registration succeeded.  Please check your email for a personalized link to our online coding problem.</span>');
+	    },
+	    error: function () {
+	      	$('#results').html('<span class="fail">Registration failed. Please refresh the page and try again, or notify <a href="mail://andrew_chang@symantec.com">andrew_chang@symantec.com</a></span>');
+	    }
+	  })
+
+	});
+
+});
+
+</script>
+
+<style>
+p.h1 {
+	font-weight: bold;
+	font-size: 40px;
+
+}
+
+body {
+
+	width: 800px;
+	margin-left: 100px;
+}
+
+#registration-form {
+	
+	border-color: red;
+}
+
+.success {
+	color: green;
+}
+
+.fail {
+	color: red;
+}
+
+.warning
+{
+	font-weight: bold;
+	font-size: 18px;
+	font-style: italic;
+
+}
+
+</style>
+</head>
+<body>
+
+<div id="instructions">
+<p class="h1">Thank you for your interest in Symantec!</p>
+
+<p>To begin your online coding problem, please complete and submit the form below.</p>
+<p>You will receive an email with a personalized link to a random coding problem; including a description, examples, a link to your test input and a form to upload and test your output, and an additional form for submitting your working code.</p>
+<p>You may solve the problem using any programming language and environment you wish.</p>
+<p class="warning">NB: You will have 48 hours from when you submit to complete your problem.</p>
+</div>
+
+<br>
+
+<form id="registration-form" class="registration-form">
+	<p>
+	  <label for="name-input">First Name:</label>
+	  <input type="text" id="first-name" placeholder="first name here..." required/>
+	 </p>
+
+	<p>
+	  <label for="name-input">Last Name:</label>
+	  <input type="text" id="last-name" placeholder="last name here..." required/>
+	 </p>
+
+	<p>	 
+	  <label for="email-input">Email:</label>
+	  <input type="email" id="email" placeholder="email here..." required/>
+	</p>
+
+
+  <button type="submit">Start the problem</button>
+</form>
+
+<span id="results"></span>
+
+</body>

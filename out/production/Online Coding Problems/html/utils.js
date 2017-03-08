@@ -96,13 +96,43 @@ Dual licensed under the MIT and GPL licenses.
 
  function debug(msg)
  {
-  if (window.location.pathname.indexOf('yetanotherwhatever.io') == -1)
+  if (window.location.href.indexOf('yetanotherwhatever.io') == -1)
   {
     alert(msg);
   }
  }
 
 <!-- submit test output form -->
+function setMeta(formName, email)
+{
+
+  var myObj = null;
+  if (isDynamicPage())
+  {
+      myObj = { "problemname" : getProblemName(), "home" : getHome()};
+  }
+  else
+  {
+      //get email & sns topic
+      myObj = { "email" : email, "topic" : getTopic(), "problemname" : getProblemName() , "home" : getHome() };
+  }
+
+  var form = document.getElementById(formName);
+  var meta = form.querySelectorAll("[name=x-amz-meta-id]");
+  var metaInput = meta[0];
+  metaInput.value=JSON.stringify(myObj);
+}
+
+function isDynamicPage()
+{
+  //page will have "/tp/" folder in the path
+  //and will be named "<UUID>.html"
+
+  var path = window.location.pathname;
+  var pageName = path.split("/").pop();
+
+  return (path.indexOf("tp/") != -1 && pageName.length == "0C109B3C-1FC3-4EEB-AF02-D604D476FF74.html".length);
+}
 
 function genSlnKey()
 {
@@ -115,14 +145,18 @@ function genSlnKey()
 
   var uuid = Math.uuid();
 
-  var form = document.getElementById('outputForm');
+  var formName = 'outputForm';
+  var form = document.getElementById(formName);
   var keys = form.querySelectorAll("[name=key]");
   var keyInput = keys[0];
 
   var problemName = getProblemName();
   
-  keyInput.value = "uploads/output/" + problemName + "/" + getLLS() + "/" + uuid;  
+  keyInput.value = "uploads/output/" + problemName + "/" + getLLS() + "/" + uuid;
 
+  debug(keyInput.value);
+
+  setMeta(formName);
 }
 
 
@@ -156,7 +190,8 @@ function genCodeKey()
 
   var uuid = Math.uuid();
 
-  var form = document.getElementById('codeForm');
+  var formName = 'codeForm';
+  var form = document.getElementById(formName);
   var keys = form.querySelectorAll("[name=key]");
   var keyInput = keys[0];
 
@@ -166,6 +201,9 @@ function genCodeKey()
 
   keyInput.value = "uploads/code/" + problemName + "/" + getLLS() + "/" + email + "/" + topic + "/" + uuid + ".zip"; 
 
+  debug(keyInput.value);
+
+  setMeta(formName, email);
 
   return true;
 
@@ -192,7 +230,19 @@ function getAndValidateEmail()
   return email;
 }
 
+function setHome()
+{
+  var url = window.location.href;
 
+  //TODO remove anchor, if there
+
+  createVariable("home", url);
+}
+
+function getHome()
+{
+  return readVariable("home");
+}
 
 
 
@@ -261,11 +311,8 @@ function getParameterByName(name, url) {
 
 function getProblemName()
 {
-  var path = window.location.pathname;
-  var page = path.split("/").pop();
-  var problemName = page.substring(0, page.lastIndexOf('.'));  //drop the .htm(l) extension
 
-  return problemName;
+  return problemName; 
 }
 
 function setTopic()

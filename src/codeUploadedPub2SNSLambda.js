@@ -37,62 +37,82 @@ function getMetadata(event, context, callback)
     });
 }
 
-function readMetadata(event, context, err, data) {
+function readMetadata(event, context, err, meta) {
   if (err) {
     console.log(err, err.stack); // an error occurred
   } 
   else {
 
-        console.log("Metadata: " + JSON.stringify(data));           // successful response
+        console.log("Metadata: " + JSON.stringify(meta));           // successful response
 
-        var meta = data;
+        var email = meta.email;
+        var topic =  translateTopic(meta.topic);
+        var url = meta.referrer;
 
-        var email = "";
-        var topic = "arn:aws:sns:us-east-1:229763884986:CodeUploaded";
-
-        //lookup by id
-        if (meta.id != null)
-        {
-            //TODO
-            email = "lookup";
-            topic = "arn:aws:sns:us-east-1:229763884986:CodeUploaded";
-        }
-        //else use metadata properties
-        else
-        {
-            if(meta.email != null)
-            {
-                email = meta.email;
-            }
-            else
-            {
-                console.log("Error: no email address");
-            }
-
-
-            //get topic
-            var notify = meta.topic;
-            //default
-            topic = "arn:aws:sns:us-east-1:229763884986:CodeUploaded";
-            if (notify != null)
-            {
-                if (notify.indexOf("szhang") != -1)
-                {
-                    topic = "arn:aws:sns:us-east-1:229763884986:SZhang";
-                }
-                if (notify.indexOf("jholler") != -1)
-                {
-                    topic = "arn:aws:sns:us-east-1:229763884986:JHoller";
-                }
-            }
-        } 
-
-        pub2SNS(event, context, topic, email);
+        lookupRegistration(event, context, email, topic, url);
     }
 }
 
+function lookupRegistration(event, context, email, topic, url)
+{
+    console.log("Reverse url->email lookup...");
 
-function pub2SNS(event, context, topic, email, bucket, key)
+    var docClient = new AWS.DynamoDB.DocumentClient();
+
+    var params = {
+        TableName: "CandidateRegistration",
+        IndexName: 'url-index',
+        KeyConditionExpression: '#u = :urlkey',
+        ExpressionAttributeNames: {
+            '#u': "url"
+        },
+        ExpressionAttributeValues: {
+            ":urlkey": url
+        }
+    };
+    docClient.query(params, function(err, data) {
+        if (err) {
+            console.error("Unable to from Dynamo. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Dynamo query succeeded:", JSON.stringify(data, null, 2));
+
+            if (data.Items.length > 0)
+            {
+                console.log("Registration found");
+
+                if (data.Items[0].email != null)
+                {
+                    email = data.Items[0].email;
+                }
+            }
+
+            pub2SNS(event, context, topic, email);
+        }
+    });
+}
+
+function translateTopic(notify)
+{
+    //default
+    var topic = "arn:aws:sns:us-east-1:229763884986:CodeUploaded";
+    if (notify != null)
+    {
+        if (notify.indexOf("szhang") != -1)
+        {
+            topic = "arn:aws:sns:us-east-1:229763884986:SZhang";
+        }
+        if (notify.indexOf("jholler") != -1)
+        {
+            topic = "arn:aws:sns:us-east-1:229763884986:JHoller";
+        }
+    }
+
+    return topic;
+
+}
+
+
+function pub2SNS(event, context, topic, email)
 {
 
     //read out time
@@ -108,7 +128,6 @@ function pub2SNS(event, context, topic, email, bucket, key)
 
     
     var mylink = "https://s3.amazonaws.com/public.yetanotherwhatever.io/" + key;
-
 
     console.log("Recieved event time: ", time);
     console.log("Email: ", email);
