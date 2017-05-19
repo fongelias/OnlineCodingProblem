@@ -28,7 +28,8 @@ $(document).ready(function(){
 	  var data = {
 	    first: $('#first-name').val(),
 	    last: $('#last-name').val(),
-	    email: $('#email').val()
+	    email: $('#email').val(),
+	    lls: getLLS()
 	  }
 
 	  $.ajax({
@@ -38,10 +39,10 @@ $(document).ready(function(){
 	    contentType: 'application/json',
 	    data: JSON.stringify(data),
 	    success: function () {
-	      	$('#results').html('<span class="success">Registration succeeded.  Please check your email for a personalized link to our online coding problem.</span>');
+	      	$('#results').html('<span class="success">Registration succeeded.  Please check your email for a personalized link to our online coding problem.<br/><br/>If you do not find the registration email in your inbox, please check your junk email folder, or notify <a href="mail://andrew_chang@symantec.com">andrew_chang@symantec.com</a>.</span>');
 	    },
 	    error: function () {
-	      	$('#results').html('<span class="fail">Registration failed. Please refresh the page and try again, or notify <a href="mail://andrew_chang@symantec.com">andrew_chang@symantec.com</a></span>');
+	      	$('#results').html('<span class="fail">Registration failed. Please refresh the page and try again; or notify <a href="mail://andrew_chang@symantec.com">andrew_chang@symantec.com</a></span>');
 	    }
 	  })
 

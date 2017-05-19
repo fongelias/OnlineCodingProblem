@@ -135,9 +135,9 @@ $(document).ready(function(){
 function setCodeMeta(formName, email)
 {
   var myObj = {"email" : email,
-  "topic" : getTopic(),
-  "problemname" : getProblemName(),
-  "referrer" : cleanLocation()};
+    "topic" : getTopic(),
+    "lls" : getLLS()
+  };
 
   setMeta(formName, myObj);
 }
@@ -145,10 +145,9 @@ function setCodeMeta(formName, email)
 function setOutputMeta(formName, uuid)
 {
   var myObj = {"uuid" : uuid,
-  "referrer" : cleanLocation(),
-  "problemname" : getProblemName(),
-  "lls" : getLLS(),
-  "home" : getHome()};
+    "lls" : getLLS(),
+    "problemname" : getProblemName()
+  };
 
   setMeta(formName, myObj);
 }
@@ -171,8 +170,8 @@ function isDynamicPage()
   var path = window.location.pathname;
   var pageName = path.split("/").pop();
 
-  var uuid = "0C109B3C-1FC3-4EEB-AF02-D604D476FF74.html";
-  var isDyn = path.indexOf("tp/") != -1 && pageName.length == uuid.length;
+  var example = "0C109B3C-1FC3-4EEB-AF02-D604D476FF74.html";
+  var isDyn = path.indexOf("tp/") != -1 && pageName.length == example.length;
 
   return (isDyn);
 }
@@ -192,7 +191,7 @@ function genSlnKey()
   var keys = form.querySelectorAll("[name=key]");
   var keyInput = keys[0];
 
-  keyInput.value = "uploads/output/" + getProblemName() + "/" + getLLS() + "/" + uuid;
+  keyInput.value = "uploads/output/" + getProblemName() + "/" + getLLS() + "/" + uuid + ".txt";
 
   debug(keyInput.value);
 

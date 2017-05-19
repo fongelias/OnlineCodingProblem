@@ -47,39 +47,37 @@ function readMetadata(event, context, err, meta) {
 
         var email = meta.email;
         var topic =  translateTopic(meta.topic);
-        var url = meta.referrer;
+        var lls = meta.lls;
 
-        lookupRegistration(event, context, email, topic, url);
+        lookupRegistrationByLLS(event, context, email, topic, lls);
     }
 }
 
-function lookupRegistration(event, context, email, topic, url)
+function lookupRegistrationByLLS(event, context, email, topic, lls)
 {
-    console.log("Reverse url->email lookup...");
+    console.log("Reverse lls->email lookup...");
 
     var docClient = new AWS.DynamoDB.DocumentClient();
 
     var params = {
         TableName: "CandidateRegistration",
-        IndexName: 'url-index',
-        KeyConditionExpression: '#u = :urlkey',
-        ExpressionAttributeNames: {
-            '#u': "url"
-        },
+        IndexName: 'lls-index',
+        KeyConditionExpression: 'lls = :llskey',
         ExpressionAttributeValues: {
-            ":urlkey": url
+            ":llskey": lls
         }
     };
     docClient.query(params, function(err, data) {
         if (err) {
-            console.error("Unable to from Dynamo. Error JSON:", JSON.stringify(err, null, 2));
+            console.error("Unable to read from Dynamo. Error JSON:" + JSON.stringify(err, null, 2));
         } else {
-            console.log("Dynamo query succeeded:", JSON.stringify(data, null, 2));
+            console.log("Dynamo query succeeded:" + JSON.stringify(data, null, 2));
 
             if (data.Items.length > 0)
             {
-                console.log("Registration found");
+                console.log("Registration found by LLS");
 
+                //TODO: get the most recent one
                 if (data.Items[0].email != null)
                 {
                     email = data.Items[0].email;
@@ -114,6 +112,7 @@ function translateTopic(notify)
 
 function pub2SNS(event, context, topic, email)
 {
+    email = encodeURI(email);
 
     //read out time
     var time = event.Records[0].eventTime;

@@ -1,6 +1,6 @@
 package io.yetanotherwhatever;
 
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
@@ -75,8 +75,7 @@ public class AWSv4Signer {
         in = in.replaceAll("\\s", "");
         try
         {
-            b64 = (new BASE64Encoder()).encode(
-                    in.getBytes("UTF-8"));
+        	b64 = Base64.encodeBase64String(in.getBytes("UTF-8"));
 
         }
         catch(IOException ioe)

@@ -1,39 +1,46 @@
-var AWS = require('aws-sdk')
-var SES = new AWS.SES()
+var AWS = require('aws-sdk');
  
-var SENDER = 'andrew_chang@symantec.com'
-
-var BUCKET = 'yetanotherwhatever.io'
- 
-var TABLE = "CandidateRegistration"
+var SENDER = 'andrew_chang@symantec.com';
+var BUCKET = 'yetanotherwhatever.io';
+var TABLE = "CandidateRegistration";
 
 var s3 = createS3();
 
 //lambda entry point
 exports.handler = function (event, context) {
-
-
-    console.log('Received event:', event)
-    
-    var reg = checkRegistration(event);
+   
+    var reg = validateRegistration(event);
         
 }
 
 //returns true if success
-function checkRegistration(event)
+function validateRegistration(event)
 {
     if (event.first == null ||
         event.last == null ||
-        event.email == null)
+        event.email == null ||
+        event.lls == null)
     {
-        console.error("Bad request, missing params: " + event.first + ", " + event.last + ", " + event.email);
+        console.error("Bad request, missing params: " + event.first + ", " + event.last + ", " + event.email + ", " + event.lls);
         return false;
     }
 
+
+    //sanitize
+    //anti xss
+    event.email = encodeURI(event.email);
+    event.first = encodeURI(event.first);
+    event.last = encodeURI(event.last);
+    event.lls = encodeURI(event.lls);
+
+    lookupRegistrationByEmail(event);
+}
+
+function lookupRegistrationByEmail(event)
+{
+    console.log("Querying registrations by email");
     var dynClient = new AWS.DynamoDB.DocumentClient();
 
-
-    //check for existing record
     var params = {
         TableName: TABLE,
         Key:{
@@ -44,41 +51,103 @@ function checkRegistration(event)
     dynClient.get(params, function(err, data) {
         if (err) {
             console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-            //TODO report error
-
+            
         } else {
-            console.log("GetItem from Dynamo succeeded:", JSON.stringify(data, null, 2));
 
             //record found
             if (data.Item != null)
             {
-                console.log("Registration alread exists for this user");
-                sendEmail(event, data.Item.url);
+                console.log("Registration alread exists for this user, " + event.email);
+
+                tellAndrew("WARNING existing registration resubmitted for: " + event.email, JSON.stringify(event));
+
+                emailCandidate(event, data.Item.url);
             }
-            //new registration
             else
             {
-                genPage(event)
+              console.log("This is a new email address being registered");
+              lookupRegistrationByLLS(event);
             }
-        }
+        } 
     });
 
     return true;
 }
 
-function recordNewRegistration(event, url)
-{
-    //TODO save original problem name
 
+
+function lookupRegistrationByLLS(event)
+{
+    console.log("Querying registrations by lls");
+    var docClient = new AWS.DynamoDB.DocumentClient();
+
+    var params = {
+        TableName: TABLE,
+        IndexName: 'lls-index',
+        KeyConditionExpression: 'lls = :llskey',
+        ExpressionAttributeValues: {
+            ":llskey": event.lls
+        }
+    };
+
+    docClient.query(params, function(err, data) {
+        if (err) {
+            console.error("Query to Dynamo failed. Error JSON:" + JSON.stringify(err, null, 2));
+        } else {
+
+            if (data.Items.length > 0)
+            {
+               handleDuplicateRegistration(event, data);
+            }
+            else
+            {
+                console.log("This is a new lls being registered");
+                selectRandProblemPage(event);
+            }
+        }
+    });
+}
+
+function handleDuplicateRegistration(event, data)
+{
+    var oldReg = data.Items[0];
+    var sub = "Existing registration found for LLS " + event.lls;
+    var body = JSON.stringify(oldReg);
+    console.error(sub);
+    console.error(body);
+
+    tellAndrew("WARNING" + sub, body);
+
+    //now what?
+    //pretend like nothing happened
+    
+    //supercede old registration, using existing problem url & key
+    saveNewRegistration(event, oldReg.url, oldReg.problemKey);
+
+    emailCandidate(event, oldReg.url);
+}
+
+function saveNewRegistration(event, url, problemKey)
+{
     var docClient = new AWS.DynamoDB.DocumentClient();
     
+    var now = new Date();
+
+    var partitionsPerY = 1;
+
+    var part = parseInt("" + now.getFullYear() + (now.getMonth() % partitionsPerY));
+
     var params = {
         TableName:TABLE,
         Item:{
             "email": event.email,
             "first": event.first,
             "last": event.last,
-            "start-time": Date.now(),
+            "start-time": now.toLocaleString("America/New_York"),
+            "epoch-part": part,
+            "epoch-time": now.getTime(),
+            "lls": event.lls,
+            "problemKey": problemKey,
             "url": url
         }
     };
@@ -92,9 +161,14 @@ function recordNewRegistration(event, url)
             console.log("Added item:", JSON.stringify(data, null, 2));
         }
     });
+
+    var sub = "New coding problem registration: " + event.first + " " + event.last + ", " + event.email;
+    var body = JSON.stringify(params);
+
+    tellAndrew(sub, body);
 }
 
-function genPage(event)
+function selectRandProblemPage(event)
 {
     console.log("generating new problem page");
 
@@ -153,9 +227,9 @@ function copyPage(s3Obj, event, url)
                     //email new page url
                     console.log("Successfully copied '" + s3Obj.Key + "' to '" + destKey + "'");
 
-                    recordNewRegistration(event, url);
+                    saveNewRegistration(event, url, s3Obj.Key);
 
-                    sendEmail(event, url)
+                    emailCandidate(event, url)
                 }
     });
 }
@@ -174,12 +248,12 @@ function createS3(regionName) {
     return s3;
 }
 
-function sendEmail (event, url, done) {
+function emailCandidate (event, url, done) {
 
     var body = "Your unique link to the online coding problem: " + url
     var subject = "Symantec online coding problem"
 
-    console.log("Sending email")
+    console.log("Sending email to: " + event.email)
     console.log("Subject: " + subject)
     console.log("Body: " + body)
 
@@ -203,7 +277,9 @@ function sendEmail (event, url, done) {
         },
         Source: SENDER
     }
-    SES.sendEmail(params, function(err, data) {
+
+    var ses = new AWS.SES();
+    ses.sendEmail(params, function(err, data) {
       if (err)
       {
             console.error("Error sending coding problem invitation email to '" + event.email + "'");
@@ -216,7 +292,24 @@ function sendEmail (event, url, done) {
 }
 
 
+function tellAndrew(subject, body)
+{
+  var topic = "arn:aws:sns:us-east-1:229763884986:CodingProblem";
 
+  var sns = new AWS.SNS();
+  var params = {
+      Message: body,
+      Subject: subject,
+      TopicArn: topic
+  };
+  sns.publish(params, function(err, data) {
+    if (err)
+    {
+      console.error("Error publishing to topic " + topic);
+      console.error(err, err.stack); 
+    }
+  });
+}
 
 
 
