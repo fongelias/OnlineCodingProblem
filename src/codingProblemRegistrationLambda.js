@@ -251,7 +251,8 @@ function createS3(regionName) {
 
 function emailCandidate (event, url, done) {
 
-    var body = "Your unique link to the online coding problem: " + url
+    var body = "Thank you for your interest in Symantec.\n\n" + 
+      "Here is your unique link to the online coding problem: " + url
     var subject = "Symantec online coding problem"
 
     console.log("Sending email to: " + event.email)
