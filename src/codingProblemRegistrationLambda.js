@@ -1,6 +1,6 @@
 var AWS = require('aws-sdk');
  
-var SENDER = 'andrew_chang@symantec.com';
+var SENDER = '"Registration" <noreply@yetanotherwhatever.io>';
 var BUCKET = 'yetanotherwhatever.io';
 var TABLE = "CandidateRegistration";
 
@@ -148,7 +148,8 @@ function saveNewRegistration(event, url, problemKey)
             "epoch-time": now.getTime(),
             "lls": event.lls,
             "problemKey": problemKey,
-            "url": url
+            "url": url,
+            "topic": event.topic
         }
     };
 
@@ -162,7 +163,7 @@ function saveNewRegistration(event, url, problemKey)
         }
     });
 
-    var sub = "New coding problem registration: " + event.first + " " + event.last + ", " + event.email;
+    var sub = "New coding problem registration: " + event.first + " " + event.last + ", " + event.email + ", topic=" + event.topic;
     var body = JSON.stringify(params);
 
     tellAndrew(sub, body);
