@@ -1,5 +1,3 @@
-
-
 /*!
 Math.uuid.js (v1.4)
 http://www.broofa.com
@@ -104,19 +102,19 @@ Dual licensed under the MIT and GPL licenses.
 
 
 
-
-
-
-
-
 "use strict";
 
+/* Global Vars & Config */
+var isProd = window.location.href.indexOf("yetanotherwhatever.io") == -1;
 
 
 
- function debug(msg)
+
+
+/* Functions */
+function debug(msg)
  {
-  if (window.location.href.indexOf("yetanotherwhatever.io") == -1)
+  if (isProd)
   {
     alert(msg);
   }
@@ -131,7 +129,9 @@ $(document).ready(function(){
   }
 });
 
-//submit test output form
+
+
+//Submit test output form metadata
 function setCodeMeta(formName, email)
 {
   var myObj = {"email" : email,
@@ -162,6 +162,9 @@ function setMeta(formName, myObj)
   metaInput.value=JSON.stringify(myObj);
 }
 
+
+//Page type
+/* Checks if the page is dynamically created */
 function isDynamicPage()
 {
   //page will have "/tp/" folder in the path
@@ -176,6 +179,10 @@ function isDynamicPage()
   return (isDyn);
 }
 
+
+
+//Key Generation
+/* key for solution submission */
 function genSlnKey()
 {
   if(!document.getElementById("outputFile").value)
@@ -199,8 +206,7 @@ function genSlnKey()
 }
 
 
-// code submission form
-
+/* key for output submission */
 function genCodeKey()
 {
 
@@ -250,6 +256,9 @@ function genCodeKey()
 
 }
 
+
+
+
 function getAndValidateEmail()
 {
 
@@ -275,7 +284,10 @@ function getAndValidateEmail()
   return email;
 }
 
-//stats
+
+
+
+//Cookie management and page property methods
 function createVariable(name,value) {
     var date = new Date();
     date.setFullYear(date.getFullYear() + 1);
@@ -313,13 +325,13 @@ function setLLS()
 
 }
 
+setLLS();
+
+
 function getLLS()
 {
     return readVariable("LLS");
 }
-
-setLLS();
-
 
 function cleanLocation()
 {
@@ -374,6 +386,7 @@ function setTopic()
 }
 
 setTopic();
+
 
 function getTopic()
 {

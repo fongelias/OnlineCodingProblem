@@ -1,11 +1,17 @@
 console.log("Loading function");
 var AWS = require("aws-sdk");
 
+
+
+
 exports.handler = function(event, context) {
     var eventText = JSON.stringify(event, null, 2);
 
     getMetadata(event, context, readMetadata);
 };
+
+
+
 
 function getMetadata(event, context, callback)
 {
@@ -37,6 +43,9 @@ function getMetadata(event, context, callback)
     });
 }
 
+
+
+
 function readMetadata(event, context, err, meta) {
   if (err) {
     console.log(err, err.stack); // an error occurred
@@ -52,6 +61,9 @@ function readMetadata(event, context, err, meta) {
         lookupRegistrationByLLS(event, context, email, topic, lls);
     }
 }
+
+
+
 
 function lookupRegistrationByLLS(event, context, email, topic, lls)
 {
@@ -89,6 +101,9 @@ function lookupRegistrationByLLS(event, context, email, topic, lls)
     });
 }
 
+
+
+
 function translateTopic(notify)
 {
     //default
@@ -108,6 +123,9 @@ function translateTopic(notify)
     return topic;
 
 }
+
+
+
 
 
 function pub2SNS(event, context, topic, email)
@@ -146,3 +164,6 @@ function pub2SNS(event, context, topic, email)
     };
     sns.publish(params, context.done);
 }
+
+
+

@@ -66,113 +66,6 @@ function checkRegistration(event)
     return true;
 }
 
-function recordNewRegistration(event, url)
-{
-    //TODO save original problem name
-
-    var docClient = new AWS.DynamoDB.DocumentClient();
-    
-    var params = {
-        TableName:TABLE,
-        Item:{
-            "email": event.email,
-            "first": event.first,
-            "last": event.last,
-            "start-time": Date.now(),
-            "url": url
-        }
-    };
-
-    console.log("Saving to " + TABLE);
-
-    docClient.put(params, function(err, data) {
-        if (err) {
-            console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("Added item:", JSON.stringify(data, null, 2));
-        }
-    });
-}
-
-function genPage(event)
-{
-    console.log("generating new problem page");
-
-    //reading existing coding problems problems
-    var prefix = "problems/"
-
-    var params = {
-          Bucket: BUCKET, /* required */
-          Delimiter: '',
-          EncodingType: 'url',
-          Marker: '',
-          MaxKeys: 100,
-          Prefix: prefix,
-          RequestPayer: 'requester'
-        };
-
-    s3.listObjects(params, function(err, data) {
-      if (err)
-        console.error(err, err.stack); // an error occurred
-      else {
-        
-        //selecting a random problem page
-        var size = data.Contents.length - 1 //ignore parent folder entry
-        console.log("'" + prefix + "' contains " + size + " elements")
-        var i = Math.floor(Math.random() * size) + 1
-        console.log("Randomly selected index " + i)
-
-        copyPage(data.Contents[i], event)
-      } 
-    });
-
-}
-
-
-function copyPage(s3Obj, event, url)
-{
-    //temp area will be http://yetanotherwhatever.io/tp/<UUID>.html
-    var uuid = Math.uuid()
-    var prefix = "tp/"
-    var destKey = prefix + uuid + ".html"
-    var url = "http://" + BUCKET + "/" + destKey
-
-    console.log("Copying '" + s3Obj.Key + "' to '" + destKey + "'")
-    
-    s3.copyObject({
-                Bucket: BUCKET,
-                Key: destKey,
-                
-                CopySource: encodeURIComponent(BUCKET + '/' + s3Obj.Key),
-                MetadataDirective: 'COPY'
-            }, function (err, data) {
-                if (err) {
-                    console.error("Error copying '" + s3Obj.Key + "' to '" + destKey + "'");
-                    console.error(err, err.stack); // an error occurred
-                } else {
-                    //email new page url
-                    console.log("Successfully copied '" + s3Obj.Key + "' to '" + destKey + "'");
-
-                    recordNewRegistration(event, url);
-
-                    sendEmail(event, url)
-                }
-    });
-}
-
-// CreateS3
-//
-// Create a reference to an S3 client
-// in the desired region.
-function createS3(regionName) {
-    var config = { apiVersion: '2006-03-01' };
-    
-    if (regionName != null)
-        config.region = regionName;
-
-    var s3 = new AWS.S3(config);
-    return s3;
-}
 
 function sendEmail (event, url, done) {
 
@@ -214,6 +107,123 @@ function sendEmail (event, url, done) {
       } 
     })
 }
+
+
+function genPage(event)
+{
+    console.log("generating new problem page");
+
+    //reading existing coding problems problems
+    var prefix = "problems/"
+
+    var params = {
+          Bucket: BUCKET, /* required */
+          Delimiter: '',
+          EncodingType: 'url',
+          Marker: '',
+          MaxKeys: 100,
+          Prefix: prefix,
+          RequestPayer: 'requester'
+        };
+
+    s3.listObjects(params, function(err, data) {
+      if (err)
+        console.error(err, err.stack); // an error occurred
+      else {
+        
+        //selecting a random problem page
+        var size = data.Contents.length - 1 //ignore parent folder entry
+        console.log("'" + prefix + "' contains " + size + " elements")
+        var i = Math.floor(Math.random() * size) + 1
+        console.log("Randomly selected index " + i)
+
+        copyPage(data.Contents[i], event)
+      } 
+    });
+
+}
+
+
+
+function copyPage(s3Obj, event, url)
+{
+    //temp area will be http://yetanotherwhatever.io/tp/<UUID>.html
+    var uuid = Math.uuid()
+    var prefix = "tp/"
+    var destKey = prefix + uuid + ".html"
+    var url = "http://" + BUCKET + "/" + destKey
+
+    console.log("Copying '" + s3Obj.Key + "' to '" + destKey + "'")
+    
+    s3.copyObject({
+                Bucket: BUCKET,
+                Key: destKey,
+                
+                CopySource: encodeURIComponent(BUCKET + '/' + s3Obj.Key),
+                MetadataDirective: 'COPY'
+            }, function (err, data) {
+                if (err) {
+                    console.error("Error copying '" + s3Obj.Key + "' to '" + destKey + "'");
+                    console.error(err, err.stack); // an error occurred
+                } else {
+                    //email new page url
+                    console.log("Successfully copied '" + s3Obj.Key + "' to '" + destKey + "'");
+
+                    recordNewRegistration(event, url);
+
+                    sendEmail(event, url)
+                }
+    });
+}
+
+
+
+function recordNewRegistration(event, url)
+{
+    //TODO save original problem name
+
+    var docClient = new AWS.DynamoDB.DocumentClient();
+    
+    var params = {
+        TableName:TABLE,
+        Item:{
+            "email": event.email,
+            "first": event.first,
+            "last": event.last,
+            "start-time": Date.now(),
+            "url": url
+        }
+    };
+
+    console.log("Saving to " + TABLE);
+
+    docClient.put(params, function(err, data) {
+        if (err) {
+            console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Added item:", JSON.stringify(data, null, 2));
+        }
+    });
+}
+
+
+
+
+// CreateS3
+//
+// Create a reference to an S3 client
+// in the desired region.
+function createS3(regionName) {
+    var config = { apiVersion: '2006-03-01' };
+    
+    if (regionName != null)
+        config.region = regionName;
+
+    var s3 = new AWS.S3(config);
+    return s3;
+}
+
+
 
 
 

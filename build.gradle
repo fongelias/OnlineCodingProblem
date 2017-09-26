@@ -1,0 +1,31 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+// apply plugin: 'application'
+
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    baseName = 'OnlineCodingProblem'
+    version = '0.1.0'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile "junit:junit:4.12"
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+	compile group: 'commons-codec', name: 'commons-codec', version: '1.5'
+	// https://mvnrepository.com/artifact/org.json/json
+	compile group: 'org.json', name: 'json', version: '20170516'
+	// https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
+	compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.202'
+	compile 'com.amazonaws:aws-lambda-java-core:1.1.0'
+	compile 'com.amazonaws:aws-lambda-java-events:2.0'
+}
+
+
+
