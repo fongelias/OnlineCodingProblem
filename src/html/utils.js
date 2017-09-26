@@ -104,12 +104,17 @@ Dual licensed under the MIT and GPL licenses.
 
 "use strict";
 
+/* Global Vars & Config */
+var isProd = window.location.href.indexOf("yetanotherwhatever.io") == -1;
 
 
 
+
+
+/* Functions */
 function debug(msg)
  {
-  if (window.location.href.indexOf("yetanotherwhatever.io") == -1)
+  if (isProd)
   {
     alert(msg);
   }
