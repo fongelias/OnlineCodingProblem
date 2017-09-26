@@ -1,503 +1,372 @@
 <html>
-
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=utf-8">
-<title>Coding Problem: "Gakkify"</title>
-
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:Wingdings;
-	panose-1:5 0 0 0 0 0 0 0 0 0;}
-@font-face
-	{font-family:"Cambria Math";
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:"Calibri Light";
-	panose-1:2 15 3 2 2 2 4 3 2 4;}
-@font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin-top:0in;
-	margin-right:0in;
-	margin-bottom:8.0pt;
-	margin-left:0in;
-	line-height:107%;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-h1
-	{mso-style-link:"Heading 1 Char";
-	margin-top:12.0pt;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:0in;
-	margin-bottom:.0001pt;
-	line-height:107%;
-	page-break-after:avoid;
-	font-size:16.0pt;
-	font-family:"Calibri Light",sans-serif;
-	color:#2E74B5;
-	font-weight:normal;}
-h2
-	{mso-style-link:"Heading 2 Char";
-	margin-top:2.0pt;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:0in;
-	margin-bottom:.0001pt;
-	line-height:107%;
-	page-break-after:avoid;
-	font-size:13.0pt;
-	font-family:"Calibri Light",sans-serif;
-	color:#2E74B5;
-	font-weight:normal;}
-p.MsoTitle, li.MsoTitle, div.MsoTitle
-	{mso-style-link:"Title Char";
-	margin:0in;
-	margin-bottom:.0001pt;
-	font-size:28.0pt;
-	font-family:"Calibri Light",sans-serif;
-	letter-spacing:-.5pt;}
-p.MsoTitleCxSpFirst, li.MsoTitleCxSpFirst, div.MsoTitleCxSpFirst
-	{mso-style-link:"Title Char";
-	margin:0in;
-	margin-bottom:.0001pt;
-	font-size:28.0pt;
-	font-family:"Calibri Light",sans-serif;
-	letter-spacing:-.5pt;}
-p.MsoTitleCxSpMiddle, li.MsoTitleCxSpMiddle, div.MsoTitleCxSpMiddle
-	{mso-style-link:"Title Char";
-	margin:0in;
-	margin-bottom:.0001pt;
-	font-size:28.0pt;
-	font-family:"Calibri Light",sans-serif;
-	letter-spacing:-.5pt;}
-p.MsoTitleCxSpLast, li.MsoTitleCxSpLast, div.MsoTitleCxSpLast
-	{mso-style-link:"Title Char";
-	margin:0in;
-	margin-bottom:.0001pt;
-	font-size:28.0pt;
-	font-family:"Calibri Light",sans-serif;
-	letter-spacing:-.5pt;}
-p.MsoNoSpacing, li.MsoNoSpacing, div.MsoNoSpacing
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
-	{margin-top:0in;
-	margin-right:0in;
-	margin-bottom:8.0pt;
-	margin-left:.5in;
-	line-height:107%;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
-	{margin-top:0in;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:.5in;
-	margin-bottom:.0001pt;
-	line-height:107%;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
-	{margin-top:0in;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:.5in;
-	margin-bottom:.0001pt;
-	line-height:107%;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
-	{margin-top:0in;
-	margin-right:0in;
-	margin-bottom:8.0pt;
-	margin-left:.5in;
-	line-height:107%;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-span.Heading1Char
-	{mso-style-name:"Heading 1 Char";
-	mso-style-link:"Heading 1";
-	font-family:"Calibri Light",sans-serif;
-	color:#2E74B5;}
-p.Code, li.Code, div.Code, span.Code
-	{mso-style-name:Code;
-	margin:0in;
-	margin-bottom:.0001pt;
-	page-break-after:avoid;
-	background:black;
-	font-size:11.0pt;
-	font-family:"Courier New";
-	color:#92D050;}
-span.Heading2Char
-	{mso-style-name:"Heading 2 Char";
-	mso-style-link:"Heading 2";
-	font-family:"Calibri Light",sans-serif;
-	color:#2E74B5;}
-span.TitleChar
-	{mso-style-name:"Title Char";
-	mso-style-link:Title;
-	font-family:"Calibri Light",sans-serif;
-	letter-spacing:-.5pt;}
-.MsoPapDefault
-	{margin-bottom:8.0pt;
-	line-height:107%;}
-@page WordSection1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-	{page:WordSection1;}
- /* List Definitions */
- ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
-
-div.uploadDiv
-	{ outline-style: ridge;
-	margin: 5px;
-	padding: 10px;
-	display: inline-block;
-	}
-
-h1
-	{margin-top: 30px;
-		margin-bottom: 10px;}
-
-body { width: 900px; text-align: left; margin: 50px auto; }
-
-div.formlabel {padding: none; margin: none; border: none;}
-
-
-input.fixThis {border: solid; border-color: red;}
--->
-</style>
-
-
-<script>
-var problemName = "gakky"
-</script>
-
-<script type="text/javascript" src="/utils.js" ></script>
-
-<script>
-setHome();
-</script>
-
-</head>
-
-<body lang=EN-US>
-
-<div class=WordSection1>
-
-<p class=MsoTitle>Coding Problem "Gakkify"</p>
-
-<p class=MsoNormal>&nbsp;</p>
-
-<h1>What is a Gakky?</h1>
-
-<p class=MsoNormal>	A "gakky" is a string containing multiple occurrences of two distinct character values in strictly alternating occurrence.
-</p>
-
-<p class=MsoNormal>Each character must occur least twice (the minimum length of a gakky would be 4).
-</p>
-
-<p class=MsoNormal>	Here are some examples of gakkies:</p>
-
-<p class=MsoNormal>
-<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0
- style='margin-left:51.0pt;border-collapse:collapse;border:none'>
- <tr>
-  <td width=122 valign=top style='width:73.35pt;border:solid #A3A3A3 1.0pt;
-  padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>ABAB</p>
-  </td>
- </tr>
- <tr>
-  <td width=122 valign=top style='width:73.35pt;border:solid #A3A3A3 1.0pt;
-  border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>&amp;^&amp;^</p>
-  </td>
- </tr>
- <tr>
-  <td width=122 valign=top style='width:73.35pt;border:solid #A3A3A3 1.0pt;
-  border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>ACACACACA</p>
-  </td>
- </tr>
-</table>
-</p>
-
-<p class=MsoNormal>	Here are some examples that are not gakkies:</p>
-<p class=MsoNormal> 
-<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0
- style='margin-left:51.0pt;border-collapse:collapse;border:none'>
- <tr>
-  <td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;
-  padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'><b>Invalid example</b></p>
-  </td>
-  <td width=365 valign=top style='width:218.75pt;border:solid #A3A3A3 1.0pt;
-  border-left:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'><b>Reason</b></p>
-  </td>
- </tr>
- <tr>
-  <td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;
-  border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>A</p>
-  </td>
-  <td width=365 valign=top style='width:218.75pt;border-top:none;border-left:
-  none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;
-  padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>Contains only one distinct character, length < 4</p>
-  </td>
- </tr>
- <tr>
-  <td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;
-  border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>ABAAB</p>
-  </td>
-  <td width=365 valign=top style='width:218.75pt;border-top:none;border-left:
-  none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;
-  padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>Characters to not alternate</p>
-  </td>
- </tr>
- <tr>
-  <td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;
-  border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>ABCAB</p>
-  </td>
-  <td width=365 valign=top style='width:218.75pt;border-top:none;border-left:
-  none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;
-  padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>Contains 3 distinct characters</p>
-  </td>
- </tr>
- <tr>
-  <td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;
-  border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>ABCABC</p>
-  </td>
-  <td width=365 valign=top style='width:218.75pt;border-top:none;border-left:
-  none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;
-  padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>Contains 3 distinct characters</p>
-  </td>
- </tr>
- <tr>
-  <td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;
-  border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>Abab</p>
-  </td>
-  <td width=365 valign=top style='width:218.75pt;border-top:none;border-left:
-  none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;
-  padding:4.0pt 4.0pt 4.0pt 4.0pt'>
-  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-  normal'>Contains 3 distinct characters (case sensitive)</p>
-  </td>
- </tr>
-</table>
-</p>
-
-<p class=MsoNormal>&nbsp;</p>
-
-
-<h1>Your program</h1>
-
-<p class=MsoNormal>Write a routine called  <span class=Code>gakkify()</span> which takes a string argument and returns a gakky contained in the string by iteratively removing all instances of a set of characters until a gakky remains.</p>
-
-<p class=MsoNormal>If no gakky is possible, then the output should be an empty string.</p>
-
-<p class=MsoNormal>Note: when removing a character, all instances of that character must be removed.</p>
-
-<p class=MsoNormal>For example, given an input string of "abcabdacdb", <span class=Code>gakkify()</span> would remove all instances of 'c' and 'd', which result in a string "ababab", which is a valid gakky which <span class=Code>gakkify()</span> should return.</p>
-
-<p class=MsoNormal>&nbsp;</p>
-
-
-
-
-<h1>Input</h1>
-
-<p class=MsoNormal><a href="http://yetanotherwhatever.io/inputs/gakky-in.txt">The test input file can be downloaded here.</a></p>
-
-<p class=MsoNormal>Each line contains an input string
-for which a gakky must be calculated.</p>
-
-<p class=MsoNormal>Each input string:</p>
-
-
-<ul>
-
-<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>will be composed of ascii characters only</p></li>
-<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>will never contain multiple gakkies (ie. input string = "ababcdcd", which contains two possible answers: "abab" and "cdcd"), so this case may be ignored (each input will contain one and only one correct answer).</p></li>
-<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>should exclude trailing and preceding whitespace</p></li>
-</ul>
-
-<p class=MsoNormal>&nbsp;</p>
-
-<h1><a name="output">Output</a></h1>
-
-<p class=MsoNormal>Your program should produce an output file you can test by uploading here:</p>
-
-
-
-
-<div id=uploadSlnDiv class=uploadDiv>
-	<form id="outputForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genSlnKey());">
-	      <input type="hidden" name="key" value="uploads/output/${filename}">
-	      <input type="hidden" name="acl" value="private"> 
-	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
-	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
-ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
-LCJ1cGxvYWRzL291dHB1dC8iXSx7ImFjbCI6InByaXZhdGUifSx7InN1Y2Nlc3NfYWN0aW9uX3Jl
-ZGlyZWN0IjoiaHR0cDovL3lldGFub3RoZXJ3aGF0ZXZlci5pby9zdWJtaXR0aW5nLmh0bWwifSx7
-IngtYW16LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwi
-OiJBS0lBSUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0
-In0seyJ4LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFz
-cyI6IlJFRFVDRURfUkVEVU5EQU5DWSJ9LFsic3RhcnRzLXdpdGgiLCIkeC1hbXotbWV0YS1pZCIs
-IiJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
-	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
-	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
-	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
-	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="9b5d2d6e9eee7cdbdd30fb486689f2281d4a4a8f37fd43d4e4ea69e3daf80fac">
-	       <input type="hidden" name="x-amz-meta-id" value="">
-	      <!-- Include any additional input fields here -->
-
-      <div class="formlabel">File to upload: <input id="outputFile" name="file" type="file"> </div>
-      
-      <br>
-	      <input type="submit" value="Upload File">
-    </form>
-</div>
-
-
-
-<p class=MsoNormal>&nbsp;</p>
-
-
-<p class=MsoNormal>Each line should contain...</p>
-
-<ul>
-<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>a gakky calculated from the corresponding line in the input file.</p></li>
-<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>If no gakky is possible, print an empty line.</p></li>
-</ul>
-
-
-<p class=MsoNormal>&nbsp;</p>
-
-
-
-<h1><a name="sample">Sample</a></h1>
-
-<p class=MsoNormal>Input:</p>
-
-
-
-
-<p class=Code>M*$*$*$)MMM*)$*M)$*$*MM)))$*M$MM*M)$*M$M*$*M)$*</p>
-<p class=Code>K_IK7KK_7_7_7I_7K_KIK;7KIKKI_K7_</p>
-<p class=Code>/\4/s//\\/4</p>
-<p class=Code>@@byb:b4bb:4b:4@@ybbb@b@:@@4</p>
-<p class=Code>m666|6m|m6|66m|m|m66|m|</p>
-<p class=Code>WDcWDcWDWcWD</p>
-
-
-<p class=MsoNormal>&nbsp;</p>
-
-<p class=MsoNormal>Output:</p>
-
-
-<p class=Code>*$*$*$*$*$*$*$*$*$*$*$*$*</p>
-<p class=Code>_7_7_7_7_7_7_7_</p>
-<p class=Code>&nbsp;</p>
-<p class=Code>:4:4:4:4</p>
-<p class=Code>m|m|m|m|m|m|m|</p>
-<p class=Code>DcDcDcD</p>
-
-<p class=MsoNormal>&nbsp;</p>
-
-<p class=MsoNormal>&nbsp;</p>
-
-<h1><a name="submit">Submitting Your Solution</a></h1>
-
-<p class=MsoNormal>If your test output successfully passes, please zip up your code (source only, please - no binaries) and submit it using the form below.</p>
-<p class=MsoNormal><b>Please include your resume in your .zip.</b></p>
-<p class=MsoNormal>Once we've recieved it, someone from our team will be contacting you shortly.</p>
-
-
-<div id=uploadCodeDiv class=uploadDiv>
-	<form id="codeForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
-	      <input type="hidden" name="key" value="uploads/code/${filename}">
-	      <input type="hidden" name="acl" value="private"> 
-	      <input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/thanks.html">
-	      <input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNr
-ZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXki
-LCJ1cGxvYWRzL2NvZGUvIl0seyJhY2wiOiJwcml2YXRlIn0seyJzdWNjZXNzX2FjdGlvbl9yZWRp
-cmVjdCI6Imh0dHA6Ly95ZXRhbm90aGVyd2hhdGV2ZXIuaW8vdGhhbmtzLmh0bWwifSx7IngtYW16
-LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwiOiJBS0lB
-SUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0In0seyJ4
-LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFzcyI6IlJF
-RFVDRURfUkVEVU5EQU5DWSJ9LFsic3RhcnRzLXdpdGgiLCIkeC1hbXotbWV0YS1pZCIsIiJdLFsi
-Y29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
-	       <input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
-	       <input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
-	       <input type="hidden" name="x-amz-date" value="20180101T000000Z">
-	       <input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
-	       <input type="hidden" name="x-amz-signature" value="49c4a08882e67c7c5cb4971a4e1612cec48b11d40efc89ad49df38c8fe83e95b">
-	       <input type="hidden" name="x-amz-meta-id" value="">
-	      <!-- Include any additional input fields here -->
-
-	      <div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>
-	      <br> 
-	      <div class="formlabel">Your email address (preferably the same one as on your resume):
-	      <br>
-	      <input id="email" name="email" type="text">
-	      <br><br></div>
-	      <input type="submit" value="Upload File">
-    </form>
-</div>
-
-
-<p class=MsoNormal>&nbsp;</p>
-
-<p class=MsoNormal>&nbsp;</p>
-
-<h1><a name="submit">Technical Issues</a></h1>
-
-<p class=MsoNormal>Please report any problems you encounter with this site to <a href="mailto:andrew_chang@symantec.com">andrew_chang@symantec.com</a></p>
-<p class=MsoNormal>&nbsp;</p>
-
-<br><br><br><br>
-<p class=MsoTitle style="text-align: center;">Good luck!</p>
-<br><br><br><br>
-
-<br><br><br><br><br><br><br><br>
-</div>
-
-</body>
+	<head>
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>Coding Problem: "Gakkify"</title>
+		<style>
+			<!--
+			 /* Font Definitions */
+			 @font-face
+				{font-family:Wingdings;
+				panose-1:5 0 0 0 0 0 0 0 0 0;}
+			@font-face
+				{font-family:"Cambria Math";
+				panose-1:2 4 5 3 5 4 6 3 2 4;}
+			@font-face
+				{font-family:"Calibri Light";
+				panose-1:2 15 3 2 2 2 4 3 2 4;}
+			@font-face
+				{font-family:Calibri;
+				panose-1:2 15 5 2 2 2 4 3 2 4;}
+			 /* Style Definitions */
+			 p.MsoNormal, li.MsoNormal, div.MsoNormal
+				{margin-top:0in;
+				margin-right:0in;
+				margin-bottom:8.0pt;
+				margin-left:0in;
+				line-height:107%;
+				font-size:11.0pt;
+				font-family:"Calibri",sans-serif;}
+			h1
+				{mso-style-link:"Heading 1 Char";
+				margin-top:12.0pt;
+				margin-right:0in;
+				margin-bottom:0in;
+				margin-left:0in;
+				margin-bottom:.0001pt;
+				line-height:107%;
+				page-break-after:avoid;
+				font-size:16.0pt;
+				font-family:"Calibri Light",sans-serif;
+				color:#2E74B5;
+				font-weight:normal;}
+			h2
+				{mso-style-link:"Heading 2 Char";
+				margin-top:2.0pt;
+				margin-right:0in;
+				margin-bottom:0in;
+				margin-left:0in;
+				margin-bottom:.0001pt;
+				line-height:107%;
+				page-break-after:avoid;
+				font-size:13.0pt;
+				font-family:"Calibri Light",sans-serif;
+				color:#2E74B5;
+				font-weight:normal;}
+			p.MsoTitle, li.MsoTitle, div.MsoTitle
+				{mso-style-link:"Title Char";
+				margin:0in;
+				margin-bottom:.0001pt;
+				font-size:28.0pt;
+				font-family:"Calibri Light",sans-serif;
+				letter-spacing:-.5pt;}
+			p.MsoTitleCxSpFirst, li.MsoTitleCxSpFirst, div.MsoTitleCxSpFirst
+				{mso-style-link:"Title Char";
+				margin:0in;
+				margin-bottom:.0001pt;
+				font-size:28.0pt;
+				font-family:"Calibri Light",sans-serif;
+				letter-spacing:-.5pt;}
+			p.MsoTitleCxSpMiddle, li.MsoTitleCxSpMiddle, div.MsoTitleCxSpMiddle
+				{mso-style-link:"Title Char";
+				margin:0in;
+				margin-bottom:.0001pt;
+				font-size:28.0pt;
+				font-family:"Calibri Light",sans-serif;
+				letter-spacing:-.5pt;}
+			p.MsoTitleCxSpLast, li.MsoTitleCxSpLast, div.MsoTitleCxSpLast
+				{mso-style-link:"Title Char";
+				margin:0in;
+				margin-bottom:.0001pt;
+				font-size:28.0pt;
+				font-family:"Calibri Light",sans-serif;
+				letter-spacing:-.5pt;}
+			p.MsoNoSpacing, li.MsoNoSpacing, div.MsoNoSpacing
+				{margin:0in;
+				margin-bottom:.0001pt;
+				font-size:11.0pt;
+				font-family:"Calibri",sans-serif;}
+			p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+				{margin-top:0in;
+				margin-right:0in;
+				margin-bottom:8.0pt;
+				margin-left:.5in;
+				line-height:107%;
+				font-size:11.0pt;
+				font-family:"Calibri",sans-serif;}
+			p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+				{margin-top:0in;
+				margin-right:0in;
+				margin-bottom:0in;
+				margin-left:.5in;
+				margin-bottom:.0001pt;
+				line-height:107%;
+				font-size:11.0pt;
+				font-family:"Calibri",sans-serif;}
+			p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+				{margin-top:0in;
+				margin-right:0in;
+				margin-bottom:0in;
+				margin-left:.5in;
+				margin-bottom:.0001pt;
+				line-height:107%;
+				font-size:11.0pt;
+				font-family:"Calibri",sans-serif;}
+			p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+				{margin-top:0in;
+				margin-right:0in;
+				margin-bottom:8.0pt;
+				margin-left:.5in;
+				line-height:107%;
+				font-size:11.0pt;
+				font-family:"Calibri",sans-serif;}
+			span.Heading1Char
+				{mso-style-name:"Heading 1 Char";
+				mso-style-link:"Heading 1";
+				font-family:"Calibri Light",sans-serif;
+				color:#2E74B5;}
+			p.Code, li.Code, div.Code, span.Code
+				{mso-style-name:Code;
+				margin:0in;
+				margin-bottom:.0001pt;
+				page-break-after:avoid;
+				background:black;
+				font-size:11.0pt;
+				font-family:"Courier New";
+				color:#92D050;}
+			span.Heading2Char
+				{mso-style-name:"Heading 2 Char";
+				mso-style-link:"Heading 2";
+				font-family:"Calibri Light",sans-serif;
+				color:#2E74B5;}
+			span.TitleChar
+				{mso-style-name:"Title Char";
+				mso-style-link:Title;
+				font-family:"Calibri Light",sans-serif;
+				letter-spacing:-.5pt;}
+			.MsoPapDefault
+				{margin-bottom:8.0pt;
+				line-height:107%;}
+			@page WordSection1
+				{size:8.5in 11.0in;
+				margin:1.0in 1.0in 1.0in 1.0in;}
+			div.WordSection1
+				{page:WordSection1;}
+			 /* List Definitions */
+			 ol
+				{margin-bottom:0in;}
+			ul
+				{margin-bottom:0in;}
+
+			div.uploadDiv
+				{ outline-style: ridge;
+				margin: 5px;
+				padding: 10px;
+				display: inline-block;
+				}
+
+			h1
+				{margin-top: 30px;
+					margin-bottom: 10px;}
+
+			body { width: 900px; text-align: left; margin: 50px auto; }
+
+			div.formlabel {padding: none; margin: none; border: none;}
+
+
+			input.fixThis {border: solid; border-color: red;}
+			-->
+		</style>
+		<script>
+		var problemName = "gakky"
+		</script>
+		<script type="text/javascript" src="/utils.js" ></script>
+		<script>
+		setHome();
+		</script>
+	</head>
+	<body lang=EN-US>
+		<div class=WordSection1>
+			<p class=MsoTitle>Coding Problem "Gakkify"</p>
+			<p class=MsoNormal>&nbsp;</p>
+			<h1>What is a Gakky?</h1>
+			<p class=MsoNormal>	
+				A "gakky" is a string containing multiple occurrences of two distinct character values in strictly alternating occurrence.
+			</p>
+			<p class=MsoNormal>Each character must occur least twice (the minimum length of a gakky would be 4).</p>
+			<p class=MsoNormal>	Here are some examples of gakkies:</p>
+			<p class=MsoNormal>
+				<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 style='margin-left:51.0pt;border-collapse:collapse;border:none'>
+					<tr>
+						<td width=122 valign=top style='width:73.35pt;border:solid #A3A3A3 1.0pt; padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>ABAB</p>
+						</td>
+					</tr>
+					<tr>
+						<td width=122 valign=top style='width:73.35pt;border:solid #A3A3A3 1.0pt; border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+			 					<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>&amp;^&amp;^</p>
+						</td>
+					</tr>
+					<tr>
+						<td width=122 valign=top style='width:73.35pt;border:solid #A3A3A3 1.0pt; border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>ACACACACA</p>
+						</td>
+					</tr>
+				</table>
+			</p>
+			<p class=MsoNormal>	Here are some examples that are not gakkies:</p>
+			<p class=MsoNormal> 
+				<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 style='margin-left:51.0pt;border-collapse:collapse;border:none'>
+					<tr>
+						<td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt; padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'><b>Invalid example</b></p>
+						</td>
+						<td width=365 valign=top style='width:218.75pt;border:solid #A3A3A3 1.0pt; border-left:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'><b>Reason</b></p>
+						</td>
+					</tr>
+					<tr>
+						<td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>A</p>
+						</td>
+						<td width=365 valign=top style='width:218.75pt;border-top:none;border-left:none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>Contains only one distinct character, length < 4</p>
+						</td>
+					</tr>
+					<tr>
+						<td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>ABAAB</p>
+						</td>
+						<td width=365 valign=top style='width:218.75pt;border-top:none;border-left:none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>Characters to not alternate</p>
+						</td>
+					</tr>
+					<tr>
+						<td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>ABCAB</p>
+						</td>
+						<td width=365 valign=top style='width:218.75pt;border-top:none;border-left:none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>Contains 3 distinct characters</p>
+						</td>
+					</tr>
+					<tr>
+						<td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>ABCABC</p>
+						</td>
+						<td width=365 valign=top style='width:218.75pt;border-top:none;border-left:none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>Contains 3 distinct characters</p>
+						</td>
+					</tr>
+					<tr>
+						<td width=147 valign=top style='width:88.25pt;border:solid #A3A3A3 1.0pt;border-top:none;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>Abab</p>
+						</td>
+						<td width=365 valign=top style='width:218.75pt;border-top:none;border-left:none;border-bottom:solid #A3A3A3 1.0pt;border-right:solid #A3A3A3 1.0pt;padding:4.0pt 4.0pt 4.0pt 4.0pt'>
+							<p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>Contains 3 distinct characters (case sensitive)</p>
+						</td>
+					</tr>
+				</table>
+			</p>
+			<p class=MsoNormal>&nbsp;</p>
+			<h1>Your program</h1>
+			<p class=MsoNormal>Write a routine called  <span class=Code>gakkify()</span> which takes a string argument and returns a gakky contained in the string by iteratively removing all instances of a set of characters until a gakky remains.</p>
+			<p class=MsoNormal>If no gakky is possible, then the output should be an empty string.</p>
+			<p class=MsoNormal>Note: when removing a character, all instances of that character must be removed.</p>
+			<p class=MsoNormal>For example, given an input string of "abcabdacdb", <span class=Code>gakkify()</span> would remove all instances of 'c' and 'd', which result in a string "ababab", which is a valid gakky which <span class=Code>gakkify()</span> should return.</p>
+			<p class=MsoNormal>&nbsp;</p>
+			<h1>Input</h1>
+			<p class=MsoNormal><a href="http://yetanotherwhatever.io/inputs/gakky-in.txt">The test input file can be downloaded here.</a></p>
+			<p class=MsoNormal>Each line contains an input string for which a gakky must be calculated.</p>
+			<p class=MsoNormal>Each input string:</p>
+			<ul>
+				<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>will be composed of ascii characters only</p></li>
+				<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>will never contain multiple gakkies (ie. input string = "ababcdcd", which contains two possible answers: "abab" and "cdcd"), so this case may be ignored (each input will contain one and only one correct answer).</p></li>
+				<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>should exclude trailing and preceding whitespace</p></li>
+			</ul>
+			<p class=MsoNormal>&nbsp;</p>
+			<h1><a name="output">Output</a></h1>
+			<p class=MsoNormal>Your program should produce an output file you can test by uploading here:</p>
+			<div id=uploadSlnDiv class=uploadDiv>
+				<form id="outputForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genSlnKey());">
+					<input type="hidden" name="key" value="uploads/output/${filename}">
+					<input type="hidden" name="acl" value="private"> 
+					<input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/submitting.html">
+					<input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1cGxvYWRzL291dHB1dC8iXSx7ImFjbCI6InByaXZhdGUifSx7InN1Y2Nlc3NfYWN0aW9uX3JlZGlyZWN0IjoiaHR0cDovL3lldGFub3RoZXJ3aGF0ZXZlci5pby9zdWJtaXR0aW5nLmh0bWwifSx7IngtYW16LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwiOiJBS0lBSUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0In0seyJ4LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFzcyI6IlJFRFVDRURfUkVEVU5EQU5DWSJ9LFsic3RhcnRzLXdpdGgiLCIkeC1hbXotbWV0YS1pZCIsIiJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
+					<input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
+					<input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
+					<input type="hidden" name="x-amz-date" value="20180101T000000Z">
+					<input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
+					<input type="hidden" name="x-amz-signature" value="9b5d2d6e9eee7cdbdd30fb486689f2281d4a4a8f37fd43d4e4ea69e3daf80fac">
+					<input type="hidden" name="x-amz-meta-id" value="">
+					<!-- Include any additional input fields here -->
+					<div class="formlabel">File to upload: <input id="outputFile" name="file" type="file"> </div>
+					<br>
+					<input type="submit" value="Upload File">
+			    </form>
+			</div>
+
+
+
+			<p class=MsoNormal>&nbsp;</p>
+			<p class=MsoNormal>Each line should contain...</p>
+			<ul>
+				<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>a gakky calculated from the corresponding line in the input file.</p></li>
+				<li><p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'>If no gakky is possible, print an empty line.</p></li>
+			</ul>
+			<p class=MsoNormal>&nbsp;</p>
+			<h1><a name="sample">Sample</a></h1>
+			<p class=MsoNormal>Input:</p>
+			<p class=Code>M*$*$*$)MMM*)$*M)$*$*MM)))$*M$MM*M)$*M$M*$*M)$*</p>
+			<p class=Code>K_IK7KK_7_7_7I_7K_KIK;7KIKKI_K7_</p>
+			<p class=Code>/\4/s//\\/4</p>
+			<p class=Code>@@byb:b4bb:4b:4@@ybbb@b@:@@4</p>
+			<p class=Code>m666|6m|m6|66m|m|m66|m|</p>
+			<p class=Code>WDcWDcWDWcWD</p>
+			<p class=MsoNormal>&nbsp;</p>
+			<p class=MsoNormal>Output:</p>
+			<p class=Code>*$*$*$*$*$*$*$*$*$*$*$*$*</p>
+			<p class=Code>_7_7_7_7_7_7_7_</p>
+			<p class=Code>&nbsp;</p>
+			<p class=Code>:4:4:4:4</p>
+			<p class=Code>m|m|m|m|m|m|m|</p>
+			<p class=Code>DcDcDcD</p>
+			<p class=MsoNormal>&nbsp;</p>
+			<p class=MsoNormal>&nbsp;</p>
+			<h1><a name="submit">Submitting Your Solution</a></h1>
+			<p class=MsoNormal>If your test output successfully passes, please zip up your code (source only, please - no binaries) and submit it using the form below.</p>
+			<p class=MsoNormal><b>Please include your resume in your .zip.</b></p>
+			<p class=MsoNormal>Once we've recieved it, someone from our team will be contacting you shortly.</p>
+			<div id=uploadCodeDiv class=uploadDiv>
+				<form id="codeForm" action="http://public.yetanotherwhatever.io.s3.amazonaws.com/" method="post" enctype="multipart/form-data" onsubmit="return(genCodeKey());">
+					<input type="hidden" name="key" value="uploads/code/${filename}">
+					<input type="hidden" name="acl" value="private"> 
+					<input type="hidden" name="success_action_redirect" value="http://yetanotherwhatever.io/thanks.html">
+					<input type="hidden" name="policy" value='eyJleHBpcmF0aW9uIjoiMjAxOC0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJwdWJsaWMueWV0YW5vdGhlcndoYXRldmVyLmlvIn0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1cGxvYWRzL2NvZGUvIl0seyJhY2wiOiJwcml2YXRlIn0seyJzdWNjZXNzX2FjdGlvbl9yZWRpcmVjdCI6Imh0dHA6Ly95ZXRhbm90aGVyd2hhdGV2ZXIuaW8vdGhhbmtzLmh0bWwifSx7IngtYW16LWFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifSx7IngtYW16LWNyZWRlbnRpYWwiOiJBS0lBSUhUUVZVSlVSMklXT0NPQS8yMDE4MDEwMS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0In0seyJ4LWFtei1kYXRlIjoiMjAxODAxMDFUMDAwMDAwWiJ9LHsieC1hbXotc3RvcmFnZS1jbGFzcyI6IlJFRFVDRURfUkVEVU5EQU5DWSJ9LFsic3RhcnRzLXdpdGgiLCIkeC1hbXotbWV0YS1pZCIsIiJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ=='>
+					<input type="hidden" name="x-amz-algorithm" value="AWS4-HMAC-SHA256">
+					<input type="hidden" name="x-amz-credential" value="AKIAIHTQVUJUR2IWOCOA/20180101/us-east-1/s3/aws4_request">
+					<input type="hidden" name="x-amz-date" value="20180101T000000Z">
+					<input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY">
+					<input type="hidden" name="x-amz-signature" value="49c4a08882e67c7c5cb4971a4e1612cec48b11d40efc89ad49df38c8fe83e95b">
+					<input type="hidden" name="x-amz-meta-id" value="">
+					<!-- Include any additional input fields here -->
+					<div class="formlabel">File to upload: <input id="codeFile" name="file" type="file"> </div>
+					<br> 
+					<div class="formlabel">Your email address (preferably the same one as on your resume):
+					<br>
+					<input id="email" name="email" type="text">
+					<br><br></div>
+					<input type="submit" value="Upload File">
+			    </form>
+			</div>
+			<p class=MsoNormal>&nbsp;</p>
+			<p class=MsoNormal>&nbsp;</p>
+			<h1><a name="submit">Technical Issues</a></h1>
+			<p class=MsoNormal>Please report any problems you encounter with this site to <a href="mailto:andrew_chang@symantec.com">andrew_chang@symantec.com</a></p>
+			<p class=MsoNormal>&nbsp;</p>
+			<br><br><br><br>
+			<p class=MsoTitle style="text-align: center;">Good luck!</p>
+			<br><br><br><br><br><br><br><br><br><br><br><br>
+		</div>
+
+	</body>
 
 </html>
