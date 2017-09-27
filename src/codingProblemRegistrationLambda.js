@@ -13,7 +13,7 @@ exports.handler = function (event, context) {
         
 }
 
-//returns true if success
+
 function validateRegistration(event)
 {
     if (event.first == null ||
@@ -249,7 +249,7 @@ function createS3(regionName) {
     return s3;
 }
 
-function emailCandidate (event, url, done) {
+function emailCandidate (event, url) {
 
     var body = "Thank you for your interest in Symantec.\n\n" + 
       "Here is your unique link to the online coding problem: " + url
