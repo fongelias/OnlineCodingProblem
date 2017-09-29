@@ -78,8 +78,9 @@ function validateRegistration(registration) {
 
 
 
-	/* --User Table functions-- */
+	/* --User Table Actions-- */
 	function validateUser(registration) {
+		console.log("Validating user registration for user " + registration.email);
 
 		return findUser(registration)
 			.catch(err => {
@@ -89,117 +90,7 @@ function validateRegistration(registration) {
 	}
 
 
-		function findUser(registration) {
-			return findUserByEmail(registration)
-				//.then(user => findUserByLls(registration))
-				.catch(err => { throw err; });
-		}
-
-
-			function findUserByEmail(registration) {
-				console.log('Querying registrations by email');
-				var docClient = new AWS.DynamoDB.DocumentClient();
-
-				var params = {
-					TableName: config.USERTABLE,
-					Key: {
-						"email": registration.email
-					}
-				};
-
-
-				return new Promise((reject, resolve) => {
-
-					docClient.get(params, (err, data) => {
-						if(err) {
-							const errMessage = "Query to " + config.USERTABLE + " from findUser() has failed.";
-							console.error(errMessage + " Error JSON:", JSON.stringify(err));
-							reject("Query to dynamoDB not successful")
-						} else {
-							if(data.Item != null) {
-								resolve(data.Item);
-							} else {
-								reject("User " + registration.email + " not found in " + config.USERTABLE);
-							}
-						}
-					});
-				});
-			}
-
-
-			//Removing this part of the registration process for now
-			/*function findUserByLls(registration) {
-				console.log('Querying registrations by lls');
-				var docClient = new AWS.DynamoDB.DocumentClient();
-
-				var params = {
-					TableName: config.USERTABLE,
-					IndexName: 'lls-index',
-					KeyConditionExpression: 'lls = :llskey',
-					ExpressionAttributeValues: {
-						":llskey": registration.lls,
-					},
-				}
-
-				return new Promise((reject, resolve) => {
-
-					docClient.query(params, (err, data) => {
-						if(err) {
-							const errMessage = "Query to " + config.USERTABLE + " from findUserByLls() has failed.";
-							console.error( errMessage + " Error JSON:", JSON.stringify(err);
-							reject(errMessage);
-						} else {
-							if(data.Items.length > 0) {
-								//Either same user registering with a different email or uuid collision (unlikely)
-								//We want to assign them a new lls
-							} else {
-								const errMessage = "No matching lls";
-								console.log(errMessage);
-								reject(errMessage);
-							}
-						}
-					})
-				})
-			}*/
-
-
-		function addUser(registration) {
-			console.log("Adding new user to " + config.USERTABLE);
-
-			const docClient = new AWS.DynamoDB.DocumentClient();
-			const now = new Date();
-			const params = {
-				TableName: config.USERTABLE,
-				Item: {
-					"email": registration.email,
-					"first": registration.first,
-					"last": registration.last,
-					"start-time": now.toLocaleString("America/New_York"),
-					"epoch-time": now.getTime(),
-					"lls": registration.lls,
-					"topic": registration.topic,
-				},
-			}
-
-			return new Promise((resolve, reject) => {
-				docClient.put(params, (err, data) => {
-					if(err) {
-						const errMessage = "Unable to add user"
-						console.error(errMessage + ". Error JSON:", JSON.stringify(err));
-						reject(errMessage);
-					} else {
-						console.log("Added user:", JSON.stringify(data));
-						//Put does not return user data
-						resolve(params);
-					}
-				});
-			});
-		}
-
-
-
-
-	/* --Problem Table functions-- */
+	/* --Problem Table Actions-- */
 	function resendExistingProblem(user, existingProblemKey) {
 		console.log("Querying '" + config.PROBLEMTABLE + "'' for existing coding problems");
 		const docClient = new AWS.DynamoDB.DocumentClient();
@@ -228,7 +119,7 @@ function validateRegistration(registration) {
 
 						resolve(success({
 							completionMessage: "A link to your coding problem has been sent to your email",
-							redirect: data.Items[0].url,
+							redirect: existingProblemUrl,
 						}));
 
 
@@ -252,10 +143,24 @@ function validateRegistration(registration) {
 
 
 	function generateNewProblem(user) {
+		console.log("Generating a new problem page for user " + user.email);
+		let url;
 
-		return new Promise((resolve, reject) => {
-
-		});
+		return selectRandomProblem(user.testsFinished)
+			.then(s3ObjKey => copyPage(s3ObjKey))
+			.then(response => {
+				url = response.url;
+				return addProblemPageEntry(user, response.s3ObjKey, response.url)
+			})
+			.then(response => {
+				let updatedUser = Object.assign({}, user);
+				updatedUser.testsOutstanding += updatedUser.testsOutstanding.length == 0 ? response.problemKey : ", " + response.problemKey;
+				return updateUserTable(updatedUser, "testsOutstanding");
+			}).then(response => success({
+				completionMessage: "Successfully generated new problem for user",
+				redirect: url,
+			}))
+			.catch(err => serverError(err));
 	}
 
 
@@ -289,14 +194,14 @@ function problemPageList() {
 }
 
 
-function selectRandomProblem(finishedTests = []) {
+function selectRandomProblem(testsFinished = []) {
 	console.log("Selecting random problem from " + config.BUCKET + config.PROBLEM_DIR);
 	
 	return problemPageList().then(s3ObjArr => {
 		console.log(config.PROBLEM_DIR + " contains " + s3ObjArr.length + " elements");
 		
-		
-		const selection = availableTests(s3ObjArr, finishedTests);
+
+		const selection = availableTests(s3ObjArr, testsFinished);
 		let selectedTest;
 
 		
@@ -320,17 +225,18 @@ function selectRandomProblem(finishedTests = []) {
 	})
 }
 
-function availableTests(s3ObjArr, finishedTests = []) {
 
-	if(!s3ObjArr) {
-		throw "s3ObjArr is empty at availableTests()";
-	} else {
-		let available = testList.map(obj => finishedTests.includes(obj.Key) ? null : obj)
-			.filter(val => val != null);
+	function availableTests(s3ObjArr, testsFinished = []) {
 
-		return available;
+		if(!s3ObjArr) {
+			throw "s3ObjArr is empty at availableTests()";
+		} else {
+			let available = testList.map(obj => testsFinished.includes(obj.Key) ? null : obj)
+				.filter(val => val != null);
+
+			return available;
+		}
 	}
-}
 
 
 function copyPage(s3ObjKey) {
@@ -365,6 +271,182 @@ function copyPage(s3ObjKey) {
 		})
 	})
 }
+
+
+/* --DyanmoDB reusable functions-- */
+/* --User Table reusable functions-- */
+function findUser(registration) {
+	return findUserByEmail(registration)
+		//.then(user => findUserByLls(registration))
+		.catch(err => { throw err; });
+}
+
+
+	function findUserByEmail(registration) {
+		console.log('Querying registrations by email');
+		var docClient = new AWS.DynamoDB.DocumentClient();
+
+		var params = {
+			TableName: config.USERTABLE,
+			Key: {
+				"email": registration.email
+			}
+		};
+
+
+		return new Promise((reject, resolve) => {
+
+			docClient.get(params, (err, data) => {
+				if(err) {
+					const errMessage = "Query to " + config.USERTABLE + " from findUser() has failed.";
+					console.error(errMessage + " Error JSON:", JSON.stringify(err));
+					reject("Query to dynamoDB not successful")
+				} else {
+					if(data.Item != null) {
+						resolve(data.Item);
+					} else {
+						reject("User " + registration.email + " not found in " + config.USERTABLE);
+					}
+				}
+			});
+		});
+	}
+
+
+	//Removing this part of the registration process for now
+	/*function findUserByLls(registration) {
+		console.log('Querying registrations by lls');
+		var docClient = new AWS.DynamoDB.DocumentClient();
+
+		var params = {
+			TableName: config.USERTABLE,
+			IndexName: 'lls-index',
+			KeyConditionExpression: 'lls = :llskey',
+			ExpressionAttributeValues: {
+				":llskey": registration.lls,
+			},
+		}
+
+		return new Promise((reject, resolve) => {
+
+			docClient.query(params, (err, data) => {
+				if(err) {
+					const errMessage = "Query to " + config.USERTABLE + " from findUserByLls() has failed.";
+					console.error( errMessage + " Error JSON:", JSON.stringify(err);
+					reject(errMessage);
+				} else {
+					if(data.Items.length > 0) {
+						//Either same user registering with a different email or uuid collision (unlikely)
+						//We want to assign them a new lls
+					} else {
+						const errMessage = "No matching lls";
+						console.log(errMessage);
+						reject(errMessage);
+					}
+				}
+			})
+		})
+	}*/
+
+
+function addUser(registration) {
+	console.log("Adding new user to " + config.USERTABLE);
+
+	const docClient = new AWS.DynamoDB.DocumentClient();
+	const now = new Date();
+	const params = {
+		TableName: config.USERTABLE,
+		Item: {
+			"email": registration.email,
+			"first": registration.first,
+			"last": registration.last,
+			"start-time": now.toLocaleString("America/New_York"),
+			"epoch-time": now.getTime(),
+			"lls": registration.lls,
+			"topic": registration.topic,
+		},
+	}
+
+	return new Promise((resolve, reject) => {
+		docClient.put(params, (err, data) => {
+			if(err) {
+				const errMessage = "Unable to add user"
+				console.error(errMessage + ". Error JSON:", JSON.stringify(err));
+				reject(errMessage);
+			} else {
+				console.log("Added user:", JSON.stringify(data));
+				//Put does not return user data
+				resolve(params.Item);
+			}
+		});
+	});
+}
+
+
+function updateUserTable(updatedUser, fieldName) {
+	console.log("Updating user in " + config.USERTABLE);
+
+	const docClient = new AWS.DynamoDB.DocumentClient();
+	const params = {
+		TableName: config.USERTABLE,
+		Key: { 
+			"email": updatedUser.email,
+		},
+		UpdateExpression: 'set #attr = :newVal',
+		ExpressionAttributeNames: {
+			"#attr": fieldName,
+		},
+		ExpressionAttributeValues: {
+			":newVal": updatedUser[fieldName],
+		},
+	}
+
+	return new Promise((resolve, reject) => {
+		docClient.update(params, (err, data) => {
+			if(err) {
+				const errMessage = "Failed to update " + fieldName + " for user " + updatedUser.email + " in " + config.USERTABLE;
+				console.err(errMessage);
+				reject(errMessage);
+			} else {
+				console.log("Updated " + fieldName + " for " + updatedUser.email + " to " + updatedUser[fieldName]);
+				resolve(updatedUser);
+			}
+		})
+	})
+}
+
+/* --Problem Table reusable functions-- */
+function addProblemPageEntry(user, problemKey, url) {
+	console.log("Adding new entry to " + config.PROBLEMTABLE);
+
+	const docClient = new AWS.DynamoDB.DocumentClient();
+	const now = new Date();
+	const params = {
+		TableName: config.PROBLEMTABLE,
+		Item: {
+			"lls": user.lls,
+			"problemKey": problemKey,
+			"url": url,
+			"start-time": now.toLocaleString("America/New_York"),
+			"epoch-time": now.getTime(),
+		},
+	}
+
+	return new Promise((resolve, reject) => {
+		docClient.put(params, (err, data) => {
+			if(err) {
+				const errMessage = "Unable to add entry " + url + " to " + config.PROBLEMTABLE;
+				console.error(errMessage);
+				reject(errMessage);
+			} else {
+				console.log("Added a new entry for " + url);
+				resolve(params.Item);
+			}
+		})
+	})
+}
+
+
 
 /* --Messaging Functions-- */
 function emailLinkToCandidate(email, url) {
@@ -408,7 +490,6 @@ function emailLinkToCandidate(email, url) {
 		}
 	});
 }
-
 
 
 function tellAndrew(subject, body) {
