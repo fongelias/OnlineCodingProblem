@@ -542,7 +542,16 @@ function logEmail(recipient, subject, body) {
 }
 
 
+/* --Config Functions-- */
+function createS3(regionName) {
+    var config = { apiVersion: '2006-03-01' };
+    
+    if (regionName != null)
+        config.region = regionName;
 
+    var s3 = new AWS.S3(config);
+    return s3;
+}
 
 
 
