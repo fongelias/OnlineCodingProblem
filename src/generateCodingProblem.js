@@ -9,6 +9,7 @@ const config = {
 	PROBLEM_DIR: "problems/",
 	USERTABLE: "CandidateRegistration",
 	PROBLEMTABLE: "ProblemTable",
+	TESTSREQUIRED: 1,
 	//AVAIL_PROBS: {},
 }
 
@@ -38,6 +39,8 @@ exports.handler = function (event, context, callback) {
 		lls: event.lls,
 		topic: event.topic,
 	}
+
+	console.log(registration);
    	
    	//Callback to return response to client
    	validateRegistration(registration).then(response => callback(null, response));
@@ -54,10 +57,10 @@ function validateRegistration(registration) {
 			console.error(completionMessage);
 
 
-			resolve(success({
+			return success({
 				completionMessage,
 				redirect: "interviewComplete",
-			}));
+			});
 
 		} else if(user.testsFinished.length != user.testsOutstanding.length) {
 			const existingProblemKey = user.testsOutstanding.reduce((p,c) => {
@@ -66,14 +69,15 @@ function validateRegistration(registration) {
 			const completionMessage = "You have an unfinished problem. Resending link to " + user.email;
 			console.log(completionMessage);
 
-			resolve(resendExistingProblem(user, existingProblemKey));
+			return resendExistingProblem(user, existingProblemKey);
 		} else {
 			const completionMessage = "Generating a new problem, an email will be sent to you at " + user.email;
 			console.log(completionMessage);
 
-			resolve(generateNewProblem(user));
+			return generateNewProblem(user);
 		}
-	});
+	})
+	.catch(err => console.log(err));
 }
 
 
@@ -147,14 +151,14 @@ function validateRegistration(registration) {
 		let url;
 
 		return selectRandomProblem(user.testsFinished)
-			.then(s3ObjKey => copyPage(s3ObjKey))
+			.then(s3Obj => copyPage(s3Obj.Key))
 			.then(response => {
 				url = response.url;
 				return addProblemPageEntry(user, response.s3ObjKey, response.url)
 			})
 			.then(response => {
 				let updatedUser = Object.assign({}, user);
-				updatedUser.testsOutstanding += updatedUser.testsOutstanding.length == 0 ? response.problemKey : ", " + response.problemKey;
+				updatedUser.testsOutstanding.push(response.problemKey);
 				return updateUserTable(updatedUser, "testsOutstanding");
 			}).then(response => success({
 				completionMessage: "Successfully generated new problem for user",
@@ -177,7 +181,7 @@ function problemPageList() {
 		RequestPayer: 'requester',
 	}
 
-	return new Promise((resolve, request) => {
+	return new Promise((resolve, reject) => {
 
 		s3.listObjects(params, (err, data) => {
 			if(err) {
@@ -195,11 +199,10 @@ function problemPageList() {
 
 
 function selectRandomProblem(testsFinished = []) {
-	console.log("Selecting random problem from " + config.BUCKET + config.PROBLEM_DIR);
+	console.log("Selecting random problem from " + config.BUCKET + "/" + config.PROBLEM_DIR);
 	
 	return problemPageList().then(s3ObjArr => {
 		console.log(config.PROBLEM_DIR + " contains " + s3ObjArr.length + " elements");
-		
 
 		const selection = availableTests(s3ObjArr, testsFinished);
 		let selectedTest;
@@ -219,7 +222,7 @@ function selectRandomProblem(testsFinished = []) {
 		}
 
 		
-		console.log("Selected" + selectedTest.Key);
+		console.log("Selected " + selectedTest.Key);
 
 		return selectedTest;
 	})
@@ -227,22 +230,25 @@ function selectRandomProblem(testsFinished = []) {
 
 
 	function availableTests(s3ObjArr, testsFinished = []) {
+		console.log("Determining available tests");
 
 		if(!s3ObjArr) {
-			throw "s3ObjArr is empty at availableTests()";
-		} else {
-			let available = testList.map(obj => testsFinished.includes(obj.Key) ? null : obj)
-				.filter(val => val != null);
-
-			return available;
+			const errMessage = "s3ObjArr is empty at availableTests()"
+			console.error(errMessage)
+			throw errMessage;
 		}
+
+		let available = s3ObjArr.map(obj => testsFinished.includes(obj.Key) ? null : obj)
+			.filter(val => val != null);
+
+		return available;
 	}
 
 
 function copyPage(s3ObjKey) {
 	const uuid = Math.uuid();
 	const destinationKey = "tp/" + uuid + ".html";
-	const url = "http://" + config.BUCKET + "/" + destKey;
+	const url = "http://" + config.BUCKET + "/" + destinationKey;
 	const params = {
 		Bucket: config.BUCKET,
 		Key: destinationKey,
@@ -250,7 +256,7 @@ function copyPage(s3ObjKey) {
 		MetadataDirective: "COPY",
 	}
 
-	console.log("Copying '" + s3ObjKey + "' to '" + destKey + "'");
+	console.log("Copying '" + s3ObjKey + "' to '" + destinationKey + "'");
 
 	return new Promise((resolve, reject) => {
 
@@ -262,7 +268,7 @@ function copyPage(s3ObjKey) {
 
 				reject(errMessage);
 			} else {
-				console.log("Successfully copied '" + s3ObjKey + "' to '" + destKey + "'");
+				console.log("Successfully copied '" + s3ObjKey + "' to '" + destinationKey + "'");
 				resolve({
 					url,
 					s3ObjKey,
@@ -283,18 +289,18 @@ function findUser(registration) {
 
 
 	function findUserByEmail(registration) {
-		console.log('Querying registrations by email');
+		console.log('Querying registrations by email for ' + registration.email);
 		var docClient = new AWS.DynamoDB.DocumentClient();
 
 		var params = {
 			TableName: config.USERTABLE,
 			Key: {
-				"email": registration.email
+				email: registration.email
 			}
 		};
 
 
-		return new Promise((reject, resolve) => {
+		return new Promise((resolve, reject) => {
 
 			docClient.get(params, (err, data) => {
 				if(err) {
@@ -358,14 +364,18 @@ function addUser(registration) {
 		TableName: config.USERTABLE,
 		Item: {
 			"email": registration.email,
-			"first": registration.first,
-			"last": registration.last,
-			"start-time": now.toLocaleString("America/New_York"),
+			"first": registration.firstName,
+			"last": registration.lastName,
+			"start-time": now.toLocaleString("en-US", { timeZone: "America/New_York"}),
 			"epoch-time": now.getTime(),
 			"lls": registration.lls,
 			"topic": registration.topic,
+			"testsFinished": [],
+			"testsOutstanding": [],
+			"testsRequired": config.TESTSREQUIRED,
 		},
 	}
+
 
 	return new Promise((resolve, reject) => {
 		docClient.put(params, (err, data) => {
@@ -427,7 +437,7 @@ function addProblemPageEntry(user, problemKey, url) {
 			"lls": user.lls,
 			"problemKey": problemKey,
 			"url": url,
-			"start-time": now.toLocaleString("America/New_York"),
+			"start-time": now.toLocaleString("en-US", { timeZone:"America/New_York" }),
 			"epoch-time": now.getTime(),
 		},
 	}
@@ -436,7 +446,7 @@ function addProblemPageEntry(user, problemKey, url) {
 		docClient.put(params, (err, data) => {
 			if(err) {
 				const errMessage = "Unable to add entry " + url + " to " + config.PROBLEMTABLE;
-				console.error(errMessage);
+				console.error(errMessage + " Error JSON:", JSON.stringify(err));
 				reject(errMessage);
 			} else {
 				console.log("Added a new entry for " + url);
@@ -546,8 +556,9 @@ function logEmail(recipient, subject, body) {
 function createS3(regionName) {
     var config = { apiVersion: '2006-03-01' };
     
-    if (regionName != null)
+    if (regionName != null) {
         config.region = regionName;
+    }
 
     var s3 = new AWS.S3(config);
     return s3;
