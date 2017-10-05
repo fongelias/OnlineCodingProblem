@@ -33,14 +33,13 @@ config.AVAIL_PROBS[problemkeys.SYMCODE] = true;*/
 exports.handler = function (event, context, callback) {
 
 	const registration = {
-		firstName: event.first,
-		lastName: event.last,
-		email: event.email,
-		lls: event.lls,
+		firstName: encodeURI(event.first),
+		lastName: encodeURI(event.last),
+		email: encodeURI(event.email),
+		lls: encodeURI(event.lls),
 		topic: event.topic,
 	}
 
-	console.log(registration);
    	
    	//Callback to return response to client
    	validateRegistration(registration).then(response => callback(null, response));
@@ -160,10 +159,16 @@ function validateRegistration(registration) {
 				let updatedUser = Object.assign({}, user);
 				updatedUser.testsOutstanding.push(response.problemKey);
 				return updateUserTable(updatedUser, "testsOutstanding");
-			}).then(response => success({
-				completionMessage: "Successfully generated new problem for user",
-				redirect: url,
-			}))
+			}).then(response => {
+				emailLinkToCandidate(user.email, url);
+				const completionMessage = "Successfully generated new problem for user";
+				console.log(completionMessage);
+
+				return success({
+					completionMessage,
+					redirect: url,
+				});
+			})
 			.catch(err => serverError(err));
 	}
 
@@ -409,13 +414,16 @@ function updateUserTable(updatedUser, fieldName) {
 		ExpressionAttributeValues: {
 			":newVal": updatedUser[fieldName],
 		},
+		ReturnValues: "UPDATED_NEW",
 	}
+
+	console.log(params);
 
 	return new Promise((resolve, reject) => {
 		docClient.update(params, (err, data) => {
 			if(err) {
 				const errMessage = "Failed to update " + fieldName + " for user " + updatedUser.email + " in " + config.USERTABLE;
-				console.err(errMessage);
+				console.error(errMessage + " Error JSON: ", JSON.stringify(err));
 				reject(errMessage);
 			} else {
 				console.log("Updated " + fieldName + " for " + updatedUser.email + " to " + updatedUser[fieldName]);
@@ -489,8 +497,8 @@ function emailLinkToCandidate(email, url) {
 	}
 
 
-
 	const ses = new AWS.SES();
+
 	ses.sendEmail(params, (err, data) => {
 		if (err) {
 			console.error("Error sending coding problem invitiation email to '" + email + "'");
