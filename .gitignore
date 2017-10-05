@@ -4,4 +4,7 @@
 build/
 
 
+node_modules/
+
+
 .gradle/
