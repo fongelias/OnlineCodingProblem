@@ -4,7 +4,7 @@
 build/
 
 
-
+src/client/public/
 
 
 node_modules/
