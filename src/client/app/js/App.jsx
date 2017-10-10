@@ -20,6 +20,7 @@ export default class App extends Component {
 				lastName: null,
 				problems: [],
 			},
+			problemKeyObj: {},
 		}
 
 
@@ -31,6 +32,7 @@ export default class App extends Component {
 	componentDidMount() {
 		let lls = Cookie.getLLS();
 		console.log(lls);
+		//'Login' User Based on LLS
 		if(lls){
 			fetch(constants.userRequests + "?lls=" + lls, {
 				method: 'GET',
@@ -64,6 +66,22 @@ export default class App extends Component {
 				}
 			})
 		}
+
+
+		//Fetch Problem List
+		fetch(constants.problemRequests, {
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		}).then(response => response.json())
+		.then(data => {
+			console.log(data);
+			this.setState({
+				problemKeyObj: data,
+			});
+		})
 	}
 
 
@@ -85,7 +103,24 @@ export default class App extends Component {
 					lls: Cookie.getLLS(),
 				}),
 			}).then(response => response.json())
-			.then(data => console.log(data));
+			.then(data => {
+				if(data.updateLls) {
+					//Update lls if user already has an lls
+					Cookie.setLLS(data.lls);
+				}
+
+				this.setState({
+					page: constants.dashboardPage,
+					user: {
+						lls: data.lls,
+						firstName: data.firstName,
+						lastName: data.lastName,
+						problems: data.problemsr,
+					},
+				});
+			}).catch(err => {
+				console.log(err);
+			});
 		}
 
 	}
