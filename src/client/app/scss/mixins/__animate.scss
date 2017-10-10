@@ -1,0 +1,25 @@
+/*-- Transition --*/
+@mixin transition($transition) {
+	-webkit-transition: $transition;
+       -moz-transition: $transition;
+    	 -o-transition: $transition;
+    		transition: $transition;
+}
+
+/*-- Transform --*/
+@mixin transform($parameters) {/*Missing Will-change property*/
+	-webkit-transform: $parameters;
+			transform: $parameters;
+}
+
+
+
+
+
+
+
+
+
+
+
+

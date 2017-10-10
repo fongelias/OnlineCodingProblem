@@ -48,9 +48,9 @@ export default class App extends Component {
 						page: constants.dashboardPage,
 						user: {
 							lls,
-							firstName: null,
-							lastName: null,
-							problems: [],
+							firstName: data.firstName,
+							lastName: data.lastName,
+							problems: data.problems,
 						},
 					});
 				}
@@ -115,14 +115,13 @@ export default class App extends Component {
 						lls: data.lls,
 						firstName: data.firstName,
 						lastName: data.lastName,
-						problems: data.problemsr,
+						problems: data.problems,
 					},
 				});
 			}).catch(err => {
 				console.log(err);
 			});
 		}
-
 	}
 
 
@@ -133,7 +132,8 @@ export default class App extends Component {
 				<Header />
 				<Body user={this.state.user} 
 					  page={this.state.page}
-					  registerUser={this.registerUser}/>
+					  registerUser={this.registerUser}
+					  problemKeyObj={this.state.problemKeyObj}/>
 			</div>
 		)
 	}

@@ -1,0 +1,250 @@
+/*-- Variables --*/
+$symMustard: #F7BA28;
+$symMustard-lite: #fed26a;
+$symBlue: #293e6c;
+$symLightBlue: #1da0d8;
+$symGrey: #44525d;
+$symGrey-lite: rgba(181,189,195,1);
+$symLightGrey: #e7e7e7;
+$transparent: rgba(0,0,0,0);
+$fontStack: arial, sans-serif;
+/*-- Mixins --*/
+@import './mixins/__flexbox';
+@import './mixins/__animate';
+/*-- Primary Containers --*/
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	padding:0;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+}
+
+html {
+	overflow: hidden;
+}
+
+body {
+	@include flexbox;
+	@include flex-direction(column);
+	@include flex-wrap(nowrap);
+	@include justify-content(flex-start);
+	@include align-items(stretch);
+	@include align-content(stretch);
+	background: white;
+}
+
+#root {
+	overflow: auto;
+	padding-bottom: 100px;
+}
+
+/*-- Elements --*/
+h1, p, a {
+	font-family: $fontStack;
+}
+
+h1 {
+	font-weight: 300;
+	font-size: 48px;
+}
+
+p {
+	font-size: 16px;
+}
+
+/*-- Text --*/
+.text.center {
+	text-align: center;
+}
+
+.text.grey-lite {
+	color: $symGrey-lite;
+}
+
+/*-- Pages --*/
+.pageHeader {
+	padding: 0.5rem 1rem;
+}
+
+.pageBody {
+	.card {
+		padding: 1rem;
+	}
+
+	.card.blue {
+		background: $symBlue;
+		color: white;
+	}
+
+	.card.grey {
+		background: $symLightGrey;
+	}
+}
+
+.pageBody.dashboardPage {
+
+}
+
+/*-- Components --*/
+	/*-- Form Elements --*/
+	.form {}
+
+	.registrationForm {}
+
+
+	/*-- Problem Grid --*/
+	.problemGrid {
+		@include flexbox;
+		@include flex-direction(row);
+		@include justify-content(center);
+	}
+
+
+	.problemCell {
+		@include flex-grow(1);
+
+		border: 1px solid;
+		margin: 0.5rem;
+		height: 80px;
+		max-width: 310px;
+		width: 40%;
+		min-width: 200px;
+		overflow: hidden;
+		position: relative;
+
+		a {
+			display: inline-block;
+			width: 100%;
+			line-height: 80px;
+			font-size: 35px;
+			font-weight: 600;
+			text-align: center;
+			text-decoration: none;
+			background: $symLightGrey;
+			color: $symGrey-lite;
+		}
+
+		span {
+			position: absolute;
+			left: calc((100% - 108px) / 2); //108px is length of text
+			bottom: 0.3rem;
+			font-size: 12px;
+			color: $transparent;
+		}
+
+		&:hover span{
+			color: $symGrey;
+		}
+
+		button {
+			position: absolute;
+			left: 61px;
+			bottom: 0.3rem;
+			font-size: 12px;
+			border: 0px;
+			background: $transparent;
+			color: $symLightBlue;
+			cursor: pointer;
+		}
+	}
+
+
+
+	.problemCell.startedProblem {
+
+		a {
+			background: $symMustard-lite;
+			color: $symGrey;
+		}
+
+		a:hover {
+			background: $symMustard;
+			color: black;
+		}
+	}
+
+
+
+
+/*
+
+
+
+
+.stock-graph {
+	@include flexbox;
+	@include flex-direction(row);
+	@include justify-content(center);
+}
+
+.stock-search {
+	@include flexbox;
+	@include flex-direction(column);
+	@include align-items(center);
+
+	input {
+		@include transition(all 0.3s ease);
+		padding-left: 5px;
+		width: 460px;
+		height: 30px;
+		border: 1px solid $charcoal;
+		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.17), 0px 0px 0px 0px rgba(0, 0, 0, 0);
+		outline: none;
+	}
+
+	&:hover input {
+		border: 1px solid $pitch-grey;
+		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.17), 0px 1px 1px rgba(0, 0, 0, 0.17);
+	}
+
+	label {
+		@include transition(all 0.3s ease);
+		opacity: 0;
+		font-size: 12px;
+		color: $grey;
+		text-align: right;
+		width: 460px;
+	}
+
+	&:hover label{
+		opacity: 1;
+	}
+}
+
+.stock-list {
+	@include flexbox;
+	@include flex-direction(column);
+	@include align-items(center);
+
+	.list-item-container {
+		width: 460px;
+		position: relative;
+		padding-left: 5px;
+
+		span {
+			font-family: sans-serif;
+			font-size: 16px;
+		}
+
+		button {
+			font-size: 16px;
+			border: 0px;
+			background: $transparent;
+			cursor: pointer;
+
+			&:hover {
+				@include transform(rotate(180deg));
+				@include transition(all 0.3s ease);
+			}
+		}
+	}
+}
+
+
+
+*/
+
