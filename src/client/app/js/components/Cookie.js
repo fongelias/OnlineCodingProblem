@@ -8,6 +8,8 @@ function createVariable(name,value) {
 	document.cookie = name+"="+value+expires+";path=/";
 }
 
+
+
 function readVariable(name) {
 	const nameEQ = name + "=";
 	const ca = document.cookie.split(";");
@@ -26,9 +28,13 @@ function readVariable(name) {
 	return null;
 }
 
+
+
 function deleteVariable(name) {
 	document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
+
+
 
 
 const Cookie = {

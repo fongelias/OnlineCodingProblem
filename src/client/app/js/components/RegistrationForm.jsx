@@ -20,7 +20,7 @@ export default class RegistrationForm extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className="registrationForm form">
 				<input ref="firstName" type="text" placeholder="First Name"/>
 				<input ref="lastName" type="text" placeholder="Last Name" />
 				<input ref="email" type="email" placeholder="Email" />
