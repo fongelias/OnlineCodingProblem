@@ -35,6 +35,7 @@ export default class App extends Component {
 		//console.log(lls);
 		//'Login' User Based on LLS
 		if(lls){
+			console.log('fetching user info');
 			fetch(constants.userRequests + "?lls=" + lls, {
 				method: 'GET',
 				headers: {
@@ -54,11 +55,16 @@ export default class App extends Component {
 							problems: data.problems,
 						},
 					});
+				} else {
+					this.setState({
+						page: constants.landingPage,
+					});
 				}
 			});
 		} else {
 			lls = Cookie.setLLS();
 			this.setState({
+				page: constants.landingPage,
 				user: {
 					lls,
 					firstName: this.state.user.firstName,
