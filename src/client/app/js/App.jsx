@@ -13,7 +13,7 @@ export default class App extends Component {
 		super();
 
 		this.state = {
-			page: constants.landingPage,
+			page: "",
 			user: {
 				lls: null,
 				firstName: null,
@@ -32,7 +32,7 @@ export default class App extends Component {
 
 	componentDidMount() {
 		let lls = Cookie.getLLS();
-		console.log(lls);
+		//console.log(lls);
 		//'Login' User Based on LLS
 		if(lls){
 			fetch(constants.userRequests + "?lls=" + lls, {
@@ -43,7 +43,7 @@ export default class App extends Component {
 				}
 			}).then(response => response.json())
 			.then(data => {
-				console.log(data);
+				//console.log(data);
 				if(data.found) {
 					this.setState({
 						page: constants.dashboardPage,
@@ -78,7 +78,7 @@ export default class App extends Component {
 			}
 		}).then(response => response.json())
 		.then(data => {
-			console.log(data);
+			//console.log(data);
 			this.setState({
 				problemKeyObj: data,
 			});
@@ -88,7 +88,7 @@ export default class App extends Component {
 
 
 	registerUser(firstName, lastName, email) {
-		console.log(firstName, lastName, email);
+		//console.log(firstName, lastName, email);
 
 		if(firstName && lastName && email && isEmail(email)) {
 			fetch(constants.userRequests, {
