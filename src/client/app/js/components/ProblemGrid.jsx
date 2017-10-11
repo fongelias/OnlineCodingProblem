@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import ExistingProblem from './ExistingProblem.jsx';
+import NewProblem from './NewProblem.jsx';
+
 
 
 
@@ -6,6 +9,7 @@ export default class ProblemGrid extends Component {
 	constructor() {
 		super();
 	}
+
 
 	render() {
 		return (
@@ -27,25 +31,37 @@ export default class ProblemGrid extends Component {
 
 
 
-						//Disable based on date and availability of url
-						//Start problem button
+						//TODO:Disable based on date and availability of url
+						
 
-						const problemClass = userProblemObj.url ? "startedProblem" : "";
+						const problemClass = userProblemObj.url ? "startedProblem" : "newProblem";
 
-						return (
-							<div className={"problemCell " + problemClass} key={problemName}>
-								<a target="_blank"
-								   href={userProblemObj.url}>
-								   {problemName.toUpperCase()}
-								</a>
-								{
-									!userProblemObj.url ? 
-										<button data-id={userProblemObj.problemKey}>click here to start this problem</button> 
-										: <span>click to go to problem</span>
-									
-								}
-							</div>
-						)
+						switch(problemClass) {
+							case "startedProblem":
+								return (
+									<ExistingProblem key={problemName}
+													 problemClass={problemClass}
+													 problemName={problemName}
+													 url={userProblemObj.url}/>
+								);
+								break;
+							case "newProblem":
+								return (
+									<NewProblem key={problemName}
+												problemClass={problemClass}
+												problemName={problemName}
+												startProblem={this.props.startProblem}/>
+								);
+								break;
+							default:
+								return (
+									<NewProblem key={problemName}
+												problemClass={problemClass}
+												problemName={problemName}
+												startProblem={this.props.startProblem}/>
+								);
+						}
+
 					})
 				}
 			</div>

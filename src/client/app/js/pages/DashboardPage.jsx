@@ -22,7 +22,8 @@ export default class DashboardPage extends Component {
 				<div className="card">
 					<p>Finish Coding Problems:<span className="text grey-lite">(You have 48 hours after starting each problem)</span></p>
 					<ProblemGrid userProblems={this.props.user.problems}
-								 problemKeyObj={this.props.problemKeyObj}/>
+								 problemKeyObj={this.props.problemKeyObj}
+								 startProblem={this.props.startProblem}/>
 				</div>
 			</div>
 		);

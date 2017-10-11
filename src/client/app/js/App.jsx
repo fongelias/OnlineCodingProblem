@@ -25,6 +25,7 @@ export default class App extends Component {
 
 
 		this.registerUser = this.registerUser.bind(this);
+		this.startProblem = this.startProblem.bind(this);
 	}
 
 
@@ -125,6 +126,35 @@ export default class App extends Component {
 	}
 
 
+	startProblem(problemName) {
+		const lls = this.state.user.lls;
+
+		fetch(constants.problemRequests, {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				problemName,
+				lls,
+			}),
+		}).then(response => response.json())
+		.then(data => {
+			if(!data.err) {
+				let newUserState = Object.assign({}, this.state.user);
+				newUserState.problems.push(data);
+
+				this.setState({
+					user: newUserState,
+				})
+			} else {
+				console.log(data.err);
+			}
+		})
+	}
+
+
 
 	render() {
 		return (
@@ -133,7 +163,8 @@ export default class App extends Component {
 				<Body user={this.state.user} 
 					  page={this.state.page}
 					  registerUser={this.registerUser}
-					  problemKeyObj={this.state.problemKeyObj}/>
+					  problemKeyObj={this.state.problemKeyObj}
+					  startProblem={this.startProblem}/>
 			</div>
 		)
 	}

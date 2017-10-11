@@ -21,7 +21,8 @@ export default class Body extends Component {
 			case constants.dashboardPage:
 				return (
 					<DashboardPage user={this.props.user}
-								   problemKeyObj={this.props.problemKeyObj}/>
+								   problemKeyObj={this.props.problemKeyObj}
+								   startProblem={this.props.startProblem}/>
 				);
 				break;
 

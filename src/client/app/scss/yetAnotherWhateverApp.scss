@@ -108,6 +108,7 @@ p {
 		@include flex-grow(1);
 
 		border: 1px solid;
+		border-radius: 0.2rem;
 		margin: 0.5rem;
 		height: 80px;
 		max-width: 310px;
@@ -155,6 +156,8 @@ p {
 
 
 	.problemCell.startedProblem {
+
+		border-color: $symMustard;
 
 		a {
 			background: $symMustard-lite;
