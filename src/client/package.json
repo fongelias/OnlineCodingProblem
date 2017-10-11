@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "build": "webpack",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dist": "webpack -p"
   },
   "keywords": [
     "aws",
