@@ -7,7 +7,7 @@ export default class Body extends Component {
 	constructor(props) {
 		super();
 
-		console.log(props);
+		//console.log(props);
 		//this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -29,7 +29,7 @@ export default class Body extends Component {
 			default:
 				//Make this the loading page instead
 				return (
-					<LandingPage registerUser={this.props.registerUser}/>
+					<LoadingPage/>
 				);
 		}
 

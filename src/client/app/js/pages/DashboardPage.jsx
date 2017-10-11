@@ -10,9 +10,6 @@ export default class DashboardPage extends Component {
 	} 
 
 	render() {
-
-		console.log(this.props.user);
-		console.log(this.props.user.problems);
 		return (
 			<div className="pageBody dashboardPage">
 				<div className="card blue">
@@ -20,7 +17,7 @@ export default class DashboardPage extends Component {
 					<p>Here are the steps you need to take to complete your interview:</p>
 				</div>
 				<div className="card">
-					<p>Finish Coding Problems:<span className="text grey-lite">(You have 48 hours after starting each problem)</span></p>
+					<p>Finish Coding Problems: <span className="text grey-lite">(You have 48 hours after starting each problem)</span></p>
 					<ProblemGrid userProblems={this.props.user.problems}
 								 problemKeyObj={this.props.problemKeyObj}
 								 startProblem={this.props.startProblem}/>

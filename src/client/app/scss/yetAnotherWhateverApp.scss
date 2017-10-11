@@ -1,4 +1,6 @@
 /*-- Variables --*/
+//Colors
+//Colors with prefix sym- are colors from the main Symantec website
 $symMustard: #F7BA28;
 $symMustard-lite: #fed26a;
 $symBlue: #293e6c;
@@ -6,7 +8,9 @@ $symLightBlue: #1da0d8;
 $symGrey: #44525d;
 $symGrey-lite: rgba(181,189,195,1);
 $symLightGrey: #e7e7e7;
+$symLighterGrey: #f8f8f8;
 $transparent: rgba(0,0,0,0);
+//Fonts
 $fontStack: arial, sans-serif;
 /*-- Mixins --*/
 @import './mixins/__flexbox';
@@ -75,6 +79,12 @@ p {
 		padding: 1rem;
 	}
 
+	.card.center {
+		@include flexbox;
+		@include flex-direction(column);
+		@include align-items(center);
+	}
+
 	.card.blue {
 		background: $symBlue;
 		color: white;
@@ -91,9 +101,51 @@ p {
 
 /*-- Components --*/
 	/*-- Form Elements --*/
-	.form {}
+	.form {
+		input {
+			@include transition(all 0.2s ease);
+			max-width: 270px;
+			width: 100%; 
+			height: 40px;
+			margin: 0.5rem;
+			font-size: 16px;
+			border: 1px solid $symGrey-lite;
+			background: $symLighterGrey;
+			padding: 0.5rem;
+			border-radius: 0.2rem;
+		}
 
-	.registrationForm {}
+		input:active {
+			background: white;
+			border-color: $symLightBlue;
+		}
+
+		.submitButton {
+			@include transition(all 0.2s ease);
+			max-width: 270px;
+			width: 100%; 
+			height: 40px;
+			margin: 0.5rem;
+			background: $symMustard-lite;
+			border: 1px solid $symMustard;
+			border-radius: 0.2rem;
+			color: $symGrey;
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.submitButton:hover {
+			background: $symMustard;
+			border: 1px solid $symMustard;
+			color: $symGrey;
+		}
+	}
+
+	.registrationForm {
+		@include flexbox;
+		@include flex-direction(column);
+		@include align-items(center);
+	}
 
 
 	/*-- Problem Grid --*/
@@ -130,6 +182,7 @@ p {
 		}
 
 		span {
+			@include transition(all 0.2s ease);
 			position: absolute;
 			left: calc((100% - 108px) / 2); //108px is length of text
 			bottom: 0.3rem;
@@ -142,6 +195,7 @@ p {
 		}
 
 		button {
+			@include transition(all 0.2s ease);
 			position: absolute;
 			left: 61px;
 			bottom: 0.3rem;
@@ -150,6 +204,10 @@ p {
 			background: $transparent;
 			color: $symLightBlue;
 			cursor: pointer;
+		}
+
+		button:hover {
+			color: $symBlue;
 		}
 	}
 
@@ -160,6 +218,7 @@ p {
 		border-color: $symMustard;
 
 		a {
+			@include transition(all 0.2s ease);
 			background: $symMustard-lite;
 			color: $symGrey;
 		}

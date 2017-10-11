@@ -24,7 +24,7 @@ export default class RegistrationForm extends Component {
 				<input ref="firstName" type="text" placeholder="First Name"/>
 				<input ref="lastName" type="text" placeholder="Last Name" />
 				<input ref="email" type="email" placeholder="Email" />
-				<button onClick={this.handleSubmit}/>
+				<button className="submitButton" onClick={this.handleSubmit}>Submit your registration</button>
 			</div>
 		)
 	}
