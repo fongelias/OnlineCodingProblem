@@ -2,6 +2,22 @@ console.log("Loading function");
 var AWS = require("aws-sdk");
 
 
+const config = {
+    BUCKET: "yetanotherwhatever.io",
+    PROBLEM_DIR: "problems/",
+    USERTABLE: {
+        NAME: "CandidateRegistration",
+        LLSINDEX: 'lls-index',
+    },
+    PROBLEMTABLE: {
+        NAME: "ProblemTable",
+        FIELDS: {
+            COMPLETED: "completed",
+        },
+    },
+}
+
+
 
 
 exports.handler = function(event, context) {
@@ -97,6 +113,7 @@ function lookupRegistrationByLLS(event, context, email, topic, lls)
             }
 
             pub2SNS(event, context, topic, email);
+            updateProblemTable(lls, parseProblemKey(event.Records[0].s3.object.key), true, config.PROBLEMTABLE.FIELDS.COMPLETED);
         }
     });
 }
@@ -104,27 +121,25 @@ function lookupRegistrationByLLS(event, context, email, topic, lls)
 
 
 
-function translateTopic(notify)
-{
-    //default
-    var topic = "arn:aws:sns:us-east-1:229763884986:CodeUploaded";
-    if (notify != null)
+    function translateTopic(notify)
     {
-        if (notify.indexOf("szhang") != -1)
+        //default
+        var topic = "arn:aws:sns:us-east-1:229763884986:CodeUploaded";
+        if (notify != null)
         {
-            topic = "arn:aws:sns:us-east-1:229763884986:SZhang";
+            if (notify.indexOf("szhang") != -1)
+            {
+                topic = "arn:aws:sns:us-east-1:229763884986:SZhang";
+            }
+            if (notify.indexOf("jholler") != -1)
+            {
+                topic = "arn:aws:sns:us-east-1:229763884986:JHoller";
+            }
         }
-        if (notify.indexOf("jholler") != -1)
-        {
-            topic = "arn:aws:sns:us-east-1:229763884986:JHoller";
-        }
+
+        return topic;
+
     }
-
-    return topic;
-
-}
-
-
 
 
 
@@ -164,6 +179,52 @@ function pub2SNS(event, context, topic, email)
     };
     sns.publish(params, context.done);
 }
+
+
+
+function parseProblemKey(keyStr) {
+    const problemName = keyStr.split("/")[2];
+    return config.PROBLEM_DIR + problemName + '.html';
+}
+
+
+
+function updateProblemTable(lls, problemKey, updatedValue, fieldName) {
+    console.log("Updating problem entry in " + config.PROBLEMTABLE.NAME);
+
+    const docClient = new AWS.DynamoDB.DocumentClient();
+    const params = {
+        TableName: config.PROBLEMTABLE.NAME,
+        Key: {
+            "lls" : lls,
+            "problemKey" : problemKey,
+        },
+        UpdateExpression: 'set #attr = :newVal',
+        ExpressionAttributeNames: {
+            "#attr": fieldName,
+        },
+        ExpressionAttributeValues: {
+            ":newVal": updatedValue,
+        },
+        ReturnValues: "UPDATED_NEW",
+    }
+
+    console.log(params);
+
+    docClient.update(params, (err, data) => {
+        if(err) {
+            const errMessage = "Failed to update " + fieldName + " for user with lls " + lls + " in " + config.PROBLEMTABLE.NAME;
+            console.error(errMessage + " Error JSON: ", JSON.stringify(err));
+        } else {
+            console.log("Updated " + fieldName + " for user with lls " + lls + " to " + updatedValue);
+        }
+    })
+}
+
+
+
+
+
 
 
 
