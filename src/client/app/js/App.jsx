@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //Components/Pages
 import Header from './components/Header.jsx';
 import Body from './components/Body.jsx';
-import Cookie from './components/Cookie.js';
+//import Cookie from './components/Cookie.js';
 import constants from './constants.js';
 import { isEmail } from './utils/';
 
@@ -13,7 +13,7 @@ export default class App extends Component {
 		super();
 
 		this.state = {
-			page: "",
+			page: window.location.pathname == "/" ? constants.landingPage : "",
 			user: {
 				lls: null,
 				firstName: null,
@@ -31,10 +31,12 @@ export default class App extends Component {
 
 
 	componentDidMount() {
-		let lls = Cookie.getLLS();
-		//console.log(lls);
-		//'Login' User Based on LLS
-		if(lls){
+		const path = window.location.pathname;
+
+		if(path != "/") {
+			//path is "/tp/[lls].html"
+			const lls = path.split("/")[2].split(".")[0];
+
 			console.log('fetching user info');
 			fetch(constants.userRequests + "?lls=" + lls, {
 				method: 'GET',
@@ -61,34 +63,25 @@ export default class App extends Component {
 					});
 				}
 			});
-		} else {
-			lls = Cookie.setLLS();
-			this.setState({
-				page: constants.landingPage,
-				user: {
-					lls,
-					firstName: this.state.user.firstName,
-					lastName: this.state.user.lastName,
-					problems: this.state.user.problems,
+
+
+
+			//Fetch Problem List
+			fetch(constants.problemRequests, {
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
 				}
+			}).then(response => response.json())
+			.then(data => {
+				//console.log(data);
+				this.setState({
+					problemKeyObj: data,
+				});
 			})
 		}
 
-
-		//Fetch Problem List
-		fetch(constants.problemRequests, {
-			method: 'GET',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			}
-		}).then(response => response.json())
-		.then(data => {
-			//console.log(data);
-			this.setState({
-				problemKeyObj: data,
-			});
-		})
 	}
 
 
@@ -107,24 +100,26 @@ export default class App extends Component {
 					firstName,
 					lastName,
 					email,
-					lls: Cookie.getLLS(),
 				}),
 			}).then(response => response.json())
 			.then(data => {
-				if(data.updateLls) {
+				/*if(data.updateLls) {
 					//Update lls if user already has an lls
 					Cookie.setLLS(data.lls);
-				}
+				}*/
 
 				this.setState({
-					page: constants.dashboardPage,
+					page: constants.registrationSuccessPage,
 					user: {
-						lls: data.lls,
+						//lls: data.lls,
 						firstName: data.firstName,
-						lastName: data.lastName,
-						problems: data.problems,
+						email,
+						//lastName: data.lastName,
+						//problems: data.problems,
 					},
 				});
+
+				console.log(this.state);
 			}).catch(err => {
 				console.log(err);
 			});

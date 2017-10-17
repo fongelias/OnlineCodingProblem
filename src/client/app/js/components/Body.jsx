@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import constants from '../constants.js';
 import DashboardPage from '../pages/DashboardPage.jsx';
 import LandingPage from '../pages/LandingPage.jsx';
+import RegistrationSuccessPage from '../pages/RegistrationSuccessPage.jsx';
 import LoadingPage from '../pages/LoadingPage.jsx';
 
 export default class Body extends Component {
 	constructor(props) {
 		super();
-
-		//console.log(props);
-		//this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	render() {
@@ -27,8 +25,13 @@ export default class Body extends Component {
 				);
 				break;
 
+			case constants.registrationSuccessPage:
+				return (
+					<RegistrationSuccessPage user={this.props.user}/>
+				);
+				break;
+
 			default:
-				//Make this the loading page instead
 				return (
 					<LoadingPage/>
 				);
