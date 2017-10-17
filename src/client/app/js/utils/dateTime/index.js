@@ -1,0 +1,1 @@
+export { diffHours } from './diffHours/diffHours';
