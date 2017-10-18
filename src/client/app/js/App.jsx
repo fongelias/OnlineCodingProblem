@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //Components/Pages
 import Header from './components/Header.jsx';
 import Body from './components/Body.jsx';
-//import Cookie from './components/Cookie.js';
+import Cookie from './components/Cookie.js';
 import constants from './constants.js';
 import { isEmail } from './utils/';
 
@@ -36,6 +36,8 @@ export default class App extends Component {
 		if(path != "/") {
 			//path is "/tp/[lls].html"
 			const lls = path.split("/")[2].split(".")[0];
+			//Update Cookie
+			Cookie.setLLS(lls);
 
 			console.log('fetching user info');
 			fetch(constants.userRequests + "?lls=" + lls, {

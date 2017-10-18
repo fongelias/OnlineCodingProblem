@@ -7,6 +7,9 @@ const s3 = createS3();
 const config = {
 	BUCKET: "yetanotherwhatever.io",
 	PROBLEM_DIR: "problems/",
+	SPA: {
+		S3OBJECTKEY: "index.html",
+	},
 	USERTABLE: {
 		NAME: "CandidateRegistration",
 		LLSINDEX: 'lls-index',
@@ -15,6 +18,7 @@ const config = {
 		NAME: "ProblemTable",
 	},
 	partitionsPerYear: 1,
+	SENDER: '"Registration" <noreply@yetanotherwhatever.io>',
 }
 
 
@@ -27,7 +31,7 @@ exports.handler = (event, context, callback) => {
 		firstName: encodeURI(event.firstName),
 		lastName: encodeURI(event.lastName),
 		email: encodeURI(event.email),
-		lls: encodeURI(event.lls),
+		lls: Math.uuid(),
 		topic: event.topic,
 	}
 
@@ -63,7 +67,7 @@ function validateRegistration(registration) {
 		//Update Response Object
 		responseObj.problems = problemArr;
 
-
+		/*
 		if(problemArr.length == 0) {
 
 			return generateNewProblem(userObj).then(problem => {
@@ -73,7 +77,11 @@ function validateRegistration(registration) {
 			});
 		} else {
 			return responseObj;
-		}
+		}*/
+
+		return generateNewDashboard(userObj);
+	}).then(response => {
+		return responseObj;
 	}).catch(err => {
 		return {
 			err,		
@@ -120,6 +128,22 @@ function validateRegistration(registration) {
 				url = response.url;
 				return addProblemPageEntry(user, response.s3ObjKey, response.url);
 			})
+	}
+
+
+
+	function generateNewDashboard(user) {
+		console.log("Generating a new dashboard page for user " + user.email);
+		let url;
+
+		console.log(user);
+
+		return copyPage(config.SPA.S3OBJECTKEY, user.lls, "monthly-tp/").then(response => {
+			emailDashboardLinkToCandidate(user.email, response.url)
+
+			return response;
+		});
+
 	}
 
 
@@ -341,9 +365,9 @@ function validateRegistration(registration) {
 	}
 
 
-	function copyPage(s3ObjKey) {
-		const uuid = Math.uuid();
-		const destinationKey = "tp/" + uuid + ".html";
+	function copyPage(s3ObjKey, lls, destinationDirectory = "tp/") {
+		const uuid = lls ? lls : Math.uuid();
+		const destinationKey = destinationDirectory + uuid + ".html";
 		const url = "http://" + config.BUCKET + "/" + destinationKey;
 		const params = {
 			Bucket: config.BUCKET,
@@ -385,6 +409,20 @@ function emailLinkToCandidate(email, url) {
 	const body = "Thank you for your interest in Symantec." + "\n\n" +
 		"Here is your unique link to the online coding problem: " + url;
 	
+	emailCandidate(email, url, body, subject);
+}
+
+
+function emailDashboardLinkToCandidate(email, url) {
+	const subject = "Symantec online coding problem";
+	const body = "Thank you for your interest in Symantec." + "\n\n" +
+		"Here is your unique link to your coding problems: " + url;
+	
+	emailCandidate(email, url, body, subject);
+}
+
+
+function emailCandidate(email, url, body, subject) {
 	logEmail(email, subject, body);
 
 	var params = {
