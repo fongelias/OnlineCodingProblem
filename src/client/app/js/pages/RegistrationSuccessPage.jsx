@@ -13,7 +13,7 @@ export default class RegistrationSuccessPage extends Component {
 					<p>You have successfully registered for an account.</p>
 				</div>
 				<div className="card center">
-					<p>An email will be sent to {this.props.user.email} with a link to your personal page for next steps.</p>
+					<p>An email will be sent to <span className="text bold">{this.props.user.email}</span> with a link to your personal page for next steps.</p>
 				</div>
 			</div>
 		);

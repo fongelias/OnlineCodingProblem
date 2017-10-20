@@ -4,6 +4,7 @@ import DashboardPage from '../pages/DashboardPage.jsx';
 import LandingPage from '../pages/LandingPage.jsx';
 import RegistrationSuccessPage from '../pages/RegistrationSuccessPage.jsx';
 import LoadingPage from '../pages/LoadingPage.jsx';
+import Footer from '../components/Footer.jsx';
 
 export default class Body extends Component {
 	constructor(props) {
@@ -14,26 +15,38 @@ export default class Body extends Component {
 		switch(this.props.page) { 
 			case constants.landingPage:
 				return (
-					<LandingPage registerUser={this.props.registerUser}/>
+					<div>
+						<LandingPage registerUser={this.props.registerUser}/>
+						<Footer/>
+					</div>
 				);
+				break;
 
 			case constants.dashboardPage:
 				return (
-					<DashboardPage user={this.props.user}
-								   problemKeyObj={this.props.problemKeyObj}
-								   startProblem={this.props.startProblem}/>
+					<div>
+						<DashboardPage user={this.props.user}
+									   problemKeyObj={this.props.problemKeyObj}
+									   startProblem={this.props.startProblem}/>
+						<Footer/>
+					</div>
 				);
 				break;
 
 			case constants.registrationSuccessPage:
 				return (
-					<RegistrationSuccessPage user={this.props.user}/>
+					<div>
+						<RegistrationSuccessPage user={this.props.user}/>
+						<Footer/>
+					</div>
 				);
 				break;
 
 			default:
 				return (
-					<LoadingPage/>
+					<div>
+						<LoadingPage/>
+					</div>
 				);
 		}
 

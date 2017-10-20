@@ -10,6 +10,7 @@ $symGrey-lite: rgba(181,189,195,1);
 $symLightGrey: #e7e7e7;
 $symLighterGrey: #f8f8f8;
 $transparent: rgba(0,0,0,0);
+$redAlert: #d31d56;
 //Fonts
 $fontStack: arial, sans-serif;
 /*-- Mixins --*/
@@ -43,7 +44,6 @@ body {
 
 #root {
 	overflow: auto;
-	padding-bottom: 100px;
 }
 
 /*-- Elements --*/
@@ -65,16 +65,39 @@ p {
 	text-align: center;
 }
 
+.text.bold {
+	font-weight: 600;
+}
+
 .text.grey-lite {
 	color: $symGrey-lite;
+}
+
+.text.red {
+	color: $redAlert;
 }
 
 /*-- Pages --*/
 .pageHeader {
 	padding: 0.5rem 1rem;
+	height: 63px;
+}
+
+.pageFooter {
+	@include flexbox;
+	@include flex-direction(column);
+	@include align-items(center);
+	padding: 0.5rem 1rem;
+	background: $symLightGrey;
+
+	p {
+		font-size: 14px;
+	}
 }
 
 .pageBody {
+	min-height: calc(100vh - 63px - 60px);
+
 	.card {
 		padding: 1rem;
 	}
@@ -188,6 +211,7 @@ p {
 			bottom: 0.3rem;
 			font-size: 12px;
 			color: $transparent;
+			cursor: pointer;
 		}
 
 		&:hover span{
@@ -197,7 +221,7 @@ p {
 		button {
 			@include transition(all 0.2s ease);
 			position: absolute;
-			left: 61px;
+			left: calc((100% - 185.3px) / 2); //185.3px is the length of text
 			bottom: 0.3rem;
 			font-size: 12px;
 			border: 0px;
@@ -232,6 +256,7 @@ p {
 	.problemCell.finishedProblem {
 		span {
 			left: calc((100% - 150px) / 2); //150px is length of text
+			cursor: default;
 		}
 	}
 

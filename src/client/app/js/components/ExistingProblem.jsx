@@ -14,7 +14,9 @@ export default class ExistingProblem extends Component {
 				   href={this.props.url}>
 				   {this.props.problemName.toUpperCase()}
 				</a>
-				<span>click to go to problem</span>
+				<span onClick={() => window.open(this.props.url,"_blank")}>
+					click to go to problem
+				</span>
 			</div>
 		)
 	}

@@ -34,7 +34,7 @@ export default class App extends Component {
 		const path = window.location.pathname;
 
 		if(path != "/") {
-			//path is "/tp/[lls].html"
+			//path is "/monthly-tp/[lls].html"
 			const lls = path.split("/")[2].split(".")[0];
 			//Update Cookie
 			Cookie.setLLS(lls);

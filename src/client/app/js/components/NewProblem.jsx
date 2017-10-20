@@ -10,7 +10,9 @@ export default class NewProblem extends Component {
 	}
 
 	handleStart() {
-		this.props.startProblem(this.props.problemName);
+		if(confirm("You will have 48 hours to complete this problem once it is started. Are you sure you want to start this problem?")) {
+			this.props.startProblem(this.props.problemName);
+		}
 	}
 
 	render() {
