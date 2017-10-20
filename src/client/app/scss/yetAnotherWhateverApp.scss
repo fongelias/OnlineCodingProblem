@@ -47,13 +47,17 @@ body {
 }
 
 /*-- Elements --*/
-h1, p, a {
+h1, h2, p, a {
 	font-family: $fontStack;
 }
 
 h1 {
 	font-weight: 300;
 	font-size: 48px;
+}
+
+h2 {
+	font-size: 24px;
 }
 
 p {
@@ -119,7 +123,9 @@ p {
 }
 
 .pageBody.dashboardPage {
-
+	.instructions {
+		line-height: 30px;
+	}
 }
 
 /*-- Components --*/

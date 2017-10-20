@@ -17,12 +17,12 @@ export default class DashboardPage extends Component {
 					<p>Here are the steps you need to take to complete your interview:</p>
 				</div>
 				<div className="card">
-					<p className="text bold">Finish Coding Problems:</p>
-					<p>
+					<h2 className="text bold">Finish Coding Problems:</h2>
+					<p className="instructions">
 						<span className="text red">You have 48 hours after starting each problem to complete it. </span>
-						You can use any language or environment for these problems.
+						<br/>You can use any language or environment for these problems.
+						<br/>When you are finished, your interviewer will contact you to for your next steps
 					</p>
-					<p>When you are finished, your interviewer will contact you to for your next steps</p>
 					<ProblemGrid userProblems={this.props.user.problems}
 								 problemKeyObj={this.props.problemKeyObj}
 								 startProblem={this.props.startProblem}/>
