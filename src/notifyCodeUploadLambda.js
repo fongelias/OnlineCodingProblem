@@ -1,5 +1,6 @@
 console.log("Loading function");
 var AWS = require("aws-sdk");
+var SNS = new AWS.SNS();
 
 
 const config = {
@@ -71,9 +72,8 @@ function readMetadata(event, context, err, meta) {
         console.log("Metadata: " + JSON.stringify(meta));           // successful response
 
         var email = meta.email;
-        var topic =  translateTopic(meta.topic);
         var lls = meta.lls;
-
+        var topic = meta.topic;
         lookupRegistrationByLLS(event, context, email, topic, lls);
     }
 }
@@ -111,41 +111,21 @@ function lookupRegistrationByLLS(event, context, email, topic, lls)
                     email = data.Items[0].email;
                 }
             }
+            else {
+            	(email = "emailnotfound");            		
+            } 
 
-            pub2SNS(event, context, topic, email);
+
             updateProblemTable(lls, parseProblemKey(event.Records[0].s3.object.key), true, config.PROBLEMTABLE.FIELDS.COMPLETED);
+			      buildNotification(event, context, topic, email);
         }
     });
 }
 
 
-
-
-    function translateTopic(notify)
-    {
-        //default
-        var topic = "arn:aws:sns:us-east-1:229763884986:CodeUploaded";
-        if (notify != null)
-        {
-            if (notify.indexOf("szhang") != -1)
-            {
-                topic = "arn:aws:sns:us-east-1:229763884986:SZhang";
-            }
-            if (notify.indexOf("jholler") != -1)
-            {
-                topic = "arn:aws:sns:us-east-1:229763884986:JHoller";
-            }
-        }
-
-        return topic;
-
-    }
-
-
-
-function pub2SNS(event, context, topic, email)
+function buildNotification(event, context, topic, email)
 {
-    email = encodeURI(email);
+	email = encodeURI(email);
 
     //read out time
     var time = event.Records[0].eventTime;
@@ -165,18 +145,74 @@ function pub2SNS(event, context, topic, email)
     console.log("Email: ", email);
     console.log("Link: ", mylink);
 
-    console.log("Topic: ", topic);
+    
+	var subject = "Coding problem solution submitted";
 
-    var sns = new AWS.SNS();
+    lookupTopicCaseInsensitive(topic, function(topic) {
+		var message = "Time: " + time 
+	        + "\nEmail: " + email  
+	        + "\nBucket: " + bucket
+	        + "\nKey: " + key
+	        + "\nTopic: " + topic
+	        + "\nDownload submitted code here: " + mylink;
+		pub2SNS(message, subject, topic, context);
+    });
+}
+
+function lookupTopicCaseInsensitive(notify, callback)
+{
+    var prefix = "arn:aws:sns:us-east-1:229763884986:";
+    
+    var dfault = "arn:aws:sns:us-east-1:229763884986:CodeUploaded";  //default
+    
+    var arn = prefix + notify.toLowerCase();
+    
     var params = {
-        Message: "Time: " + time 
-            + "\nEmail: " + email  
-            + "\nBucket: " + bucket
-            + "\nKey: " + key
-            + "\nDownload submitted code here: " + mylink,
-        Subject: "Coding problem solution submitted",
+    };
+    
+    SNS.listTopics(params, function(err, data) {
+        if (err) 
+        {
+            console.log("Error looking up SNS topic: " + arn);
+            console.log(err.message);
+            console.log("Returning default topic, " + dfault);
+            
+            callback(dfault);
+        }
+        else {  //success
+        
+            var topics = data.Topics;
+            var i = 0
+            for (; i < topics.length; i++)
+            {
+                if (arn == topics[i].TopicArn.toLowerCase())
+                {
+                    
+                    console.log("SNS topic found: " + topics[i].TopicArn);
+                    callback(topics[i].TopicArn);
+                    return;
+                }
+                
+            }
+            
+            console.log("SNS topic not found: " + arn);
+            console.log("Returning default topic, " + dfault);
+        }
+    });
+
+}
+
+function pub2SNS(message, subject, topic, context)
+{
+    console.log("Publishing to SNS topic: ", topic);
+
+    
+    var params = {
+        Message: message,
+        Subject: subject,
         TopicArn: topic
     };
+
     sns.publish(params, context.done);
 }
 
@@ -220,11 +256,4 @@ function updateProblemTable(lls, problemKey, updatedValue, fieldName) {
         }
     })
 }
-
-
-
-
-
-
-
 
