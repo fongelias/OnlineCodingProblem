@@ -59,7 +59,7 @@ function lookupRegistrationByEmail(event)
             {
                 console.log("Registration alread exists for this user, " + event.email);
 
-                tellAndrew("WARNING existing registration resubmitted for: " + event.email, JSON.stringify(event));
+                tellAndrew("WARNING existing registration resubmitted for: " + event.email, JSON.stringify(event), event.topic);
 
                 emailCandidate(event, data.Item.url);
             }
@@ -116,7 +116,7 @@ function handleDuplicateRegistration(event, data)
     console.error(sub);
     console.error(body);
 
-    tellAndrew("WARNING" + sub, body);
+    tellAndrew("WARNING" + sub, body, event.topic);
 
     //now what?
     //pretend like nothing happened
@@ -166,7 +166,7 @@ function saveNewRegistration(event, url, problemKey)
     var sub = "New coding problem registration: " + event.first + " " + event.last + ", " + event.email + ", topic=" + event.topic;
     var body = JSON.stringify(params);
 
-    tellAndrew(sub, body);
+    tellAndrew(sub, body, event.topic);
 }
 
 function selectRandProblemPage(event)
@@ -294,15 +294,15 @@ function emailCandidate (event, url, done) {
 }
 
 
-function tellAndrew(subject, body)
+function tellAndrew(subject, body, topic)
 {
-  var topic = "arn:aws:sns:us-east-1:229763884986:CodingProblem";
+  var andrew = "arn:aws:sns:us-east-1:229763884986:CodingProblem";
 
   var sns = new AWS.SNS();
   var params = {
       Message: body,
       Subject: subject,
-      TopicArn: topic
+      TopicArn: andrew
   };
   sns.publish(params, function(err, data) {
     if (err)
@@ -311,8 +311,65 @@ function tellAndrew(subject, body)
       console.error(err, err.stack); 
     }
   });
+
+  //also tell other guy
+  notifyIfFound(sns, body, subject, topic);
 }
 
+
+function notifyIfFound(sns, body, subject, topic)
+{
+    var prefix = "arn:aws:sns:us-east-1:229763884986:";
+        
+    var arn = prefix + topic.toLowerCase();
+    
+    var params = {
+    };
+    
+    var sns = new AWS.SNS();
+    sns.listTopics(params, function(err, data) {
+        if (err) 
+        {
+            console.log("Error looking up SNS topic: " + arn);
+            console.log(err.message);
+        }
+        else {  //success
+        
+            var topics = data.Topics;
+            var i = 0
+            for (; i < topics.length; i++)
+            {
+                if (arn == topics[i].TopicArn.toLowerCase())
+                {
+                    
+                    console.log("SNS topic found: " + topics[i].TopicArn);
+
+                    var params = {
+                        Message: body,
+                        Subject: subject,
+                        TopicArn: topics[i].TopicArn
+                    };
+
+                    sns.publish(params, function(err, data) {
+                      if (err)
+                      {
+                        console.error("Error publishing to topic " + topic);
+                        console.error(err, err.stack); 
+                      }
+                    });
+
+                    return;
+                }
+                
+            }
+
+            console.log("SNS topic not found: " + arn);
+
+
+        }
+    });
+
+}
 
 
 
