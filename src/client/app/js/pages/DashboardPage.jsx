@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import constants from '../constants.js';
 import ProblemGrid from '../components/ProblemGrid.jsx';
 
 
@@ -14,14 +15,16 @@ export default class DashboardPage extends Component {
 			<div className="pageBody dashboardPage">
 				<div className="card blue">
 					<h1>Hello, {this.props.user.firstName}.</h1>
-					<p>Here are the steps you need to take to complete your interview:</p>
+					<p>Please complete both coding problems below.</p>
+					<p className="text italic">Deadline: the Online Coding Problem portion of our 2018 Summer Internship search will be closing on {constants.campaign.endDateString}</p>
 				</div>
 				<div className="card">
-					<h2 className="text bold">Finish Coding Problems:</h2>
 					<p className="instructions">
 						<span className="text red">You have 48 hours after starting each problem to complete it. </span>
-						<br/>You can use any language or environment for these problems.
-						<br/>When you are finished, your interviewer will contact you to for your next steps
+						<br/>Each problem is expected to take about 4 hours or less.
+						<br/>You may use any language or environment to solve these problems.
+						<br/>After you have submitted a solution for both problems, you will be contacted to schedule an interview.
+						<br/>Good luck, and we appreciate your interest in Symantec!
 					</p>
 					<ProblemGrid userProblems={this.props.user.problems}
 								 problemKeyObj={this.props.problemKeyObj}
