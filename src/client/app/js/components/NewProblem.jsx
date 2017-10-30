@@ -20,7 +20,7 @@ export default class NewProblem extends Component {
 			<div className={"problemCell " + this.props.problemClass} key={this.props.problemName}>
 				<a target="_blank"
 				   href={this.props.url}>
-				   {this.props.problemName.toUpperCase()}
+				   {this.props.problemTitle.toUpperCase()}
 				</a>
 				<button onClick={this.handleStart}>click here to start this problem</button> 
 			</div>
