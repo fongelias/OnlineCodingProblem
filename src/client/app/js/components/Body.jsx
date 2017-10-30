@@ -4,6 +4,7 @@ import DashboardPage from '../pages/DashboardPage.jsx';
 import LandingPage from '../pages/LandingPage.jsx';
 import RegistrationSuccessPage from '../pages/RegistrationSuccessPage.jsx';
 import LoadingPage from '../pages/LoadingPage.jsx';
+import CampaignOverPage from '../pages/CampaignOverPage.jsx';
 import Footer from '../components/Footer.jsx';
 
 export default class Body extends Component {
@@ -38,6 +39,14 @@ export default class Body extends Component {
 					<div>
 						<RegistrationSuccessPage user={this.props.user}/>
 						<Footer/>
+					</div>
+				);
+				break;
+
+			case constants.campaignOverPage:
+				return (
+					<div>
+						<CampaignOverPage/>
 					</div>
 				);
 				break;
