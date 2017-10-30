@@ -19,7 +19,7 @@ export default class ProblemGrid extends Component {
 				{
 					Object.keys(this.props.problemKeyObj).map((problemName, i) => {
 						const userProblems = this.props.userProblems;
-						const problemString = "Problem " + (i + 1);
+						const problemTitle = "Problem " + (i + 1);
 						let userProblemObj = {};
 
 
@@ -43,7 +43,8 @@ export default class ProblemGrid extends Component {
 								return (
 									<ExistingProblem key={problemName}
 													 problemClass={problemClass}
-													 problemName={problemString}
+													 problemTitle={problemTitle}
+													 problemName={problemName}
 													 url={userProblemObj.url}/>
 								);
 								break;
@@ -51,7 +52,8 @@ export default class ProblemGrid extends Component {
 								return (
 									<NewProblem key={problemName}
 												problemClass={problemClass}
-												problemName={problemString}
+												problemTitle={problemTitle}
+												problemName={problemName}
 												startProblem={this.props.startProblem}/>
 								);
 								break;
@@ -59,13 +61,15 @@ export default class ProblemGrid extends Component {
 								return (
 									<FinishedProblem key={problemName}
 													 problemClass={problemClass}
-													 problemName={problemString}/>
+													 problemTitle={problemTitle}
+													 problemName={problemName}/>
 								);
 							default:
 								return (
 									<NewProblem key={problemName}
 												problemClass={problemClass}
-												problemName={problemString}
+												problemTitle={problemTitle}
+												problemName={problemName}
 												startProblem={this.props.startProblem}/>
 								);
 						}
