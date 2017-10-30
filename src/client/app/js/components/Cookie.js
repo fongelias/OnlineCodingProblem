@@ -1,6 +1,18 @@
 import idGenerator from './idGenerator.js';
 
 
+const cookieNames = {
+	LLS: "LLS",
+	ROLE: "ROLE",
+}
+
+const roles = {
+	INTERN: "INTERN",
+}
+
+
+
+
 function createVariable(name,value) {
 	const date = new Date();
 	date.setFullYear(date.getFullYear() + 1);
@@ -39,12 +51,19 @@ function deleteVariable(name) {
 
 const Cookie = {
 	getLLS : () => {
-		return readVariable("LLS");
+		return readVariable(cookieNames.LLS);
 	},
-	setLLS : () => {
-		const uuid = idGenerator.uuid();
-		createVariable("LLS", uuid);
+	setLLS : (lls) => {
+		const uuid = lls ? lls : idGenerator.uuid();
+		createVariable(cookieNames.LLS, uuid);
 		return uuid;
+	},
+	getRole: () => {
+		return readVariable(cookieNames.ROLE);
+	},
+	setInternRole: () => {
+		createVariable(cookieNames.ROLE, roles.INTERN);
+		return roles.INTERN;
 	},
 }
 
