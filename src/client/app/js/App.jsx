@@ -12,8 +12,12 @@ export default class App extends Component {
 	constructor(props) {
 		super();
 
+		const page = new Date() > constants.campaign.endDate ? 
+			constants.campaignOverPage :
+			(window.location.pathname == "/" ? constants.landingPage : "");
+
 		this.state = {
-			page: window.location.pathname == "/" ? constants.landingPage : "",
+			page,
 			user: {
 				lls: null,
 				firstName: null,
@@ -38,6 +42,7 @@ export default class App extends Component {
 			const lls = path.split("/")[2].split(".")[0];
 			//Update Cookie
 			Cookie.setLLS(lls);
+			Cookie.setInternRole();
 
 			console.log('fetching user info');
 			fetch(constants.userRequests + "?lls=" + lls, {
@@ -121,10 +126,13 @@ export default class App extends Component {
 					},
 				});
 
-				console.log(this.state);
+				//console.log(this.state);
 			}).catch(err => {
 				console.log(err);
+				return false;
 			});
+		} else {
+			return false;
 		}
 	}
 
