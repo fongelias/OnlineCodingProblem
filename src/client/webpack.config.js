@@ -20,7 +20,7 @@ module.exports = {
 			{test: /\.(woff|woff2|eot|ttf|otf)$/, loader: 'url-loader?limit=65000&mimetype=application/font-woff&name=../fonts/[name].[ext]'}
 		]
 	},
-	devtool: "cheap-eval-source-map",
+	//devtool: "cheap-eval-source-map",
 	plugins: [
 		new ExtractTextPlugin({
 			filename: './css/[name].css',
