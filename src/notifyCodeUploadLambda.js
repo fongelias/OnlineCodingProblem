@@ -184,9 +184,7 @@ function lookupTopicCaseInsensitive(notify, callback)
         {
             console.log("Error looking up SNS topic: " + arn);
             console.log(err.message);
-            console.log("Returning default topic, " + dfault);
             
-            callback(dfault);
         }
         else {  //success
         
@@ -205,8 +203,11 @@ function lookupTopicCaseInsensitive(notify, callback)
             }
             
             console.log("SNS topic not found: " + arn);
-            console.log("Returning default topic, " + dfault);
         }
+
+        console.log("Returning default topic, " + dfault);
+        callback(dfault);
+        return;
     });
 
 }
