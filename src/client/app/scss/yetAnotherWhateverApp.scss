@@ -11,6 +11,8 @@ $symLightGrey: #e7e7e7;
 $symLighterGrey: #f8f8f8;
 $transparent: rgba(0,0,0,0);
 $redAlert: #d31d56;
+$coolGreen: #c4f4ca;
+$darkGreen: #418949;
 //Fonts
 $fontStack: arial, sans-serif;
 /*-- Mixins --*/
@@ -300,90 +302,18 @@ p {
 	}
 
 	.problemCell.finishedProblem {
+
+		a {
+			background: $coolGreen;
+			color: $darkGreen;
+		}
+
 		span {
 			left: calc((100% - 150px) / 2); //150px is length of text
 			cursor: default;
+			color: $darkGreen;
 		}
 	}
 
 
-
-
-/*
-
-
-
-
-.stock-graph {
-	@include flexbox;
-	@include flex-direction(row);
-	@include justify-content(center);
-}
-
-.stock-search {
-	@include flexbox;
-	@include flex-direction(column);
-	@include align-items(center);
-
-	input {
-		@include transition(all 0.3s ease);
-		padding-left: 5px;
-		width: 460px;
-		height: 30px;
-		border: 1px solid $charcoal;
-		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.17), 0px 0px 0px 0px rgba(0, 0, 0, 0);
-		outline: none;
-	}
-
-	&:hover input {
-		border: 1px solid $pitch-grey;
-		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.17), 0px 1px 1px rgba(0, 0, 0, 0.17);
-	}
-
-	label {
-		@include transition(all 0.3s ease);
-		opacity: 0;
-		font-size: 12px;
-		color: $grey;
-		text-align: right;
-		width: 460px;
-	}
-
-	&:hover label{
-		opacity: 1;
-	}
-}
-
-.stock-list {
-	@include flexbox;
-	@include flex-direction(column);
-	@include align-items(center);
-
-	.list-item-container {
-		width: 460px;
-		position: relative;
-		padding-left: 5px;
-
-		span {
-			font-family: sans-serif;
-			font-size: 16px;
-		}
-
-		button {
-			font-size: 16px;
-			border: 0px;
-			background: $transparent;
-			cursor: pointer;
-
-			&:hover {
-				@include transform(rotate(180deg));
-				@include transition(all 0.3s ease);
-			}
-		}
-	}
-}
-
-
-
-*/
 
