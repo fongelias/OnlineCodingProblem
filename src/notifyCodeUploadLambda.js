@@ -115,23 +115,13 @@ function lookupRegistrationByLLS(event, context, email, topic, lls)
             	(email = "emailnotfound");            		
             } 
 
-<<<<<<< HEAD
             updateProblemTable(lls, parseProblemKey(event.Records[0].s3.object.key), true, config.PROBLEMTABLE.FIELDS.COMPLETED);
 			buildNotification(event, context, topic, email);
-=======
-
-            updateProblemTable(lls, parseProblemKey(event.Records[0].s3.object.key), true, config.PROBLEMTABLE.FIELDS.COMPLETED);
-			      buildNotification(event, context, topic, email);
->>>>>>> 58c6f3b75eb4b3e1965dc2784c09f177acb4ccfc
         }
     });
 }
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 58c6f3b75eb4b3e1965dc2784c09f177acb4ccfc
 function buildNotification(event, context, topic, email)
 {
 	email = encodeURI(email);
@@ -223,7 +213,7 @@ function pub2SNS(message, subject, topic, context)
         TopicArn: topic
     };
 
-    sns.publish(params, context.done);
+    SNS.publish(params, context.done);
 }
 
 
