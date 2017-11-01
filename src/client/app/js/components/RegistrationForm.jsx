@@ -6,6 +6,7 @@ export default class RegistrationForm extends Component {
 
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.activateSubmit = this.activateSubmit.bind(this);
+		this.handleKeyPress = this.handleKeyPress.bind(this);
 
 		this.state = {
 			submitButtonLabel: "",
@@ -19,6 +20,12 @@ export default class RegistrationForm extends Component {
 		const email = this.refs.email.value;
 
 		this.props.registerUser(firstName, lastName, email);
+	}
+
+	handleKeyPress(e) {
+		if(e.key === 'Enter' && !this.state.submitButtonDisabled) {
+			this.handleSubmit();
+		}
 	}
 
 	activateSubmit() {
@@ -41,7 +48,7 @@ export default class RegistrationForm extends Component {
 			<div className="registrationForm form">
 				<input ref="firstName" type="text" placeholder="First Name"/>
 				<input ref="lastName" type="text" placeholder="Last Name" />
-				<input ref="email" type="email" placeholder="Email" />
+				<input ref="email" type="email" placeholder="Email" onKeyPress={this.handleKeyPress}/>
 				<div className="input-group">
 					<button ref="submitButton" className="submitButton" onClick={this.handleSubmit} disabled={this.state.submitButtonDisabled}>Submit your registration</button>
 					<label htmlFor="submitButton">{this.state.submitButtonLabel}</label>
