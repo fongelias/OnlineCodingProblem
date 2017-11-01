@@ -15,6 +15,11 @@ export default class App extends Component {
 		const page = new Date() > constants.campaign.endDate ? 
 			constants.campaignOverPage :
 			(window.location.pathname == "/" ? constants.landingPage : "");
+		
+
+		//Use the line below for local development of dashboard
+		//const page = constants.dashboardPage;
+
 
 		this.state = {
 			page,
@@ -37,9 +42,15 @@ export default class App extends Component {
 	componentDidMount() {
 		const path = window.location.pathname;
 
+		//Use the top line for local development of dashboard
+		//if(true) {
 		if(path != "/") {
 			//path is "/monthly-tp/[lls].html"
 			const lls = path.split("/")[2].split(".")[0];
+			//Use the line below for local development of Dashboard
+			//const lls = "133910D1-B380-4088-BAEC-AE284CC267B8";
+
+
 			//Update Cookie
 			Cookie.setLLS(lls);
 			Cookie.setInternRole();
