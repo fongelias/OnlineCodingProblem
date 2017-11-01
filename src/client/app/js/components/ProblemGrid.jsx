@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ExistingProblem from './ExistingProblem.jsx';
 import NewProblem from './NewProblem.jsx';
 import FinishedProblem from './FinishedProblem.jsx';
-import { diffHours } from '../utils';
 
 
 
@@ -12,64 +11,43 @@ export default class ProblemGrid extends Component {
 		super();
 	}
 
-
 	render() {
 		return (
 			<div className="problemGrid">
 				{
-					Object.keys(this.props.problemKeyObj).map((problemName, i) => {
-						const userProblems = this.props.userProblems;
-						const problemTitle = "Problem " + (i + 1);
-						let userProblemObj = {};
-
-
-						//Locate Problem
-						for(let i = 0; i < userProblems.length; i++) {
-							console.log(userProblems[i]);
-							if(userProblems[i].problemKey.indexOf(problemName) != -1) {
-								userProblemObj = userProblems[i];
-								break;
-							}
-						}
-						
-
-						const problemClass = userProblemObj.url ? 
-							(userProblemObj.completed || 48 <= diffHours(Date.now(), new Date(userProblemObj["start-time"])) 
-								? "finishedProblem" : "startedProblem")
-							: "newProblem";
-
-						switch(problemClass) {
+					this.props.userProblemObjList.map((problemObj) => {
+						switch(problemObj.problemClass) {
 							case "startedProblem":
 								return (
-									<ExistingProblem key={problemName}
-													 problemClass={problemClass}
-													 problemTitle={problemTitle}
-													 problemName={problemName}
-													 url={userProblemObj.url}/>
+									<ExistingProblem key={problemObj.problemName}
+													 problemClass={problemObj.problemClass}
+													 problemTitle={problemObj.problemTitle}
+													 problemName={problemObj.problemName}
+													 url={problemObj.url}/>
 								);
 								break;
 							case "newProblem":
 								return (
-									<NewProblem key={problemName}
-												problemClass={problemClass}
-												problemTitle={problemTitle}
-												problemName={problemName}
+									<NewProblem key={problemObj.problemName}
+												problemClass={problemObj.problemClass}
+												problemTitle={problemObj.problemTitle}
+												problemName={problemObj.problemName}
 												startProblem={this.props.startProblem}/>
 								);
 								break;
 							case "finishedProblem":
 								return (
-									<FinishedProblem key={problemName}
-													 problemClass={problemClass}
-													 problemTitle={problemTitle}
-													 problemName={problemName}/>
+									<FinishedProblem key={problemObj.problemName}
+													 problemClass={problemObj.problemClass}
+													 problemTitle={problemObj.problemTitle}
+													 problemName={problemObj.problemName}/>
 								);
 							default:
 								return (
-									<NewProblem key={problemName}
-												problemClass={problemClass}
-												problemTitle={problemTitle}
-												problemName={problemName}
+									<NewProblem key={problemObj.problemName}
+												problemClass={problemObj.problemClass}
+												problemTitle={problemObj.problemTitle}
+												problemName={problemObj.problemName}
 												startProblem={this.props.startProblem}/>
 								);
 						}
