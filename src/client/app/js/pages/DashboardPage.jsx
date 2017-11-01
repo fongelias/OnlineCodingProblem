@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import constants from '../constants.js';
 import ProblemGrid from '../components/ProblemGrid.jsx';
+import { diffHours } from '../utils';
 
 
 
@@ -8,15 +9,54 @@ import ProblemGrid from '../components/ProblemGrid.jsx';
 export default class DashboardPage extends Component {
 	constructor(props) {
 		super();
+
+		this.formatProblemKeyObj = this.formatProblemKeyObj.bind(this);
 	} 
 
+	formatProblemKeyObj() {
+		return Object.keys(this.props.problemKeyObj).map((problemName, i) => {
+			const userProblems = this.props.user.problems;
+			const problemTitle = "Problem " + (i + 1);
+			let userProblemObj = {};
+
+
+			//Locate Problem
+			for(let i = 0; i < userProblems.length; i++) {
+				console.log(userProblems[i]);
+				if(userProblems[i].problemKey.indexOf(problemName) != -1) {
+					userProblemObj = userProblems[i];
+					break;
+				}
+			}
+			
+			const timeLimitOver = 48 <= diffHours(Date.now(), new Date(userProblemObj["start-time"]));
+			const problemClass = userProblemObj.url ? 
+				((userProblemObj.completed || timeLimitOver) 
+					? "finishedProblem" : "startedProblem")
+				: "newProblem";
+
+			return {
+				problemName,
+				problemTitle,
+				problemClass,
+				completed: userProblemObj.completed || timeLimitOver,
+				url : userProblemObj.url,
+			};
+		});
+	}
+
+
 	render() {
+
+		const userProblemObjList = this.formatProblemKeyObj();
+		const testsCompleted = userProblemObjList.length > 0 ? userProblemObjList.map(obj => obj.completed).reduce((p,c) => p && c, true) : false;
+
 		return (
 			<div className="pageBody dashboardPage">
 				<div className="card blue">
 					<h1>Hello, {this.props.user.firstName}.</h1>
 					<p>Please complete both coding problems below.</p>
-					<p className="text italic">Deadline: the Online Coding Problem portion of our 2018 Summer Internship search will be closing on {constants.campaign.endDateString}</p>
+					<p className="text italic">Deadline: the Online Coding Problem portion of our 2018 Summer Internship search will end on {constants.campaign.endDateString}</p>
 				</div>
 				<div className="card">
 					<p className="instructions">
@@ -26,9 +66,9 @@ export default class DashboardPage extends Component {
 						<br/>After you have submitted a solution for both problems, you will be contacted to schedule an interview.
 						<br/>Good luck, and we appreciate your interest in Symantec!
 					</p>
-					<ProblemGrid userProblems={this.props.user.problems}
-								 problemKeyObj={this.props.problemKeyObj}
+					<ProblemGrid userProblemObjList={userProblemObjList}
 								 startProblem={this.props.startProblem}/>
+					<p className="text center">{ testsCompleted ? "You've finished both tests! You will be contacted to schedule an interview." : "" }</p>
 				</div>
 			</div>
 		);
