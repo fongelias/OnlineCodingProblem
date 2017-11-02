@@ -17,7 +17,7 @@ export default class LandingPage extends Component {
 					<p>Thank you for your interest in Symantec!</p>
 					<p>The first step in our interview process will be two take-home coding exercises.</p>
 					<p>The second step is a one-hour onsite interview (remote is also possible for students unable to visit our Cambridge office).</p>
-					<p>Please register below to receive your personalized link containing further instructions.</p>
+					<p>Please register below <span className="text red">with your school email</span> to receive your personalized link containing further instructions.</p>
 					<p className="text italic">Eligibility: You must be a full-time student in fall of 2018 who is also graduating by the summer of 2018 in order to participate in our internship</p>
 					<p className="text italic">Deadline: the Online Coding Problem portion of our 2018 Summer Internship search will be closing on {constants.campaign.endDateString}</p>
 					<p>Thanks!</p>
