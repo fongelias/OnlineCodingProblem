@@ -40,6 +40,7 @@ function populateUserByLls(lls) {
 		.then(response => {
 			user.firstName = response.first;
 			user.lastName = response.last;
+			user.email = response.email;
 			user.found = true;
 
 			return findExistingProblems(lls);
