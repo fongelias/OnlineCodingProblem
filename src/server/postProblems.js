@@ -2,6 +2,7 @@
 
 const AWS = require('aws-sdk');
 const s3 = createS3();
+const SNS = new AWS.SNS();
 
 
 const config = {
@@ -13,6 +14,10 @@ const config = {
 	},
 	PROBLEMTABLE: {
 		NAME: "ProblemTable",
+	},
+	TOPIC: {
+		CODEUPLOADED: "arn:aws:sns:us-east-1:229763884986:CodeUploaded",
+		CODINGPROBLEM: "arn:aws:sns:us-east-1:229763884986:CodingProblem",
 	},
 }
 
@@ -28,7 +33,10 @@ exports.handler = (event, context, callback) => {
 	const problemRequest = {
 		problem: config.PROBLEM_DIR + encodeURI(event.problemName) + ".html", //Should not alter the problem name in any way
 		lls: encodeURI(event.lls),
+		name: encodeURI(event.firstName) + " " + encodeURI(event.lastName),
 	}
+
+	//console.log(event);
 	
 
 	generateProblem(problemRequest).then(response => callback(null, response));
@@ -52,7 +60,12 @@ function generateProblem(problemRequest) {
 		}).then(response => copyPage(problemRequest.problem))
 		.then(response => {
 			url = response.url;
-			return addProblemPageEntry({ lls: problemRequest.lls }, response.s3ObjKey, response.url);
+			const user = {
+				lls: problemRequest.lls,
+				name: problemRequest.name,
+			}
+
+			return addProblemPageEntry(user, response.s3ObjKey, response.url);
 		}).catch(err => {
 			console.log(err);
 			return {
@@ -65,7 +78,7 @@ function generateProblem(problemRequest) {
 
 	/* --Problem Table reusable functions-- */
 	function addProblemPageEntry(user, problemKey, url) {
-		console.log("Adding new entry to " + config.PROBLEMTABLE);
+		console.log("Adding new entry to " + config.PROBLEMTABLE.NAME);
 
 		const docClient = new AWS.DynamoDB.DocumentClient();
 		const now = new Date();
@@ -88,6 +101,11 @@ function generateProblem(problemRequest) {
 					reject(errMessage);
 				} else {
 					console.log("Added a new entry for " + url);
+
+					const message = "New problem with problemkey: " + problemKey + " generated for user: " + user.name;
+					const subject = user.name + " has just started a problem!";
+
+					notifyCodingProblemSNS(message, subject);
 					resolve(params.Item);
 				}
 			})
@@ -163,6 +181,25 @@ function generateProblem(problemRequest) {
 	}
 
 
+
+	/* --SNS functions-- */
+	function notifyCodingProblemSNS(message, subject) {
+		notifySNS(config.TOPIC.CODINGPROBLEM, message, subject);
+	}
+
+
+
+	function notifySNS(topic, message, subject) {
+		console.log("Notifying SNS topic: " + topic);
+
+		const params = {
+			Message: message,
+			Subject: subject,
+			TopicArn: topic,
+		}
+
+		SNS.publish(params).send();
+	}
 
 
 
