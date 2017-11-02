@@ -24,6 +24,7 @@ export default class App extends Component {
 		this.state = {
 			page,
 			user: {
+				//email: null,
 				lls: null,
 				firstName: null,
 				lastName: null,
@@ -73,6 +74,7 @@ export default class App extends Component {
 							firstName: data.firstName,
 							lastName: data.lastName,
 							problems: data.problems,
+							//email: data.email,
 						},
 					});
 				} else {
@@ -107,7 +109,7 @@ export default class App extends Component {
 	registerUser(firstName, lastName, email) {
 		//console.log(firstName, lastName, email);
 
-		if(firstName && lastName && email && isEmail(email)) {
+		if(firstName && lastName && email && isEmail(email) && email.endsWith(".edu")) {
 			fetch(constants.userRequests, {
 				method: 'POST',
 				headers: {
@@ -150,6 +152,8 @@ export default class App extends Component {
 
 	startProblem(problemName) {
 		const lls = this.state.user.lls;
+		const firstName = this.state.user.firstName;
+		const lastName = this.state.user.lastName;
 
 		fetch(constants.problemRequests, {
 			method: 'POST',
@@ -160,6 +164,8 @@ export default class App extends Component {
 			body: JSON.stringify({
 				problemName,
 				lls,
+				firstName,
+				lastName,
 			}),
 		}).then(response => response.json())
 		.then(data => {
