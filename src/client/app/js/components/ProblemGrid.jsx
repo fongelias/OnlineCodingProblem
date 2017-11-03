@@ -40,7 +40,8 @@ export default class ProblemGrid extends Component {
 									<FinishedProblem key={problemObj.problemName}
 													 problemClass={problemObj.problemClass}
 													 problemTitle={problemObj.problemTitle}
-													 problemName={problemObj.problemName}/>
+													 problemName={problemObj.problemName}
+													 url={problemObj.url}/>
 								);
 							default:
 								return (
