@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { isEmail } from '../utils/';
 
 export default class RegistrationForm extends Component {
 	constructor(props) {
@@ -11,6 +12,7 @@ export default class RegistrationForm extends Component {
 		this.state = {
 			submitButtonLabel: "",
 			submitButtonDisabled: true,
+			submitButtonText: "Submit your registration",
 		};
 	}
 
@@ -19,7 +21,13 @@ export default class RegistrationForm extends Component {
 		const lastName = this.refs.lastName.value;
 		const email = this.refs.email.value;
 
-		this.props.registerUser(firstName, lastName, email);
+		if(firstName && lastName && email && isEmail(email) && email.endsWith(".edu")) {
+			this.setState({
+				submitButtonText: "Loading...",
+				submitButtonDisabled: true,
+			})
+			this.props.registerUser(firstName, lastName, email);
+		}
 	}
 
 	handleKeyPress(e) {
@@ -50,7 +58,7 @@ export default class RegistrationForm extends Component {
 				<input ref="lastName" type="text" placeholder="Last Name" />
 				<input ref="email" type="email" placeholder="Email" onKeyPress={this.handleKeyPress}/>
 				<div className="input-group">
-					<button ref="submitButton" className="submitButton" onClick={this.handleSubmit} disabled={this.state.submitButtonDisabled}>Submit your registration</button>
+					<button ref="submitButton" className="submitButton" onClick={this.handleSubmit} disabled={this.state.submitButtonDisabled}>{this.state.submitButtonText}</button>
 					<label htmlFor="submitButton">{this.state.submitButtonLabel}</label>
 				</div>
 				<div className="input-group">
