@@ -56,16 +56,26 @@ export default class DashboardPage extends Component {
 				<div className="card blue">
 					<h1>Hello, {this.props.user.firstName}.</h1>
 					<p>Please complete both coding problems below.</p>
-					<p className="text italic">Deadline: the Online Coding Problem portion of our 2018 Summer Internship search will end on {constants.campaign.endDateString}</p>
+					<p className="text italic">Deadline: the coding problems will close end of day, {constants.campaign.endDateString}. Interviews may be held after{constants.campaign.endDateString.split(',')[1]}.</p>
 				</div>
 				<div className="card">
-					<p className="instructions">
-						<span className="text red">You have 48 hours after starting each problem to complete it. </span>
-						<br/>Each problem is expected to take about 4 hours or less.
-						<br/>You may use any language or environment to solve these problems.
-						<br/>After you have submitted a solution for both problems, you will be contacted to schedule an interview.
-						<br/>Good luck, and we appreciate your interest in Symantec!
-					</p>
+					{
+						(() => {
+							return testsCompleted ?
+								(<p className="instructions">
+									<span className="text bold">Thank you!</span>
+									<br/>We have received your coding solutions, and will be reaching out to you shortly with feedback and further instruction
+									<br/>If you have any questions, you may contact <a href="mail://andrew_chang@symantec.com">andrew_chang@symantec.com</a>
+								</p>)
+								: (<p className="instructions">
+									<span className="text red">You have 48 hours after starting each problem to complete it. </span>
+									<br/>Each problem is expected to take about 4 hours or less.' +
+									<br/>You may use any language or environment to solve these problems.' +
+									<br/>After you have submitted a solution for both problems, you will be contacted to schedule an interview.
+									<br/>Good luck, and we appreciate your interest in Symantec!
+								</p>);
+						})()
+					}
 					<ProblemGrid userProblemObjList={userProblemObjList}
 								 startProblem={this.props.startProblem}/>
 					<p className="text center">{ testsCompleted ? "You've finished both tests! You will be contacted to schedule an interview." : "" }</p>
