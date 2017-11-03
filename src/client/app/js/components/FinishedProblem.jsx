@@ -12,7 +12,7 @@ export default class FinishedProblem extends Component {
 	render() {
 		return (
 			<div className={"problemCell " + this.props.problemClass} key={this.props.problemName}>
-				<a>{this.props.problemName.toUpperCase()}</a>
+				<a href={this.props.url}>{this.props.problemName.toUpperCase()}</a>
 				<span>You have finished this problem</span>
 			</div>
 		)
