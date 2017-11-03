@@ -36,8 +36,69 @@ export default class App extends Component {
 
 		this.registerUser = this.registerUser.bind(this);
 		this.startProblem = this.startProblem.bind(this);
+		this.updateUserStateByLLS = this.updateUserStateByLLS.bind(this);
+		this.updateProblemList = this.updateProblemList.bind(this);
+		this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
 	}
 
+
+	updateUserStateByLLS(lls) {
+		/* This should only be used on the dashboard page. In the future when this is not the case, 
+		   we will need to split out the update to this.state.page by returning the fetch() promise */
+		console.log('fetching user info');
+		fetch(constants.userRequests + "?lls=" + lls, {
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		}).then(response => response.json())
+		.then(data => {
+			//console.log(data);
+			if(data.found) {
+				this.setState({
+					page: constants.dashboardPage,
+					user: {
+						lls,
+						firstName: data.firstName,
+						lastName: data.lastName,
+						problems: data.problems,
+						//email: data.email,
+					},
+				});
+			} else {
+				this.setState({
+					page: constants.landingPage,
+				});
+			}
+		});
+	}
+
+
+	updateProblemList() {
+		//Fetch Problem List
+		fetch(constants.problemRequests, {
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		}).then(response => response.json())
+		.then(data => {
+			//console.log(data);
+			this.setState({
+				problemKeyObj: data,
+			});
+		})
+	}
+
+
+	handleVisibilityChange() {
+		//console.log("handleVisibilityChange()");
+		if(!document[constants.visibilityAPI.hidden]) {
+			this.updateUserStateByLLS(Cookie.getLLS());
+		}
+	}
 
 
 	componentDidMount() {
@@ -56,52 +117,17 @@ export default class App extends Component {
 			Cookie.setLLS(lls);
 			Cookie.setInternRole();
 
-			console.log('fetching user info');
-			fetch(constants.userRequests + "?lls=" + lls, {
-				method: 'GET',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-				}
-			}).then(response => response.json())
-			.then(data => {
-				//console.log(data);
-				if(data.found) {
-					this.setState({
-						page: constants.dashboardPage,
-						user: {
-							lls,
-							firstName: data.firstName,
-							lastName: data.lastName,
-							problems: data.problems,
-							//email: data.email,
-						},
-					});
-				} else {
-					this.setState({
-						page: constants.landingPage,
-					});
-				}
-			});
+			this.updateUserStateByLLS(lls);
+			this.updateProblemList();
 
-
-
-			//Fetch Problem List
-			fetch(constants.problemRequests, {
-				method: 'GET',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-				}
-			}).then(response => response.json())
-			.then(data => {
-				//console.log(data);
-				this.setState({
-					problemKeyObj: data,
-				});
-			})
+			document.addEventListener(constants.visibilityAPI.visibilityChange, this.handleVisibilityChange);
 		}
+	}
 
+	componentWillUnmount() {
+		if(path != "/") {
+			document.removeEventListener(constants.visibilityAPI.visibilityChange, this.handleVisibilityChange);
+		}
 	}
 
 
