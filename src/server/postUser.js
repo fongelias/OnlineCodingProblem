@@ -2,6 +2,8 @@
 
 const AWS = require('aws-sdk');
 const s3 = createS3();
+const SNS = new AWS.SNS();
+
 
 
 const config = {
@@ -19,6 +21,10 @@ const config = {
 	},
 	partitionsPerYear: 1,
 	SENDER: '"Registration" <noreply@yetanotherwhatever.io>',
+	TOPIC: {
+		CODEUPLOADED: "arn:aws:sns:us-east-1:229763884986:CodeUploaded",
+		CODINGPROBLEM: "arn:aws:sns:us-east-1:229763884986:CodingProblem",
+	},
 }
 
 
@@ -60,6 +66,11 @@ function validateRegistration(registration) {
 		responseObj.updateLls = user.updateLls;
 
 		console.log(user);
+
+		const message = user.first + " " + user.last + " was added with lls " + user.lls;
+		const subject = user.first + " " + user.last + " just registered on the interview portal";
+
+		notifyCodingProblemSNS(message, subject); 
 
 
 		return findExistingProblems(user.lls);
@@ -399,6 +410,24 @@ function validateRegistration(registration) {
 	}
 
 
+	/* --SNS functions-- */
+	function notifyCodingProblemSNS(message, subject) {
+		notifySNS(config.TOPIC.CODINGPROBLEM, message, subject);
+	}
+
+
+
+		function notifySNS(topic, message, subject) {
+			console.log("Notifying SNS topic: " + topic);
+
+			const params = {
+				Message: message,
+				Subject: subject,
+				TopicArn: topic,
+			}
+
+			SNS.publish(params).send();
+		}
 
 
 
@@ -468,8 +497,7 @@ function tellAndrew(subject, body) {
 		TopicArn: topic,
 	};
 
-	const sns = new AWS.SNS();
-	sns.publish(params, (err, data) => {
+	SNS.publish(params, (err, data) => {
 		if(err) {
 			console.error("Error publishing to topic: " + topic);
 			console.error(err, err.stack);
