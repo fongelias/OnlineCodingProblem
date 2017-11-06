@@ -135,7 +135,7 @@ export default class App extends Component {
 	registerUser(firstName, lastName, email) {
 		//console.log(firstName, lastName, email);
 
-		if(firstName && lastName && email && isEmail(email) && email.endsWith(".edu")) {
+		if(firstName && lastName && email && isEmail(email) && (email.endsWith(".edu") || email.endsWith("symantec.com"))) {
 			fetch(constants.userRequests, {
 				method: 'POST',
 				headers: {
