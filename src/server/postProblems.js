@@ -102,7 +102,7 @@ function generateProblem(problemRequest) {
 				} else {
 					console.log("Added a new entry for " + url);
 
-					const message = "New problem with problemkey: " + problemKey + " generated for user: " + user.name;
+					const message = "New problem with problemkey: " + problemKey + " generated for user: " + user.name + "\n\n\n\n\n\n";
 					const subject = user.name + " has just started a problem!";
 
 					notifyCodingProblemSNS(message, subject);

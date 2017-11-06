@@ -153,7 +153,8 @@ function buildNotification(event, context, topic, email)
 	        + "\nBucket: " + bucket
 	        + "\nKey: " + key
 	        + "\nTopic: " + topic
-	        + "\nDownload submitted code here: " + mylink;
+	        + "\nDownload submitted code here: " + mylink
+            + "\n\n\n\n\n";
 		pub2SNS(message, subject, topic, context);
     });
 }
