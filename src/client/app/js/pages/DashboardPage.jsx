@@ -69,8 +69,8 @@ export default class DashboardPage extends Component {
 								</p>)
 								: (<p className="instructions">
 									<span className="text red">You have 48 hours after starting each problem to complete it. </span>
-									<br/>Each problem is expected to take about 4 hours or less.' +
-									<br/>You may use any language or environment to solve these problems.' +
+									<br/>Each problem is expected to take about 4 hours or less.
+									<br/>You may use any language or environment to solve these problems.
 									<br/>After you have submitted a solution for both problems, you will be contacted to schedule an interview.
 									<br/>Good luck, and we appreciate your interest in Symantec!
 								</p>);
