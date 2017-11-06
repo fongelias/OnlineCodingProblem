@@ -21,7 +21,7 @@ export default class RegistrationForm extends Component {
 		const lastName = this.refs.lastName.value;
 		const email = this.refs.email.value;
 
-		if(firstName && lastName && email && isEmail(email) && email.endsWith(".edu")) {
+		if(firstName && lastName && email && isEmail(email) && (email.endsWith(".edu") || email.endsWith("symantec.com"))) {
 			this.setState({
 				submitButtonText: "Loading...",
 				submitButtonDisabled: true,
