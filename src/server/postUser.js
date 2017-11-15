@@ -67,7 +67,7 @@ function validateRegistration(registration) {
 
 		console.log(user);
 
-		const message = user.first + " " + user.last + " was added with lls " + user.lls + "\n\n\n\n\n\n";
+		const message = user.first + " " + user.last + " with email " + user.email + " was added with lls " + user.lls + "\n\n\n\n\n\n";
 		const subject = user.first + " " + user.last + " just registered on the interview portal";
 
 		notifyCodingProblemSNS(message, subject); 
